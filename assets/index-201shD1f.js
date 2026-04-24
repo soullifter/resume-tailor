@@ -402,7 +402,7 @@ Return ONLY this JSON (no markdown):
       "after": "fixed text (for quantification issues, keep same as before — do not add [X])"
     }
   ],
-  "fixedResume": { ...same JSON structure with tense/verb/passive/redundancy fixes applied. Do NOT modify any bullet for quantification — leave those unchanged. },
+  "fixedResume": { ...same JSON structure with verb/passive/redundancy fixes applied. Do NOT touch tense bullets here — leave them unchanged. Do NOT modify quantification bullets. },
   "submitCheck": {
     "score": <0-100>,
     "blockers": ["critical issue that would hurt this application"],
@@ -410,7 +410,7 @@ Return ONLY this JSON (no markdown):
     "positives": ["genuine strength"],
     "verdict": "one-line overall verdict"
   }
-}`)),o(`done`)}catch{o(`error`)}}function y(){n(l.fixedResume),f(!0),g(!1)}async function b(){c(`loading`);try{r(await TY(i,`Today's date is ${new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`})}. Trim this resume to fit in approximately ${p} page${p===1?``:`s`}. Remove the least impactful content while keeping the strongest achievements and most relevant experience. Do NOT invent or change any facts.
+}`)),o(`done`)}catch{o(`error`)}}function y(){let e=JSON.parse(JSON.stringify(l.fixedResume));l.issues.filter(e=>e.type===`tense`&&e.before&&e.after&&e.before!==e.after).forEach(t=>{e.experience=e.experience?.map(e=>({...e,bullets:e.bullets?.map(e=>e===t.before?t.after:e)}))}),n(e),f(!0),g(!1)}async function b(){c(`loading`);try{r(await TY(i,`Today's date is ${new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`})}. Trim this resume to fit in approximately ${p} page${p===1?``:`s`}. Remove the least impactful content while keeping the strongest achievements and most relevant experience. Do NOT invent or change any facts.
 
 RESUME:
 ${JSON.stringify(t||e,null,2)}
