@@ -284,8 +284,27 @@ Return this exact JSON structure:
   "education": [
     { "degree": "Degree Name", "school": "School Name", "dates": "YYYY or YYYY–YYYY" }
   ]
-}`}}function Dl(e,t){return{temperature:0,maxOutputTokens:10,prompt:`You are an ATS scoring system. Score how well this resume matches the job description.
-Consider: keyword alignment, experience level match, skills coverage, and role relevance.
+}`}}function Dl(e,t){return{temperature:0,maxOutputTokens:10,prompt:`You are simulating an ATS (Applicant Tracking System) resume scanner. Follow this exact mechanism:
+
+STEP 1 — Extract from the JD:
+- All required skills, tools, technologies — note how many times each appears (frequency = weight)
+- Preferred/nice-to-have skills
+- Job title keywords
+- Required qualifications (degree level, years of experience, certifications)
+
+STEP 2 — Scan the resume for each item:
+- Found in Summary or Work Experience bullets: FULL credit (keyword demonstrated in context)
+- Found in Skills section only: HALF credit (listed but not demonstrated)
+- Absent entirely: NO credit
+- Standard abbreviations count as matches: JS=JavaScript, ML=Machine Learning, k8s=Kubernetes, AWS=Amazon Web Services
+- Related-but-different does NOT count: Angular≠React, MySQL≠MongoDB, supervised≠unsupervised ML
+
+STEP 3 — Weighted score:
+- Required keywords carry more weight than preferred (3:1 ratio)
+- Keywords appearing multiple times in JD carry more weight than single-mention ones
+- Required qualification met (degree, years): bonus
+- Normalize to 0-100
+
 Return ONLY a single integer 0-100. No explanation, no punctuation, just the number.
 
 RESUME:
