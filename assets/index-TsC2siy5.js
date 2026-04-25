@@ -411,31 +411,92 @@ Return ONLY this JSON, no markdown:
     "positives": ["genuine strength of this resume"],
     "verdict": "One honest sentence: is this ready to submit or what needs to happen first?"
   }
-}`}}function kl(e,t){return{temperature:0,maxOutputTokens:8192,prompt:`Today's date: ${new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`})}. You are trimming a resume to fit approximately ${t} page${t===1?``:`s`}.
+}`}}function kl(e,t){let n=new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`}),r=Math.round(t*52);return{temperature:0,maxOutputTokens:8192,prompt:`Today's date: ${n}. You are a professional resume editor trimming a resume to fit approximately ${t} page${t===1?``:`s`}.
 
-RULES:
-- Remove the least impactful bullets first (generic, weak, or redundant ones).
-- Keep all jobs and education entries — only remove bullets within them, not entire roles.
-- Never remove contact info, summary, skills, or education sections entirely.
-- Do NOT change, invent, or rephrase any remaining content.
-- Keep the strongest achievements and most role-relevant content.
+PAGE CALIBRATION: A standard resume page holds ~52 content lines. Target: ≤${r} total content lines across all sections. Count every bullet, heading, contact line, skill row, and summary sentence as lines.
+
+REMOVAL PRIORITY — follow this exact order, stopping as soon as you hit the target:
+
+STEP 1 — Remove duplicates/redundancy
+  - Remove bullets that repeat the same idea already expressed in another bullet within the same role or across roles.
+
+STEP 2 — Remove generic/weak bullets
+  - Remove bullets with no metrics and weak openers: "Assisted with", "Helped", "Worked on", "Was responsible for", "Participated in", "Supported", "Contributed to".
+  - NEVER remove a bullet that contains a number, %, $, or specific metric.
+
+STEP 3 — Shorten long bullets
+  - Condense any bullet that is 2+ lines into a single tight sentence. Do NOT delete it — just tighten it.
+  - Keep all facts, metrics, and outcomes intact. Do not invent or change anything.
+
+STEP 4 — Thin older roles
+  - For roles older than 5 years, reduce to the 2-3 strongest bullets only. Protect any bullet with a metric.
+  - For the 2 most recent roles, keep at least 3-4 bullets each.
+
+STEP 5 — Trim summary
+  - If summary is 3+ sentences, condense to 2 tight sentences. Keep specific skills and value proposition. Do not change facts.
+
+STEP 6 — Condense skills
+  - If skills list has 30+ items, remove the most generic ones (e.g. "Microsoft Office", "Email", "Communication"). Keep technical and domain-specific skills.
+
+STEP 7 — Trim projects / extraSections (last resort)
+  - Reduce project bullets to 1-2 strongest per project. If still over limit, remove the least relevant project entirely.
+  - ExtraSection items can be removed if needed.
+  - Never remove certifications — they are compact and high value.
+
+NEVER DO:
+- Never remove contact info, education, or the skills section entirely.
+- Never remove a bullet containing a number, %, $, or named metric.
+- Never rephrase, invent, or alter any content you keep — only remove or tighten.
+- Never remove the 2 most recent roles entirely.
 
 RESUME:
 ${JSON.stringify(e,null,2)}
 
-Return ONLY the trimmed resume in the exact same JSON structure, no markdown.`}}function Al(e){return{temperature:.1,maxOutputTokens:8192,prompt:`You are a professional English editor. Fix grammar, spelling, and unnatural phrasing in this resume.
+Return ONLY the trimmed resume in the exact same JSON structure, no markdown.`}}function Al(e){return{temperature:.2,maxOutputTokens:8192,prompt:`You are a senior resume editor doing a full language polish pass. Your goal is crisp, professional, impactful resume language throughout.
 
-STRICT RULES — violating any is a failure:
-- Do NOT add any new words, facts, company names, job titles, skills, or information not already present.
-- Do NOT remove any existing information.
-- Do NOT change proper nouns (names, companies, schools, tools, technologies, acronyms).
-- Do NOT change any numbers, percentages, dates, or metrics.
-- ONLY fix: grammar errors, spelling mistakes, awkward phrasing, passive voice, unnatural sentence structure.
-- If a sentence is already correct, leave it exactly as-is.
-- Return ONLY the resume in the exact same JSON structure, no markdown.
+WHAT TO FIX — apply every rule below:
+
+1. WEAK VERBS → Strong action verbs
+   - Replace weak openers: "Responsible for" → Led/Owned, "Helped" → Supported/Enabled, "Worked on" → Built/Developed, "Was involved in" → Contributed to, "Assisted" → Partnered/Facilitated
+   - Use strong verbs: Led, Built, Drove, Architected, Delivered, Designed, Launched, Reduced, Increased, Automated, Spearheaded, Streamlined, Optimized, Managed, Established
+
+2. PASSIVE VOICE → Active voice
+   - "Was implemented by the team" → "Implemented by leading the team"
+   - "Were reduced through" → "Reduced X through"
+   - Convert all passive constructions to active, subject-first sentences
+
+3. FILLER PHRASES → Remove or rephrase
+   - Cut: "hardworking", "team player", "passionate about", "go-getter", "results-driven", "detail-oriented", "self-starter", "strong communication skills", "fast learner"
+   - Replace with specific evidence if possible, or remove entirely
+
+4. BULLET STRUCTURE → Action + What + Result
+   - Each bullet should follow: [Strong verb] + [what you did] + [outcome/impact if present]
+   - Tighten wordy bullets to one clean sentence. Do not pad short bullets.
+
+5. REDUNDANT OPENERS → Vary them
+   - If 3+ consecutive bullets in a role start with the same verb, vary at least one with a synonym
+
+6. SUMMARY POLISH
+   - No first-person pronouns ("I", "my", "me") — omit subject entirely
+   - Should be value-proposition focused: what the candidate brings, not just who they are
+   - Remove pure adjective phrases with no evidence ("dynamic professional", "passionate engineer")
+   - Max 3 sentences, tight and specific
+
+7. CONSISTENCY
+   - Date formats consistent throughout (e.g. all "Jan 2022 – Mar 2024" or all "2022 – 2024")
+   - Bullet punctuation consistent — either all end with periods or none do
+   - Tool/technology names correctly capitalized (JavaScript not javascript, AWS not aws, React not react)
+
+ABSOLUTE LIMITS — violating any is a failure:
+- Do NOT add new facts, skills, companies, titles, or any information not already in the resume
+- Do NOT remove any existing information (bullets, roles, sections)
+- Do NOT change proper nouns, numbers, percentages, dates, or metrics
+- Do NOT change anything that is already clean and correct — leave it exactly as-is
 
 RESUME:
-${JSON.stringify(e)}`}}function jl(e,t,n,r){return{temperature:.3,maxOutputTokens:200,prompt:`Rewrite this resume bullet to be stronger, more impact-focused, and more relevant to the target job.
+${JSON.stringify(e,null,2)}
+
+Return ONLY the polished resume in the exact same JSON structure, no markdown.`}}function jl(e,t,n,r){return{temperature:.3,maxOutputTokens:200,prompt:`Rewrite this resume bullet to be stronger, more impact-focused, and more relevant to the target job.
 
 CANDIDATE ROLE: ${t} at ${n}
 ORIGINAL BULLET: ${e}
