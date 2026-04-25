@@ -206,9 +206,9 @@ RULES:
 - worthApplying "borderline": gaps exist but resume tailoring helps significantly — worth applying with clear expectations.
 - worthApplying "no": major gaps that rewriting cannot fix (wrong experience level, missing 3+ critical skills with no transferable equivalent, completely different field).
 - strengths: specific things from the actual resume that this role values — not generic praise.
-- fixableGaps: gaps resume tailoring CAN address (keyword absent but experience exists, weak framing, missing targeted summary, etc.)
-- hardGaps: genuine gaps the resume CANNOT fix. For each, say what it would realistically take to close.
-- applicationTip: one specific coaching tip — what angle to lead with, what to address in cover letter or interview.
+- fixableGaps: gaps the resume rewrite itself CAN fix — only things the generated document will actually change (keyword absent but experience exists, weak framing, no targeted summary, missing skill already in their background). Do NOT mention cover letters, interviews, or anything outside the resume.
+- hardGaps: genuine skill/experience gaps the resume CANNOT fix. For each, say what it would realistically take to close.
+- applicationTip: one specific coaching tip for OUTSIDE the resume — what to lead with in a cover letter, what to address proactively in an interview, or what to research before applying.
 - priorityActions: exactly 3 concrete changes for the rewrite — reference actual bullets or sections from the resume.
 
 Return ONLY this JSON, no markdown:
