@@ -397,38 +397,38 @@ Return ONLY this JSON, no markdown:
     "positives": ["genuine strength of this resume"],
     "verdict": "One honest sentence: is this ready to submit or what needs to happen first?"
   }
-}`}}function Vl(e){let t=0;function n(e){typeof e==`string`?t+=e.trim().split(/\s+/).filter(Boolean).length:Array.isArray(e)?e.forEach(n):e&&typeof e==`object`&&Object.values(e).forEach(n)}return n(e),t}function Hl(e,t,n=null,r=null,i=1,a=3){let o=new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`});a-i;let s=`This is attempt ${i} of ${a}.`,c=[n?`Current: ${n} page${n===1?``:`s`}`:null,r?`~${r} words`:null].filter(Boolean).join(`, `),l=i===1?`Make conservative cuts — there are more passes remaining. Remove only the lowest-value content.`:i===a?`This is the final pass. Be as aggressive as needed to hit the target — prioritise reaching the page limit over preserving marginal content.`:`Make moderate cuts. You have one more pass after this if needed.`;return{temperature:0,maxOutputTokens:5e3,prompt:`Today's date: ${o}. You are a professional resume editor.
+}`}}function Vl(e){let t=0;function n(e){typeof e==`string`?t+=e.trim().split(/\s+/).filter(Boolean).length:Array.isArray(e)?e.forEach(n):e&&typeof e==`object`&&Object.values(e).forEach(n)}return n(e),t}function Hl(e,t,n=null,r=null,i=1,a=3){let o=new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`});a-i;let s=`This is attempt ${i} of ${a}.`,c=[n?`Current: ${n} page${n===1?``:`s`}`:null,r?`~${r} words`:null].filter(Boolean).join(`, `),l=i===1?25:i===2?18:13,u=i===1?`Make conservative cuts — more passes follow. Remove only the lowest-value content first.`:i===a?`This is the FINAL pass. Hit the target no matter what. Compress every bullet hard — maximum ${l} words each.`:`Moderate pass. Compress bullets aggressively — maximum ${l} words each.`;return{temperature:0,maxOutputTokens:5e3,prompt:`Today's date: ${o}. You are a professional resume editor.
 ${s} ${c?`Status: ${c}.`:``} Target: ${t} page${t===1?``:`s`}.
-Use the current page count and word count to judge how much needs to be removed, then apply the steps below in order. ${l}
+Use the current page count and word count to judge how much to remove. ${u}
 
-REMOVAL PRIORITY — apply in order until the content fits ${t} page${t===1?``:`s`}:
+BULLET COMPRESSION RULE (most important):
+Every bullet must be at most ${l} words. Rewrite long bullets by keeping ONLY the core action + metric + outcome. Drop all filler context.
+Example: "Delivered products for 30K users by leading a 21-member team, setting priorities and aligning goals, resulting in 80% reduction in failures" → "Reduced failures 80% via OCR for 30K users, leading 21-member team." (13 words)
 
-STEP 1 — Remove duplicate/redundant bullets
-  - Remove bullets that repeat the same idea within the same role or across roles.
+REMOVAL PRIORITY — apply in order:
 
-STEP 2 — Remove weak bullets
-  - Remove bullets with no metrics and weak openers: "Assisted", "Helped", "Worked on", "Was responsible for", "Participated in", "Supported", "Contributed to".
-  - Keep any bullet containing a number, %, $, or specific metric.
+STEP 1 — Compress ALL bullets to max ${l} words (keep metric + outcome, cut everything else).
 
-STEP 3 — Shorten long bullets
-  - Condense any bullet longer than one line into a single tight sentence. Keep all facts and metrics intact.
+STEP 2 — Remove duplicate/redundant bullets — same idea expressed twice in same or different role.
+
+STEP 3 — Remove weak bullets with no metrics: "Assisted", "Helped", "Worked on", "Was responsible for", "Participated in", "Supported".
 
 STEP 4 — Thin older roles
-  - Roles older than 5 years: reduce to 2-3 strongest bullets. Keep bullets with metrics.
-  - The 2 most recent roles: keep at least 3 bullets each.
+  - Roles older than 5 years: keep 1-2 strongest bullets only.
+  - The 2 most recent roles: keep at least 2 bullets.${i===a?`
+  - Final pass: reduce ALL roles to 2 bullets max if still over limit.`:``}
 
-STEP 5 — Trim summary to 2 sentences max.
+STEP 5 — Trim summary to 1-2 tight sentences.
 
 STEP 6 — Condense skills — remove generic items (e.g. "Microsoft Office", "Communication"). Keep technical skills.
 
-STEP 7 — Projects / extra sections (last resort)
-  - Reduce each project to 1-2 bullets. Remove least-relevant projects if still over limit.
-  - Never remove certifications.
+STEP 7 — Projects: reduce each to 1 bullet. Remove least-relevant project entirely if still over limit.
 
 NEVER DO:
-- Never remove contact info, education, or the skills section entirely.
-- Never rephrase, invent, or alter content you keep — only remove or tighten.
-- Never remove both of the 2 most recent roles.
+- Never remove contact info or education.
+- Never remove the skills section entirely.
+- Never invent or alter facts — only compress and remove.
+- Never remove both of the 2 most recent roles entirely.
 
 RESUME:
 ${JSON.stringify(e)}
