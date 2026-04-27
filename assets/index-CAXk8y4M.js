@@ -243,7 +243,7 @@ Match score guide:
 0-49   → Weak match, major gaps in required skills or experience level`}}var jl={fresh_grad:`Candidate is a fresh graduate. Lead with education and projects if strong. Frame internships and coursework as real deliverables. Do NOT penalize for short work history.`,switcher:`Candidate is switching careers. Map transferable skills aggressively into the new field's language. Frame their background as an asset, not a liability.`,gap:`Candidate has an employment gap. Do not highlight it. Frame it professionally ("Career break") if mentioned. Focus only on what they bring.`,senior:`Candidate is senior/executive. Use executive summary format. Amplify leadership, strategy, and organizational impact. Compress early-career roles that are not relevant.`,freelance:`Candidate has freelance/contract history. Frame as "Independent Consultant". Group similar contracts. Highlight cumulative client impact. Do not treat multiple contracts as job-hopping.`,standard:``};function Ml(e,t,n,r,i,a=``){let o=jl[r]||``,s=i?.mustHaveSkills?.filter(e=>!e.inResume).map(e=>e.skill)||[],c=n.strengths?.length?n.strengths.map(e=>`  • ${e.strength} — ${e.why}`).join(`
 `):`  (none identified)`,l=n.fixableGaps?.length?n.fixableGaps.map(e=>`  • ${e.gap} → ${e.fix}`).join(`
 `):`  (none identified)`,u=n.hardGaps?.length?n.hardGaps.map(e=>`  • ${e.gap}`).join(`
-`):`  (none)`;return{temperature:.35,maxOutputTokens:8192,prompt:`You are an expert professional resume writer and ATS specialist. Produce the strongest possible tailored version of this resume — one that passes ATS filters AND compels a human recruiter to call.
+`):`  (none)`;return{temperature:.35,maxOutputTokens:5e3,prompt:`You are an expert professional resume writer and ATS specialist. Produce the strongest possible tailored version of this resume — one that passes ATS filters AND compels a human recruiter to call.
 ${o?`\nCANDIDATE MODE: ${o}`:``}
 ${a?.trim()?`\n══ USER INSTRUCTIONS — follow these specifically, they override defaults ══\n${a.trim()}\n`:``}
 ══ ROLE INTELLIGENCE (use throughout) ══
@@ -380,7 +380,7 @@ ${t.slice(0,3e3)}`}}function Pl(e){return{temperature:0,maxOutputTokens:2048,pro
 Today's date: ${new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`})}. Use this for date evaluation — do NOT flag past dates as errors.
 
 RESUME:
-${JSON.stringify(e,null,2)}
+${JSON.stringify(e)}
 
 DETECTION RULES:
 
@@ -409,7 +409,7 @@ Return ONLY this JSON, no markdown:
     "positives": ["genuine strength of this resume"],
     "verdict": "One honest sentence: is this ready to submit or what needs to happen first?"
   }
-}`}}function Fl(e,t,n=null){return{temperature:0,maxOutputTokens:8192,prompt:`Today's date: ${new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`})}. You are a professional resume editor. ${n?`This resume currently renders as ${n} page${n===1?``:`s`}. You must trim it down to fit ${t} page${t===1?``:`s`}.`:`Trim this resume to fit ${t} page${t===1?``:`s`}.`}
+}`}}function Fl(e,t,n=null){return{temperature:0,maxOutputTokens:5e3,prompt:`Today's date: ${new Date().toLocaleDateString(`en-US`,{month:`long`,year:`numeric`})}. You are a professional resume editor. ${n?`This resume currently renders as ${n} page${n===1?``:`s`}. You must trim it down to fit ${t} page${t===1?``:`s`}.`:`Trim this resume to fit ${t} page${t===1?``:`s`}.`}
 
 REMOVAL PRIORITY — follow this exact order, stopping as soon as you hit the target:
 
@@ -446,9 +446,9 @@ NEVER DO:
 - Never remove the 2 most recent roles entirely.
 
 RESUME:
-${JSON.stringify(e,null,2)}
+${JSON.stringify(e)}
 
-Return ONLY the trimmed resume in the exact same JSON structure, no markdown.`}}function Il(e){return{temperature:.2,maxOutputTokens:8192,prompt:`You are a senior resume editor doing a full language polish pass. Your goal is crisp, professional, impactful resume language throughout.
+Return ONLY the trimmed resume in the exact same JSON structure, no markdown.`}}function Il(e){return{temperature:.2,maxOutputTokens:5e3,prompt:`You are a senior resume editor doing a full language polish pass. Your goal is crisp, professional, impactful resume language throughout.
 
 WHAT TO FIX — apply every rule below:
 
@@ -490,7 +490,7 @@ ABSOLUTE LIMITS — violating any is a failure:
 - Do NOT change anything that is already clean and correct — leave it exactly as-is
 
 RESUME:
-${JSON.stringify(e,null,2)}
+${JSON.stringify(e)}
 
 Return ONLY the polished resume in the exact same JSON structure, no markdown.`}}function Ll(e,t,n,r){return{temperature:.3,maxOutputTokens:200,prompt:`Rewrite this resume bullet to be stronger, more impact-focused, and more relevant to the target job.
 
