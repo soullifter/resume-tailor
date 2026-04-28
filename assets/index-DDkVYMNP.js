@@ -347,13 +347,14 @@ EXPERIENCE:
 - Wrap key metrics, numbers, percentages, and dollar amounts in **double asterisks** — e.g. **40%**, **$2M revenue**, **3x faster** — so they render bold in the PDF
 - Preserve ALL existing numbers/metrics/percentages exactly as they appear in the original
 - Use [X] as placeholder only where a metric is clearly implied but genuinely missing
-- Use JD language where it authentically describes what the candidate actually did
-- Weave in missing keywords/skills only where they genuinely reflect the candidate's real work
+- Use JD language/terminology only where it authentically describes what the candidate actually did
+- NEVER add a tool, technology, or skill into a bullet that does not appear in the original resume — not even as an inference or related skill
+- You may use JD phrasing/terminology for skills that ARE already in the resume — do NOT add skills that are not in the original resume
 
 SKILLS:
-- Order: JD required skills (present in resume) → JD preferred skills → other relevant skills
-- Remove skills completely irrelevant to this specific JD
-- Keep all relevant technical, domain, and tool skills
+- ONLY include skills explicitly present in the candidate's original resume — do NOT add skills from the JD that aren't already there, not even inferred or related ones (e.g. if resume has Docker but not Kubernetes, do NOT add Kubernetes)
+- Order: JD-matching skills first → other resume skills → remove only skills with zero relevance to this JD
+- Keep all relevant technical, domain, and tool skills that are in the original resume
 
 PRESERVE ALL RELEVANT SECTIONS:
 - Keep projects, certifications, awards, publications, languages, volunteer work if they add value for this role
