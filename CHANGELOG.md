@@ -71,10 +71,3 @@ Format: `Major.Minor.Patch` — bump policy:
 - Shown in gear modal next to Feedback section
 - Included in every feedback submission and data export
 
----
-
-## Upcoming (planned)
-
-- v1.1.0 — Cover letter generator improvements, interview prep
-- v1.2.0 — Chrome extension for one-click JD capture
-- v2.0.0 — User accounts, cross-device sync, team features
