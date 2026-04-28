@@ -32,11 +32,11 @@ function getCurrentPage() {
 
 const FEEDBACK_TYPES = ['Bug', 'Suggestion', 'Feature Request']
 
-function FeedbackSection() {
+function FeedbackModal({ onClose }) {
   const [type, setType]           = useState('')
   const [description, setDesc]    = useState('')
   const [email, setEmail]         = useState('')
-  const [status, setStatus]       = useState('idle') // idle | sending | sent | error
+  const [status, setStatus]       = useState('idle')
   const hasError                  = !!getLastError()
 
   async function handleSubmit() {
@@ -52,85 +52,91 @@ function FeedbackSection() {
   }
 
   return (
-    <div className="border-t border-slate-800 pt-4 space-y-3">
-      <div className="flex items-center justify-between">
-        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Feedback</p>
-        <span className="text-slate-600 text-xs">{APP_VERSION}</span>
-      </div>
-
-      {status === 'sent' ? (
-        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-3 text-xs text-emerald-400 text-center">
-          ✓ Thanks! We'll review it soon.
-          <button onClick={() => setStatus('idle')} className="block mx-auto mt-1 text-slate-500 underline text-xs">Send another</button>
-        </div>
-      ) : (
-        <div className="space-y-2.5">
-          {hasError && (
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 text-xs text-amber-400">
-              ⚡ An error was detected — it will be included automatically if you submit a bug report.
-            </div>
-          )}
-
-          <div className="flex gap-1.5">
-            {FEEDBACK_TYPES.map(t => (
-              <button
-                key={t}
-                onClick={() => setType(t)}
-                className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors ${
-                  type === t
-                    ? 'border-blue-500 bg-blue-500/10 text-blue-400'
-                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
-                }`}
-              >
-                {t === 'Bug' ? '🐛' : t === 'Suggestion' ? '💡' : '✨'} {t}
-              </button>
-            ))}
+    <>
+      <div className="fixed inset-0 bg-black/40 z-60" onClick={onClose} />
+      <div className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md z-70 bg-slate-900 border border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-2xl">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+          <div className="flex items-center gap-2">
+            <span className="text-white text-sm font-semibold">Send Feedback</span>
+            <span className="text-slate-600 text-xs">{APP_VERSION}</span>
           </div>
-
-          <textarea
-            value={description}
-            onChange={e => setDesc(e.target.value.slice(0, 500))}
-            placeholder={
-              type === 'Bug' ? 'What happened? What were you doing when it broke?' :
-              type === 'Suggestion' ? 'What would make this better?' :
-              type === 'Feature Request' ? 'What feature would you like to see?' :
-              'Select a type above, then describe...'
-            }
-            rows={3}
-            className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2.5 text-xs focus:outline-none resize-none transition-colors"
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-slate-600 text-xs">{description.length}/500</span>
-          </div>
-
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            placeholder="Email (optional — for follow-up)"
-            className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2 text-xs focus:outline-none transition-colors"
-          />
-
-          {status === 'error' && (
-            <p className="text-red-400 text-xs">Failed to send — check your connection and try again.</p>
-          )}
-
-          <button
-            onClick={handleSubmit}
-            disabled={!type || !description.trim() || status === 'sending'}
-            className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
-          >
-            {status === 'sending' ? (
-              <><svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Sending...</>
-            ) : 'Send Feedback'}
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-      )}
-    </div>
+        <div className="p-5 space-y-3">
+          {status === 'sent' ? (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-4 text-xs text-emerald-400 text-center">
+              ✓ Thanks! We'll review it soon.
+              <button onClick={() => setStatus('idle')} className="block mx-auto mt-1 text-slate-500 underline text-xs">Send another</button>
+            </div>
+          ) : (
+            <>
+              {hasError && (
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 text-xs text-amber-400">
+                  ⚡ An error was detected — it will be included automatically if you submit a bug report.
+                </div>
+              )}
+              <div className="flex gap-1.5">
+                {FEEDBACK_TYPES.map(t => (
+                  <button
+                    key={t}
+                    onClick={() => setType(t)}
+                    className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors ${
+                      type === t
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-400'
+                        : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                  >
+                    {t === 'Bug' ? '🐛' : t === 'Suggestion' ? '💡' : '✨'} {t}
+                  </button>
+                ))}
+              </div>
+              <textarea
+                value={description}
+                onChange={e => setDesc(e.target.value.slice(0, 500))}
+                placeholder={
+                  type === 'Bug' ? 'What happened? What were you doing when it broke?' :
+                  type === 'Suggestion' ? 'What would make this better?' :
+                  type === 'Feature Request' ? 'What feature would you like to see?' :
+                  'Select a type above, then describe...'
+                }
+                rows={4}
+                className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2.5 text-xs focus:outline-none resize-none transition-colors"
+              />
+              <div className="flex items-center justify-between">
+                <span className="text-slate-600 text-xs">{description.length}/500</span>
+              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="Email (optional — for follow-up)"
+                className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2 text-xs focus:outline-none transition-colors"
+              />
+              {status === 'error' && (
+                <p className="text-red-400 text-xs">Failed to send — check your connection and try again.</p>
+              )}
+              <button
+                onClick={handleSubmit}
+                disabled={!type || !description.trim() || status === 'sending'}
+                className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+              >
+                {status === 'sending' ? (
+                  <><svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Sending...</>
+                ) : 'Send Feedback'}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </>
   )
 }
 
-function DataBackup() {
+function DataModal({ onClose }) {
   const [importResult, setImportResult] = useState(null)
   const [importError, setImportError]   = useState('')
   const fileRef = useRef()
@@ -170,41 +176,59 @@ function DataBackup() {
   }
 
   return (
-    <div className="border-t border-slate-800 pt-4 space-y-3">
-      <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Your Data</p>
-      <p className="text-slate-500 text-xs">Export everything — saved resumes, applications, usage — to a file. Import it on any device to restore.</p>
-      <div className="flex gap-2">
-        <button
-          onClick={handleExport}
-          className="flex-1 py-2 text-xs font-medium text-slate-300 border border-slate-700 hover:border-slate-500 rounded-xl transition-colors flex items-center justify-center gap-1.5"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          Export backup
-        </button>
-        <button
-          onClick={() => fileRef.current?.click()}
-          className="flex-1 py-2 text-xs font-medium text-slate-300 border border-slate-700 hover:border-slate-500 rounded-xl transition-colors flex items-center justify-center gap-1.5"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12" />
-          </svg>
-          Import backup
-        </button>
-        <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={handleImport} />
-      </div>
-      {importResult && (
-        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 text-xs text-emerald-400 space-y-0.5">
-          <p className="font-semibold">Import complete</p>
-          <p>Resumes: +{importResult.resumesAdded} added, {importResult.resumesSkipped} already existed</p>
-          <p>Applications: +{importResult.appsAdded} added, {importResult.appsSkipped} already existed</p>
+    <>
+      <div className="fixed inset-0 bg-black/40 z-60" onClick={onClose} />
+      <div className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md z-70 bg-slate-900 border border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-2xl">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+          <span className="text-white text-sm font-semibold">Export / Import Data</span>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-      )}
-      {importError && (
-        <p className="text-amber-400 text-xs">{importError}</p>
-      )}
-    </div>
+        <div className="p-5 space-y-4">
+          <p className="text-slate-400 text-sm">Back up everything to a file and restore it on any device.</p>
+          <div className="bg-slate-800/50 rounded-xl p-3 space-y-1.5 text-xs text-slate-500">
+            <p className="text-slate-400 font-medium text-xs">What's included</p>
+            <p>• Saved resumes</p>
+            <p>• Application tracker entries</p>
+            <p>• Today's token usage &amp; model limits</p>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleExport}
+              className="flex-1 py-2.5 text-sm font-medium text-slate-300 border border-slate-700 hover:border-slate-500 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export backup
+            </button>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="flex-1 py-2.5 text-sm font-medium text-slate-300 border border-slate-700 hover:border-slate-500 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12" />
+              </svg>
+              Import backup
+            </button>
+            <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={handleImport} />
+          </div>
+          {importResult && (
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 text-xs text-emerald-400 space-y-0.5">
+              <p className="font-semibold">Import complete</p>
+              <p>Resumes: +{importResult.resumesAdded} added, {importResult.resumesSkipped} already existed</p>
+              <p>Applications: +{importResult.appsAdded} added, {importResult.appsSkipped} already existed</p>
+            </div>
+          )}
+          {importError && (
+            <p className="text-amber-400 text-xs">{importError}</p>
+          )}
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -217,6 +241,8 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
   const [error, setError] = useState('')
   const [showKey, setShowKey] = useState(false)
   const [showGuide, setShowGuide] = useState(false)
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [showData, setShowData] = useState(false)
 
   async function verifyKey() {
     if (!key.trim()) return
@@ -428,13 +454,32 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
 
           <p className="text-slate-600 text-xs pt-1">🔒 Your key is stored in your browser only — never sent to any server.</p>
 
-          {/* Feedback */}
-          <FeedbackSection />
-
-          {/* Data Export / Import */}
-          <DataBackup />
+          {/* Quick action buttons */}
+          <div className="border-t border-slate-800 pt-4 flex gap-2">
+            <button
+              onClick={() => setShowFeedback(true)}
+              className="flex-1 py-2 text-xs font-medium text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+              Send Feedback
+            </button>
+            <button
+              onClick={() => setShowData(true)}
+              className="flex-1 py-2 text-xs font-medium text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16M10 12h4" />
+              </svg>
+              Export / Import
+            </button>
+          </div>
         </div>
       </div>
+
+      {showFeedback && <FeedbackModal onClose={() => setShowFeedback(false)} />}
+      {showData && <DataModal onClose={() => setShowData(false)} />}
     </>
   )
 }

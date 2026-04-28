@@ -8,6 +8,15 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.0.1] — 2026-04-28
+
+### Settings modal refactor
+- Feedback and Export/Import moved out of the inline gear modal into separate focused sub-modals
+- Gear modal now only shows API key + model selector — cleaner and scrollable
+- "Send Feedback" and "Export / Import" buttons at the bottom open their own overlays
+
+---
+
 ## [1.0.0] — 2026-04-28
 
 ### First stable release 🎉
