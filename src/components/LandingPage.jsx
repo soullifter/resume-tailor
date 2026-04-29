@@ -24,16 +24,16 @@ const LANDING_STYLES = `
 `
 
 const TICKER_ITEMS = [
-  "✓  Rohan's score jumped 42 → 88",
-  "✓  Sara landed 3 interviews after tailoring",
-  "✓  1,247 resumes tailored today",
-  "✓  Marcus: 4 keywords → 13 keywords",
-  "✓  Priya got shortlisted at Google",
-  "✓  James's ATS score +31 points",
-  "✓  Ana went from 0 callbacks to 4",
-  "✓  80 full rewrites free every day",
-  "✓  Diego landed his first dev job",
-  "✓  Meera switched careers successfully",
+  "✓  Free — no account, no credit card, ever",
+  "✓  80 AI resume rewrites free every day",
+  "✓  Your resume never leaves your browser",
+  "✓  Upload PDF or Word (.docx) — both supported",
+  "✓  ATS score, keyword heatmap, AI rewrite — one tool",
+  "✓  Download as PDF or Word when done",
+  "✓  Cover letter + interview prep included",
+  "✓  16 tools — all free, all in your browser",
+  "✓  No data stored — no backend, no server",
+  "✓  Works on mobile and desktop",
 ]
 
 function Ticker() {
