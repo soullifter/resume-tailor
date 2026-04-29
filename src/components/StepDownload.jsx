@@ -84,12 +84,51 @@ async function getPdfDoc(data) {
 
 function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
   const canvasRef = useRef()
+  const scrollAreaRef = useRef()
   const [numPages, setNumPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [zoom, setZoom] = useState(1)
   const renderTaskRef = useRef(null)
+
+  // Pinch-to-zoom: trackpad pinch = ctrl+wheel, touch pinch on mobile
+  useEffect(() => {
+    const el = scrollAreaRef.current
+    if (!el) return
+    const onWheel = (e) => {
+      if (!e.ctrlKey) return
+      e.preventDefault()
+      setZoom(z => parseFloat(Math.min(3, Math.max(0.5, z - e.deltaY * 0.01)).toFixed(2)))
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [])
+
+  // Touch pinch
+  useEffect(() => {
+    const el = scrollAreaRef.current
+    if (!el) return
+    let lastDist = null
+    const onTouchMove = (e) => {
+      if (e.touches.length !== 2) return
+      const dx = e.touches[0].clientX - e.touches[1].clientX
+      const dy = e.touches[0].clientY - e.touches[1].clientY
+      const dist = Math.hypot(dx, dy)
+      if (lastDist !== null) {
+        const delta = (dist - lastDist) / 200
+        setZoom(z => parseFloat(Math.min(3, Math.max(0.5, z + delta)).toFixed(2)))
+      }
+      lastDist = dist
+    }
+    const onTouchEnd = () => { lastDist = null }
+    el.addEventListener('touchmove', onTouchMove, { passive: true })
+    el.addEventListener('touchend', onTouchEnd)
+    return () => {
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -105,11 +144,11 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
         const page = await pdfDoc.getPage(currentPage)
         if (cancelled) return
         const canvas = canvasRef.current
-        if (!canvas) return
+        const scrollArea = scrollAreaRef.current
+        if (!canvas || !scrollArea) return
         const dpr = window.devicePixelRatio || 1
-        const area = canvas.parentElement?.parentElement  // scroll wrapper → canvas wrapper
-        const containerWidth  = (area?.clientWidth  || 350)
-        const containerHeight = (area?.clientHeight || 0)
+        const containerWidth  = scrollArea.clientWidth  || 350
+        const containerHeight = scrollArea.clientHeight || 0
         const unscaledViewport = page.getViewport({ scale: 1 })
         let baseScale
         if (fitToHeight && containerHeight > 100) {
@@ -123,7 +162,7 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
         const viewport = page.getViewport({ scale })
         canvas.width = viewport.width
         canvas.height = viewport.height
-        canvas.style.width = `${viewport.width / dpr}px`
+        canvas.style.width  = `${viewport.width  / dpr}px`
         canvas.style.height = `${viewport.height / dpr}px`
         const ctx = canvas.getContext('2d')
         if (renderTaskRef.current) renderTaskRef.current.cancel()
@@ -141,46 +180,39 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
 
   return (
     <div className={`bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden ${fitToHeight ? 'h-full flex flex-col' : ''}`}>
-      {/* Header bar */}
+      {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800 shrink-0">
         <span className="text-slate-400 text-sm font-medium">
           {numPages > 0 ? `Page ${currentPage} of ${numPages}` : 'Rendering…'}
         </span>
         <div className="flex items-center gap-3">
-          {/* Zoom controls */}
           <div className="flex items-center gap-1">
-            <button
-              onClick={() => setZoom(z => Math.max(0.5, parseFloat((z - 0.25).toFixed(2))))}
-              disabled={zoom <= 0.5}
-              className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700 transition-colors text-base leading-none"
-            >−</button>
+            <button onClick={() => setZoom(z => parseFloat(Math.max(0.5, z - 0.25).toFixed(2)))} disabled={zoom <= 0.5}
+              className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700 transition-colors">−</button>
             <span className="text-slate-500 text-xs w-9 text-center tabular-nums">{Math.round(zoom * 100)}%</span>
-            <button
-              onClick={() => setZoom(z => Math.min(3, parseFloat((z + 0.25).toFixed(2))))}
-              disabled={zoom >= 3}
-              className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700 transition-colors text-base leading-none"
-            >+</button>
+            <button onClick={() => setZoom(z => parseFloat(Math.min(3, z + 0.25).toFixed(2)))} disabled={zoom >= 3}
+              className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700 transition-colors">+</button>
           </div>
-          {/* Page navigation */}
           {numPages > 1 && (
             <div className="flex items-center gap-1 border-l border-slate-700 pl-3">
-              <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-1.5">←</button>
-              <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-1.5">→</button>
+              <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}
+                className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-1.5">←</button>
+              <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages}
+                className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-1.5">→</button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Canvas area — scrollable when zoomed in */}
-      <div className={fitToHeight ? 'flex-1 overflow-auto bg-slate-900' : 'bg-white'}
-           style={fitToHeight ? {} : { minHeight: '80px' }}>
-        <div style={{ minHeight: '100%', minWidth: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          {loading && <span className="text-slate-500 text-sm">Rendering PDF...</span>}
-          {error   && <span className="text-red-400 text-sm">{error}</span>}
-          <canvas ref={canvasRef}
-                  style={{ display: loading || error ? 'none' : 'block' }}
-                  className={fitToHeight ? '' : 'w-full block'} />
-        </div>
+      {/* Scroll area — panel stays fixed, content scrolls inside */}
+      <div ref={scrollAreaRef}
+           className={fitToHeight ? 'flex-1 overflow-auto bg-slate-900' : 'bg-white'}
+           style={fitToHeight ? { display: 'grid', placeItems: 'center' } : { minHeight: '80px' }}>
+        {loading && <span className="text-slate-500 text-sm">Rendering PDF...</span>}
+        {error   && <span className="text-red-400 text-sm">{error}</span>}
+        <canvas ref={canvasRef}
+                style={{ display: loading || error ? 'none' : 'block' }}
+                className={fitToHeight ? '' : 'w-full block'} />
       </div>
     </div>
   )
@@ -906,7 +938,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
         </div>{/* end LEFT COLUMN */}
 
         {/* RIGHT COLUMN — full-height panel, desktop only, 50/50 */}
-        <div className="hidden lg:flex lg:flex-col flex-1 border-l border-slate-800">
+        <div className="hidden lg:flex lg:flex-col flex-1 border-l border-slate-800 overflow-hidden">
           <div className="px-4 py-3 border-b border-slate-800 shrink-0">
             <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Live Preview</p>
           </div>
