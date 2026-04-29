@@ -615,8 +615,8 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
   return (
     <>
     <style>{DOWNLOAD_STYLES}</style>
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-xl">
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start px-4">
+      <div className="w-full max-w-xl lg:max-w-5xl">
 
         {/* Top nav */}
         <div className="flex items-center justify-between pt-6 pb-2 mb-2">
@@ -635,6 +635,12 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
             )}
           </div>
         </div>
+
+        {/* Two-column layout: controls left, sticky preview right */}
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+
+        {/* LEFT COLUMN */}
+        <div className="w-full lg:flex-1 min-w-0">
 
         {/* Header */}
         <div className="text-center mb-6" style={{ animation: 'header-bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
@@ -749,7 +755,8 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
         {/* Template selector — PDF only */}
         {downloadFormat === 'pdf' && <TemplateSelector value={template} onChange={setTemplate} />}
 
-        {/* Preview toggle — PDF only */}
+        {/* Preview toggle — mobile only; desktop shows sticky right column */}
+        <div className="lg:hidden">
         {downloadFormat === 'pdf' && (
           <>
             <div className="flex gap-2 mb-4">
@@ -779,6 +786,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
             )}
           </>
         )}
+        </div>{/* end lg:hidden preview toggle */}
 
         {/* Submit-ready check */}
         <SubmitReadyCheck resumeData={resumeData} />
@@ -865,6 +873,33 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
         <ExtraTools apiKey={apiKey} resumeData={resumeData} jobDescription={jobDescription} />
 
         <div className="h-12" />
+        </div>{/* end LEFT COLUMN */}
+
+        {/* RIGHT COLUMN — sticky PDF preview, desktop only */}
+        <div className="hidden lg:block w-[420px] xl:w-[480px] shrink-0">
+          <div className="sticky top-4 pt-6">
+            <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Live Preview</p>
+            {downloadFormat === 'pdf' ? (
+              isTouchDevice ? (
+                <CanvasPdfPreview resumeData={resumeData} template={template} />
+              ) : (
+                <div className="rounded-xl overflow-hidden border border-slate-700">
+                  <PDFViewer width="100%" height={720} showToolbar={false}>
+                    <ResumeDocument data={resumeData} template={template} />
+                  </PDFViewer>
+                </div>
+              )
+            ) : (
+              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-8 flex flex-col items-center gap-3 text-center">
+                <span className="text-4xl">📝</span>
+                <p className="text-white font-semibold">Word (.docx) format</p>
+                <p className="text-slate-400 text-sm leading-relaxed">Preview not available for Word. Download to open in Microsoft Word or Google Docs.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        </div>{/* end two-column flex */}
       </div>
     </div>
 
