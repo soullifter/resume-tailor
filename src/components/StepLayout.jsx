@@ -60,7 +60,7 @@ export default function StepLayout({ step, totalSteps, title, subtitle, children
       <style>{LAYOUT_STYLES}</style>
       {/* Top bar */}
       <div className="border-b border-slate-800/60 px-6 pt-4 pb-4">
-        <div className="max-w-xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           {/* Brand + settings */}
           <div className="flex items-center justify-between mb-4">
             <button
@@ -131,7 +131,7 @@ export default function StepLayout({ step, totalSteps, title, subtitle, children
 
       {/* Content */}
       <div className="px-4 py-10">
-        <div className="w-full max-w-xl mx-auto">
+        <div className="w-full max-w-2xl mx-auto">
           <GearHint onOpenSettings={onOpenSettings} />
 
           <div key={step} style={{ animation: 'content-slide-in 0.35s ease-out both' }}>

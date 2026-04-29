@@ -617,29 +617,31 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
     <style>{DOWNLOAD_STYLES}</style>
     <div className="bg-slate-950 flex flex-col min-h-screen lg:h-screen lg:overflow-hidden">
 
-        {/* Top nav — full width */}
-        <div className="flex items-center justify-between px-6 py-3 border-b border-slate-800 shrink-0">
-          <button onClick={onBack} disabled={polishing || rescoring} className="text-slate-400 hover:text-white disabled:opacity-40 text-sm flex items-center gap-1 transition-colors">
-            ← Back
-          </button>
-          <div className="flex items-center gap-2">
-            <ModelWidget />
-            {onOpenSettings && (
-              <button onClick={onOpenSettings} title="API Key Settings" className="text-slate-600 hover:text-slate-300 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </button>
-            )}
+        {/* Top nav — constrained to same width as body */}
+        <div className="shrink-0 border-b border-slate-800">
+          <div className="max-w-7xl mx-auto px-8 py-3 flex items-center justify-between">
+            <button onClick={onBack} disabled={polishing || rescoring} className="text-slate-400 hover:text-white disabled:opacity-40 text-sm flex items-center gap-1 transition-colors">
+              ← Back
+            </button>
+            <div className="flex items-center gap-2">
+              <ModelWidget />
+              {onOpenSettings && (
+                <button onClick={onOpenSettings} title="API Key Settings" className="text-slate-600 hover:text-slate-300 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Two-column body */}
-        <div className="flex flex-col lg:flex-row flex-1 lg:overflow-hidden">
+        {/* Two-column body — centered, max-w-7xl */}
+        <div className="flex-1 lg:overflow-hidden max-w-7xl mx-auto w-full flex flex-col lg:flex-row">
 
         {/* LEFT COLUMN — scrollable */}
-        <div className="flex-1 lg:overflow-y-auto px-6 py-6">
+        <div className="flex-1 lg:overflow-y-auto px-8 py-6">
 
         {/* Header */}
         <div className="text-center mb-6" style={{ animation: 'header-bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
