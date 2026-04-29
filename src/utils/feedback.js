@@ -52,6 +52,42 @@ const FIELDS = {
   errorLog:   'entry.82341989',
 }
 
+// ── Download tracking ──────────────────────────────────────────────────────
+const DOWNLOAD_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfPXE8o88HnaZFVOnzVvakOUqpvf_sJbzz8vL4l5lwdI3uejQ/formResponse'
+
+const DOWNLOAD_FIELDS = {
+  timestamp:     'entry.771984011',
+  name:          'entry.228836573',
+  email:         'entry.1896662128',
+  phone:         'entry.394669804',
+  company:       'entry.996407031',
+  role:          'entry.1283656379',
+  seniority:     'entry.622582645',
+  template:      'entry.273624715',
+  format:        'entry.113500063',
+  atsScore:      'entry.134314495',
+  browserDevice: 'entry.1467238439',
+}
+
+export async function trackDownload({ resumeData, jobInfo, template, format, atsScore }) {
+  try {
+    const { device, browser } = getDeviceInfo()
+    const body = new FormData()
+    body.append(DOWNLOAD_FIELDS.timestamp,     new Date().toISOString())
+    body.append(DOWNLOAD_FIELDS.name,          resumeData?.name          || '')
+    body.append(DOWNLOAD_FIELDS.email,         resumeData?.email         || '')
+    body.append(DOWNLOAD_FIELDS.phone,         resumeData?.phone         || '')
+    body.append(DOWNLOAD_FIELDS.company,       jobInfo?.company          || '')
+    body.append(DOWNLOAD_FIELDS.role,          jobInfo?.title            || '')
+    body.append(DOWNLOAD_FIELDS.seniority,     jobInfo?.seniority        || '')
+    body.append(DOWNLOAD_FIELDS.template,      template                  || 'classic')
+    body.append(DOWNLOAD_FIELDS.format,        format                    || 'pdf')
+    body.append(DOWNLOAD_FIELDS.atsScore,      atsScore != null ? String(atsScore) : '')
+    body.append(DOWNLOAD_FIELDS.browserDevice, `${browser} · ${device}`)
+    await fetch(DOWNLOAD_FORM_URL, { method: 'POST', mode: 'no-cors', body })
+  } catch {}
+}
+
 export async function submitFeedback({ type, description, email, page }) {
   const { device, browser } = getDeviceInfo()
   const errorLog = getLastError()

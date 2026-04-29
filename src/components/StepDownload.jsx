@@ -15,6 +15,7 @@ import { saveResume, addApplication } from '../utils/storage'
 import { generateDocxBlob } from '../utils/docxGenerator'
 import { geminiJSON, geminiScore } from '../utils/groq'
 import { polishPrompt, scorePrompt } from '../utils/prompts'
+import { trackDownload } from '../utils/feedback'
 
 
 const DOWNLOAD_STYLES = `
@@ -498,7 +499,7 @@ function TemplateSelector({ value, onChange }) {
   )
 }
 
-export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDescription, beforeScore, afterScore, onOpenSettings, resumeText, userMode, sessionId, onGoToVersions, onGoToTracker }) {
+export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDescription, jobInfo, beforeScore, afterScore, onOpenSettings, resumeText, userMode, sessionId, onGoToVersions, onGoToTracker }) {
   const originalData = useRef(data)
   const [resumeData, setResumeData]     = useState(data)
   const [trimBase, setTrimBase]         = useState(data)
@@ -686,6 +687,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
       setShowDownloadModal(false)
       setDownloadFlash(true)
       setTimeout(() => setDownloadFlash(false), 1200)
+      trackDownload({ resumeData, jobInfo, template, format: downloadFormat, atsScore: liveAfterScore })
     } finally {
       setDownloadingPdf(false)
     }

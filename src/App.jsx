@@ -185,6 +185,7 @@ function App() {
                 onStartOver={handleStartOver}
                 onBack={() => navigate(-1)}
                 jobDescription={jobDescription}
+                jobInfo={jobInfo}
                 beforeScore={matchScore}
                 afterScore={tailoredScore}
                 resumeText={resumeText}

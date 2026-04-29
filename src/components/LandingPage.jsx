@@ -677,9 +677,19 @@ function CapacityToast({ onDismiss }) {
   )
 }
 
+const COUNTER_URL = 'https://script.google.com/macros/s/AKfycbyX0WyiuiG86e2NDpoQnzSPj_ThW986bpK52m4GlFZ-vMSDo1RJ1P0GLGSHMvDnfZwWjg/exec'
+
 export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGoToTracker }) {
   const savedCount = getSavedResumes().length
   const [showToast, setShowToast] = useState(true)
+  const [downloadCount, setDownloadCount] = useState(null)
+
+  useEffect(() => {
+    fetch(COUNTER_URL)
+      .then(r => r.text())
+      .then(t => { const n = parseInt(t.trim()); if (!isNaN(n) && n > 0) setDownloadCount(n) })
+      .catch(() => {})
+  }, [])
   return (
     <div className="bg-slate-950 text-white overflow-x-hidden">
       <style>{LANDING_STYLES}</style>
@@ -750,6 +760,18 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
             <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
             Free · AI-Powered · Your data never leaves your browser
           </div>
+
+          {/* Download counter */}
+          {downloadCount !== null && (
+            <div className="flex justify-center mb-3">
+              <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium px-3 py-1 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                {downloadCount.toLocaleString()} resumes downloaded
+              </div>
+            </div>
+          )}
 
           {/* Capacity strip */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
