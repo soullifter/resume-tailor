@@ -82,7 +82,7 @@ async function getPdfDoc(data) {
   }
 }
 
-function CanvasPdfPreview({ resumeData, template }) {
+function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
   const canvasRef = useRef()
   const [numPages, setNumPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
@@ -106,9 +106,18 @@ function CanvasPdfPreview({ resumeData, template }) {
         const canvas = canvasRef.current
         if (!canvas) return
         const dpr = window.devicePixelRatio || 1
-        const containerWidth = canvas.parentElement?.clientWidth || 350
+        const area = canvas.parentElement
+        const containerWidth = area?.clientWidth || 350
+        const containerHeight = area?.clientHeight || 0
         const unscaledViewport = page.getViewport({ scale: 1 })
-        const scale = (containerWidth / unscaledViewport.width) * dpr
+        let scale
+        if (fitToHeight && containerHeight > 100) {
+          const scaleByWidth  = containerWidth  / unscaledViewport.width
+          const scaleByHeight = containerHeight / unscaledViewport.height
+          scale = Math.min(scaleByWidth, scaleByHeight) * dpr
+        } else {
+          scale = (containerWidth / unscaledViewport.width) * dpr
+        }
         const viewport = page.getViewport({ scale })
         canvas.width = viewport.width
         canvas.height = viewport.height
@@ -126,32 +135,35 @@ function CanvasPdfPreview({ resumeData, template }) {
     }
     render()
     return () => { cancelled = true }
-  }, [resumeData, template, currentPage])
+  }, [resumeData, template, currentPage, fitToHeight])
 
   return (
-    <div className="bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-800">
-        <span className="text-slate-400 text-sm font-medium">Exact PDF Preview</span>
+    <div className={`bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden ${fitToHeight ? 'h-full flex flex-col' : ''}`}>
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-800 shrink-0">
+        <span className="text-slate-400 text-sm font-medium">
+          {numPages > 0 ? `Page ${currentPage} of ${numPages}` : 'Rendering…'}
+        </span>
         {numPages > 1 && (
           <div className="flex items-center gap-2">
             <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-2">←</button>
-            <span className="text-slate-500 text-sm">{currentPage} / {numPages}</span>
             <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-2">→</button>
           </div>
         )}
       </div>
-      <div className="bg-white" style={{ minHeight: '80px' }}>
+      <div className={`bg-white ${fitToHeight ? 'flex-1 flex items-center justify-center overflow-hidden' : ''}`}
+           style={fitToHeight ? {} : { minHeight: '80px' }}>
         {loading && (
-          <div className="flex items-center justify-center h-20 bg-slate-900">
+          <div className="flex items-center justify-center h-20 bg-slate-900 w-full">
             <span className="text-slate-500 text-sm">Rendering PDF...</span>
           </div>
         )}
         {error && (
-          <div className="flex items-center justify-center h-16 bg-slate-900">
+          <div className="flex items-center justify-center h-16 bg-slate-900 w-full">
             <span className="text-red-400 text-sm">{error}</span>
           </div>
         )}
-        <canvas ref={canvasRef} className="w-full block" style={{ display: loading || error ? 'none' : 'block' }} />
+        <canvas ref={canvasRef} style={{ display: loading || error ? 'none' : 'block' }}
+                className={fitToHeight ? '' : 'w-full block'} />
       </div>
     </div>
   )
@@ -881,15 +893,9 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           <div className="px-4 py-3 border-b border-slate-800 shrink-0">
             <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Live Preview</p>
           </div>
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden p-3">
             {downloadFormat === 'pdf' ? (
-              isTouchDevice ? (
-                <div className="p-4 overflow-y-auto h-full"><CanvasPdfPreview resumeData={resumeData} template={template} /></div>
-              ) : (
-                <PDFViewer width="100%" height="100%" showToolbar={false}>
-                  <ResumeDocument data={resumeData} template={template} />
-                </PDFViewer>
-              )
+              <CanvasPdfPreview resumeData={resumeData} template={template} fitToHeight />
             ) : (
               <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-8">
                 <span className="text-4xl">📝</span>
