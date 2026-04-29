@@ -615,11 +615,10 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
   return (
     <>
     <style>{DOWNLOAD_STYLES}</style>
-    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-start px-4">
-      <div className="w-full max-w-xl lg:max-w-5xl">
+    <div className="bg-slate-950 flex flex-col min-h-screen lg:h-screen lg:overflow-hidden">
 
-        {/* Top nav */}
-        <div className="flex items-center justify-between pt-6 pb-2 mb-2">
+        {/* Top nav — full width */}
+        <div className="flex items-center justify-between px-6 py-3 border-b border-slate-800 shrink-0">
           <button onClick={onBack} disabled={polishing || rescoring} className="text-slate-400 hover:text-white disabled:opacity-40 text-sm flex items-center gap-1 transition-colors">
             ← Back
           </button>
@@ -636,11 +635,11 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           </div>
         </div>
 
-        {/* Two-column layout: controls left, sticky preview right */}
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Two-column body */}
+        <div className="flex flex-col lg:flex-row flex-1 lg:overflow-hidden">
 
-        {/* LEFT COLUMN */}
-        <div className="w-full lg:flex-1 min-w-0">
+        {/* LEFT COLUMN — scrollable */}
+        <div className="flex-1 lg:overflow-y-auto px-6 py-6">
 
         {/* Header */}
         <div className="text-center mb-6" style={{ animation: 'header-bounce-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both' }}>
@@ -875,22 +874,22 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
         <div className="h-12" />
         </div>{/* end LEFT COLUMN */}
 
-        {/* RIGHT COLUMN — sticky PDF preview, desktop only */}
-        <div className="hidden lg:block w-[420px] xl:w-[480px] shrink-0">
-          <div className="sticky top-4 pt-6">
-            <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Live Preview</p>
+        {/* RIGHT COLUMN — full-height panel, desktop only */}
+        <div className="hidden lg:flex lg:flex-col w-[460px] xl:w-[540px] shrink-0 border-l border-slate-800">
+          <div className="px-4 py-3 border-b border-slate-800 shrink-0">
+            <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Live Preview</p>
+          </div>
+          <div className="flex-1 overflow-hidden">
             {downloadFormat === 'pdf' ? (
               isTouchDevice ? (
-                <CanvasPdfPreview resumeData={resumeData} template={template} />
+                <div className="p-4 overflow-y-auto h-full"><CanvasPdfPreview resumeData={resumeData} template={template} /></div>
               ) : (
-                <div className="rounded-xl overflow-hidden border border-slate-700">
-                  <PDFViewer width="100%" height={720} showToolbar={false}>
-                    <ResumeDocument data={resumeData} template={template} />
-                  </PDFViewer>
-                </div>
+                <PDFViewer width="100%" height="100%" showToolbar={false}>
+                  <ResumeDocument data={resumeData} template={template} />
+                </PDFViewer>
               )
             ) : (
-              <div className="bg-slate-900 border border-slate-700 rounded-2xl p-8 flex flex-col items-center gap-3 text-center">
+              <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-8">
                 <span className="text-4xl">📝</span>
                 <p className="text-white font-semibold">Word (.docx) format</p>
                 <p className="text-slate-400 text-sm leading-relaxed">Preview not available for Word. Download to open in Microsoft Word or Google Docs.</p>
@@ -899,8 +898,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           </div>
         </div>
 
-        </div>{/* end two-column flex */}
-      </div>
+        </div>{/* end two-column body */}
     </div>
 
     {modalMode && (
