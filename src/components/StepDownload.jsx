@@ -627,9 +627,9 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
     <style>{DOWNLOAD_STYLES}</style>
     <div className="bg-slate-950 flex flex-col min-h-screen lg:h-screen lg:overflow-hidden">
 
-        {/* Top nav — constrained to same width as body */}
+        {/* Top nav */}
         <div className="shrink-0 border-b border-slate-800">
-          <div className="max-w-7xl mx-auto px-8 py-3 flex items-center justify-between">
+          <div className="px-8 py-3 flex items-center justify-between">
             <button onClick={onBack} disabled={polishing || rescoring} className="text-slate-400 hover:text-white disabled:opacity-40 text-sm flex items-center gap-1 transition-colors">
               ← Back
             </button>
@@ -647,8 +647,8 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           </div>
         </div>
 
-        {/* Two-column body — centered, max-w-7xl */}
-        <div className="flex-1 lg:overflow-hidden max-w-7xl mx-auto w-full flex flex-col lg:flex-row">
+        {/* Two-column body — full width, 50/50 */}
+        <div className="flex-1 lg:overflow-hidden flex flex-col lg:flex-row">
 
         {/* LEFT COLUMN — scrollable */}
         <div className="flex-1 lg:overflow-y-auto px-8 py-6">
@@ -886,8 +886,8 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
         <div className="h-12" />
         </div>{/* end LEFT COLUMN */}
 
-        {/* RIGHT COLUMN — full-height panel, desktop only */}
-        <div className="hidden lg:flex lg:flex-col w-[460px] xl:w-[540px] shrink-0 border-l border-slate-800">
+        {/* RIGHT COLUMN — full-height panel, desktop only, 50/50 */}
+        <div className="hidden lg:flex lg:flex-col flex-1 border-l border-slate-800">
           <div className="px-4 py-3 border-b border-slate-800 shrink-0">
             <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Live Preview</p>
           </div>
