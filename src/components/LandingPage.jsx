@@ -743,7 +743,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
         <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-emerald-600/6 rounded-full blur-3xl pointer-events-none" />
         <FloatingChips />
 
-        <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 text-center">
 
           {/* Live badge */}
           <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium px-4 py-1.5 rounded-full mb-3">
@@ -753,13 +753,13 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
 
           {/* Capacity strip */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-            <span className="text-slate-500 text-xs">Free daily capacity:</span>
+            <span className="text-slate-500 text-sm">Free daily capacity:</span>
             {MODEL_CAPACITY.map(m => (
-              <span key={m.name} className={`inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border font-medium ${m.color}`}>
+              <span key={m.name} className={`inline-flex items-center gap-1 text-sm px-2.5 py-1 rounded-full border font-medium ${m.color}`}>
                 <span className="font-black">{m.resumes}</span> {m.name}
               </span>
             ))}
-            <span className="text-white text-xs font-black bg-gradient-to-r from-blue-500/20 to-emerald-500/20 border border-blue-500/30 px-2.5 py-1 rounded-full">
+            <span className="text-white text-sm font-black bg-gradient-to-r from-blue-500/20 to-emerald-500/20 border border-blue-500/30 px-2.5 py-1 rounded-full">
               = {TOTAL_RESUMES} resumes/day free
             </span>
           </div>
@@ -797,7 +797,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
           </div>
 
           {/* Feature pill strip */}
-          <div className="flex flex-wrap justify-center gap-2 mb-10 max-w-3xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-2 mb-10 max-w-5xl mx-auto">
             {[
               { label: 'ATS Match Score',       color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
               { label: 'Keyword Heatmap',        color: 'text-blue-400 bg-blue-500/10 border-blue-500/20' },
@@ -816,7 +816,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
               { label: 'Follow-up Emails',       color: 'text-slate-300 bg-slate-800 border-slate-600' },
               { label: 'Custom AI Instructions', color: 'text-slate-300 bg-slate-800 border-slate-600' },
             ].map(({ label, color }) => (
-              <span key={label} className={`text-xs px-3 py-1.5 rounded-full border font-medium ${color}`}>
+              <span key={label} className={`text-sm px-3 py-1.5 rounded-full border font-medium ${color}`}>
                 ✓ {label}
               </span>
             ))}
@@ -839,7 +839,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
 
       {/* ── STAT BAR ── */}
       <section className="border-y border-slate-800 bg-slate-900/40">
-        <div className="max-w-4xl mx-auto px-4 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+        <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
           {[
             { to: 75, suffix: '%', label: 'Resumes filtered before a human sees them', color: 'from-red-400 to-orange-400' },
             { to: 16, suffix: '+', label: 'AI tools, all free', color: 'from-blue-400 to-blue-300' },
@@ -850,14 +850,14 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
               <p className={`text-4xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r ${color} mb-2`}>
                 <Counter to={to} suffix={suffix} />
               </p>
-              <p className="text-slate-500 text-xs leading-relaxed">{label}</p>
+              <p className="text-slate-500 text-sm leading-relaxed">{label}</p>
             </FadeIn>
           ))}
         </div>
       </section>
 
       {/* ── DEMO ── */}
-      <section className="max-w-2xl mx-auto px-4 py-20">
+      <section className="max-w-4xl mx-auto px-4 py-20">
         <FadeIn>
           <div className="text-center mb-10">
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">See it in action</p>
@@ -869,7 +869,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="max-w-3xl mx-auto px-4 py-24">
+      <section className="max-w-5xl mx-auto px-4 py-24">
         <FadeIn>
           <div className="text-center mb-16">
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3">How it works</p>
@@ -929,7 +929,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
 
       {/* ── FEATURES ── */}
       <section className="bg-slate-900/30 border-y border-slate-800 py-24">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <FadeIn>
             <div className="text-center mb-16">
               <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest mb-3">What you get</p>
@@ -952,7 +952,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
                 <div className={`group bg-slate-900 border border-slate-800 ${border} rounded-2xl p-5 transition-all hover:shadow-lg hover:-translate-y-0.5`}>
                   <div className="text-2xl mb-3">{icon}</div>
                   <p className="text-white text-sm font-semibold mb-1.5 leading-snug">{title}</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">{desc}</p>
+                  <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -961,7 +961,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
       </section>
 
       {/* ── WHO IT'S FOR ── */}
-      <section className="max-w-4xl mx-auto px-4 py-24">
+      <section className="max-w-6xl mx-auto px-4 py-24">
         <FadeIn>
           <div className="text-center mb-10">
             <p className="text-violet-400 text-xs font-bold uppercase tracking-widest mb-3">Who it's for</p>
@@ -993,7 +993,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
 
       {/* ── TRUST STRIP ── */}
       <section className="border-y border-slate-800 bg-slate-900/30">
-        <div className="max-w-4xl mx-auto px-4 py-12">
+        <div className="max-w-6xl mx-auto px-4 py-12">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
             {[
               { icon: '🔒', title: 'Browser-only', desc: 'Your resume never leaves your device' },
@@ -1005,7 +1005,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
                 <div>
                   <div className="text-2xl mb-2">{icon}</div>
                   <p className="text-white text-sm font-semibold mb-1">{title}</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">{desc}</p>
+                  <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -1014,7 +1014,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
       </section>
 
       {/* ── FAQ ── */}
-      <section className="max-w-2xl mx-auto px-4 py-24">
+      <section className="max-w-3xl mx-auto px-4 py-24">
         <FadeIn>
           <div className="text-center mb-12">
             <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mb-3">FAQ</p>
@@ -1042,7 +1042,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
       <section className="relative overflow-hidden border-t border-slate-800 py-28">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-slate-950 to-emerald-950/30 pointer-events-none" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-blue-600/8 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
+        <div className="relative z-10 max-w-3xl mx-auto px-4 text-center">
           <FadeIn>
             <p className="text-blue-400 text-xs font-bold uppercase tracking-widest mb-5">Ready to get shortlisted?</p>
             <h2 className="text-4xl sm:text-5xl font-black text-white mb-5 leading-tight">
@@ -1062,14 +1062,14 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
               Tailor My Resume — Free
               <span className="group-hover:translate-x-1 transition-transform">→</span>
             </button>
-            <p className="text-slate-600 text-xs mt-4">No account · No credit card · Free forever</p>
+            <p className="text-slate-600 text-sm mt-4">No account · No credit card · Free forever</p>
           </FadeIn>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-slate-800 py-6 text-center">
-        <p className="text-slate-700 text-xs">Built with care · Runs entirely in your browser · No data stored · No tracking</p>
+        <p className="text-slate-700 text-sm">Built with care · Runs entirely in your browser · No data stored · No tracking</p>
       </footer>
 
     </div>
