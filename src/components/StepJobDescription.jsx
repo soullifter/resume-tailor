@@ -108,8 +108,8 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
       subtitle="Copy the full JD from LinkedIn, Indeed, or any job board."
       onBack={onBack}
       onNext={onNext}
-      nextLabel="Analyze & Tailor"
-      nextDisabled={!isReady}
+      nextLabel={parseStatus === 'loading' ? 'Analyzing JD...' : 'Analyze & Tailor'}
+      nextDisabled={!isReady || parseStatus === 'loading'}
       onOpenSettings={onOpenSettings}
     >
       <style>{JD_STYLES}</style>
