@@ -8,6 +8,18 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.2.2] — 2026-04-29
+
+### AI generation quality — anti-fake-metrics & bullet variety
+- **No invented metrics**: generation prompt now explicitly forbids adding any number, %, or $ not present in the original resume — fake metrics like "25%" or "30%" will no longer appear
+- **Varied bullet structures**: AI no longer writes every bullet in the same "Verb + task + X% improvement" pattern — sentence shapes are now mixed to avoid AI-looking output
+- **`[X]` placeholder restricted**: placeholder only valid when original bullet clearly has a measurable outcome but no figure — the vast majority of bullets will have no `[X]`
+- Same fixes applied to single-bullet rewrite tool (`bulletRewritePrompt`)
+- Freelance mode instruction updated — no longer uses `[X]`/`[N]` example templates that could cause fabrication
+- Generation temperature bumped 0.35 → 0.5 for more natural, varied language
+
+---
+
 ## [1.2.1] — 2026-04-29
 
 ### Fixes & polish

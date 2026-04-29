@@ -276,7 +276,7 @@ const MODE_INSTRUCTIONS = {
   freelance: `Candidate has freelance or independent contractor history.
 - Group similar contracts under a single umbrella entry titled "Independent Consultant" or "Freelance [Specialty]" with a date range covering the full period.
 - Under the umbrella, list 2-3 key clients or project types as sub-bullets, not separate roles.
-- Bullets should highlight cumulative client impact: "Delivered [X] across [N] clients", "Managed [Y] in engagements totalling [Z]".
+- Bullets should highlight cumulative client impact using only real figures from the resume — e.g. "Delivered projects across multiple clients", "Managed concurrent engagements in [domain]". Never invent client counts, revenue figures, or other metrics not present in the original.
 - Do NOT treat separate contracts as job-hopping — present it as a deliberate consulting practice.
 - In the summary, position them as a specialist with proven client-facing delivery, not as someone between jobs.`,
 
@@ -301,7 +301,7 @@ export function generationPrompt(resumeText, jobDescription, analysis, userMode,
     : '  (none)'
 
   return {
-    temperature: 0.35,
+    temperature: 0.5,
     maxOutputTokens: 5000,
     prompt: `You are an expert professional resume writer and ATS specialist. Produce the strongest possible tailored version of this resume — one that passes ATS filters AND compels a human recruiter to call.
 ${modeNote ? `\n══ CANDIDATE MODE — follow these instructions throughout the entire rewrite ══\n${modeNote}` : ''}
@@ -340,11 +340,13 @@ SUMMARY:
 EXPERIENCE:
 - Rewrite EVERY bullet — no bullet should be left in its original weak form
 - Reorder bullets within each role: most JD-relevant bullet goes first
-- Every bullet format: strong past-tense action verb + specific outcome + metric
+- Bullet structure: strong past-tense action verb + what was done + outcome if present. NOT every bullet needs a number — only include metrics that exist in the original
+- VARY sentence structures across bullets — do NOT use the same pattern on every line. Mix shapes: some lead with the context, some with the system/tool, some with the scope, some with the problem solved. Avoid writing every bullet as "Verb + task + X% improvement" — that reads as AI-generated
 - Do NOT end any bullet with a period or full stop — resume bullets never end with punctuation
 - Wrap key metrics, numbers, percentages, and dollar amounts in **double asterisks** — e.g. **40%**, **$2M revenue**, **3x faster** — so they render bold in the PDF
-- Preserve ALL existing numbers/metrics/percentages exactly as they appear in the original
-- Use [X] as placeholder only where a metric is clearly implied but genuinely missing
+- Preserve ALL existing numbers/metrics/percentages EXACTLY as they appear in the original — do NOT change, estimate, or round any figure
+- NEVER invent or add any number, percentage, or metric that is not in the original resume. If the original bullet has no number, rewrite it as a strong action bullet with NO number — do NOT add "by 25%" or any invented figure. Fake metrics will get candidates caught in interviews
+- Use [X] placeholder ONLY in rare cases where the original clearly describes a measurable outcome but the actual figure is simply missing (e.g. "reduced load time" — [X]% is valid). The vast majority of bullets should have no [X] at all
 - Use JD language/terminology only where it authentically describes what the candidate actually did
 - NEVER add a tool, technology, or skill into a bullet that does not appear in the original resume — not even as an inference or related skill
 - You may use JD phrasing/terminology for skills that ARE already in the resume — do NOT add skills that are not in the original resume
@@ -375,7 +377,7 @@ Return ONLY this JSON, no markdown, no extra text:
       "title": "Job Title",
       "company": "Company Name",
       "dates": "Mon YYYY – Mon YYYY or Present",
-      "bullets": ["Strong bullet with action verb, outcome, and metric", "..."]
+      "bullets": ["Strong bullet with action verb and outcome", "..."]
     }
   ],
   "skills": ["most JD-relevant first", "..."],
@@ -647,7 +649,7 @@ RULES:
 - Keep it to one concise line — no run-ons.
 - Preserve ALL facts, numbers, percentages, company names, and technologies exactly as given.
 - Wrap key metrics, numbers, percentages, and dollar amounts in **double asterisks** — e.g. **40%**, **$2M**, **3x faster**.
-- If a metric is clearly implied but missing, add [X] as a placeholder (e.g. "reduced load time by [X]%").
+- NEVER invent or estimate a number, percentage, or metric not in the original. If the original has no number, write a strong bullet with no number — do NOT add "by [X]%" or any invented figure. Use [X] ONLY if the original explicitly describes a measurable result but the actual figure is missing (e.g. original says "reduced load time" — then "[X]%" is valid). Most rewrites should have no [X].
 - If a JD keyword genuinely describes what this bullet is about, use that language — do not force keywords that don't fit.
 - Do NOT invent new achievements, tools, or outcomes not in the original.
 - Return ONLY the rewritten bullet — no quotes, no explanation, no label.`
