@@ -8,6 +8,20 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.2.0] — 2026-04-29
+
+### Download page redesign — split-pane layout
+- Two-column layout on desktop: controls on the left, live PDF preview on the right
+- Full-screen split-pane — left panel scrolls independently, right panel is fixed full-height
+- PDF preview fits exactly to panel height (no black space, no clipping) using `Math.min(scaleByWidth, scaleByHeight)` scaling
+- Multi-page resumes: "Page X of Y" label with ← → navigation arrows in preview panel
+- Mobile unchanged — single-column layout with preview toggle as before
+- Consistent `max-w-7xl` centered container with `px-8` side padding on download page
+- All step pages (Upload, Job Description, Analyze) bumped from `max-w-xl` → `max-w-2xl` to match column width
+- `text-xs` → `text-sm` across all app components for improved readability
+
+---
+
 ## [1.1.0] — 2026-04-28
 
 ### Word (.docx) support
