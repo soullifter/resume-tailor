@@ -150,7 +150,7 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
           </div>
         )}
       </div>
-      <div className={`bg-white ${fitToHeight ? 'flex-1 flex items-center justify-center overflow-hidden' : ''}`}
+      <div className={fitToHeight ? 'flex-1 flex items-center justify-center overflow-hidden bg-slate-900' : 'bg-white'}
            style={fitToHeight ? {} : { minHeight: '80px' }}>
         {loading && (
           <div className="flex items-center justify-center h-20 bg-slate-900 w-full">
