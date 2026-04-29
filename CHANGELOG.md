@@ -8,6 +8,15 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.0.2] — 2026-04-28
+
+### Bug fixes
+- Gear modal now scrollable on mobile — `max-h-[88vh]` + `overflow-y-auto` prevents content getting cut off
+- API key masked display no longer overflows its box on mobile — truncates cleanly
+- Feedback page detection fixed — landing page (`#/`) now correctly reports "Home" instead of "Upload Resume"
+
+---
+
 ## [1.0.1] — 2026-04-28
 
 ### Settings modal refactor

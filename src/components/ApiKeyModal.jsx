@@ -21,12 +21,13 @@ const guideSteps = [
 
 function getCurrentPage() {
   const hash = window.location.hash || ''
-  if (hash.includes('upload') || hash === '#/')   return 'Upload Resume'
-  if (hash.includes('job'))                        return 'Job Description'
-  if (hash.includes('analyze'))                    return 'Analyze & Generate'
-  if (hash.includes('download'))                   return 'Download'
-  if (hash.includes('versions'))                   return 'My Resumes'
-  if (hash.includes('tracker'))                    return 'Application Tracker'
+  if (hash === '' || hash === '#' || hash === '#/')  return 'Home'
+  if (hash.includes('upload'))                       return 'Upload Resume'
+  if (hash.includes('job'))                          return 'Job Description'
+  if (hash.includes('analyze'))                      return 'Analyze & Generate'
+  if (hash.includes('download'))                     return 'Download'
+  if (hash.includes('versions'))                     return 'My Resumes'
+  if (hash.includes('tracker'))                      return 'Application Tracker'
   return 'Home'
 }
 
@@ -277,10 +278,10 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
       />
 
       {/* Modal */}
-      <div className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md z-50 bg-slate-900 border border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-2xl">
+      <div className="fixed inset-x-4 bottom-0 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-full sm:max-w-md z-50 bg-slate-900 border border-slate-700 rounded-t-2xl sm:rounded-2xl shadow-2xl flex flex-col max-h-[88vh]">
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 shrink-0">
           <div className="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
@@ -294,7 +295,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
           </button>
         </div>
 
-        <div className="p-5 space-y-4">
+        <div className="p-5 space-y-4 overflow-y-auto">
           {/* Connected state */}
           {mode === 'connected' && (
             <>
@@ -308,7 +309,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                 </svg>
-                <span className="text-slate-300 text-sm font-mono flex-1 tracking-wider">
+                <span className="text-slate-300 text-sm font-mono flex-1 tracking-wider truncate min-w-0">
                   {showKey ? getStoredApiKey() : maskKey(getStoredApiKey())}
                 </span>
                 <button onClick={() => setShowKey(v => !v)} className="text-slate-500 hover:text-slate-300 transition-colors">
