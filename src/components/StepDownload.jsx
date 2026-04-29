@@ -88,6 +88,7 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [zoom, setZoom] = useState(1)
   const renderTaskRef = useRef(null)
 
   useEffect(() => {
@@ -106,18 +107,19 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
         const canvas = canvasRef.current
         if (!canvas) return
         const dpr = window.devicePixelRatio || 1
-        const area = canvas.parentElement
-        const containerWidth = area?.clientWidth || 350
-        const containerHeight = area?.clientHeight || 0
+        const area = canvas.parentElement?.parentElement  // scroll wrapper → canvas wrapper
+        const containerWidth  = (area?.clientWidth  || 350)
+        const containerHeight = (area?.clientHeight || 0)
         const unscaledViewport = page.getViewport({ scale: 1 })
-        let scale
+        let baseScale
         if (fitToHeight && containerHeight > 100) {
           const scaleByWidth  = containerWidth  / unscaledViewport.width
           const scaleByHeight = containerHeight / unscaledViewport.height
-          scale = Math.min(scaleByWidth, scaleByHeight) * dpr
+          baseScale = Math.min(scaleByWidth, scaleByHeight)
         } else {
-          scale = (containerWidth / unscaledViewport.width) * dpr
+          baseScale = containerWidth / unscaledViewport.width
         }
+        const scale = baseScale * zoom * dpr
         const viewport = page.getViewport({ scale })
         canvas.width = viewport.width
         canvas.height = viewport.height
@@ -135,35 +137,50 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
     }
     render()
     return () => { cancelled = true }
-  }, [resumeData, template, currentPage, fitToHeight])
+  }, [resumeData, template, currentPage, fitToHeight, zoom])
 
   return (
     <div className={`bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden ${fitToHeight ? 'h-full flex flex-col' : ''}`}>
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-800 shrink-0">
+      {/* Header bar */}
+      <div className="flex items-center justify-between px-3 py-2 border-b border-slate-800 shrink-0">
         <span className="text-slate-400 text-sm font-medium">
           {numPages > 0 ? `Page ${currentPage} of ${numPages}` : 'Rendering…'}
         </span>
-        {numPages > 1 && (
-          <div className="flex items-center gap-2">
-            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-2">←</button>
-            <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-2">→</button>
+        <div className="flex items-center gap-3">
+          {/* Zoom controls */}
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setZoom(z => Math.max(0.5, parseFloat((z - 0.25).toFixed(2))))}
+              disabled={zoom <= 0.5}
+              className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700 transition-colors text-base leading-none"
+            >−</button>
+            <span className="text-slate-500 text-xs w-9 text-center tabular-nums">{Math.round(zoom * 100)}%</span>
+            <button
+              onClick={() => setZoom(z => Math.min(3, parseFloat((z + 0.25).toFixed(2))))}
+              disabled={zoom >= 3}
+              className="text-slate-400 hover:text-white disabled:opacity-30 w-6 h-6 flex items-center justify-center rounded hover:bg-slate-700 transition-colors text-base leading-none"
+            >+</button>
           </div>
-        )}
+          {/* Page navigation */}
+          {numPages > 1 && (
+            <div className="flex items-center gap-1 border-l border-slate-700 pl-3">
+              <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-1.5">←</button>
+              <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-1.5">→</button>
+            </div>
+          )}
+        </div>
       </div>
-      <div className={fitToHeight ? 'flex-1 flex items-center justify-center overflow-hidden bg-slate-900' : 'bg-white'}
+
+      {/* Canvas area — scrollable when zoomed in */}
+      <div className={fitToHeight ? 'flex-1 overflow-auto bg-slate-900' : 'bg-white'}
            style={fitToHeight ? {} : { minHeight: '80px' }}>
-        {loading && (
-          <div className="flex items-center justify-center h-20 bg-slate-900 w-full">
-            <span className="text-slate-500 text-sm">Rendering PDF...</span>
-          </div>
-        )}
-        {error && (
-          <div className="flex items-center justify-center h-16 bg-slate-900 w-full">
-            <span className="text-red-400 text-sm">{error}</span>
-          </div>
-        )}
-        <canvas ref={canvasRef} style={{ display: loading || error ? 'none' : 'block' }}
-                className={fitToHeight ? '' : 'w-full block'} />
+        <div style={{ minHeight: '100%', minWidth: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {loading && <span className="text-slate-500 text-sm">Rendering PDF...</span>}
+          {error   && <span className="text-red-400 text-sm">{error}</span>}
+          <canvas ref={canvasRef}
+                  style={{ display: loading || error ? 'none' : 'block' }}
+                  className={fitToHeight ? '' : 'w-full block'} />
+        </div>
       </div>
     </div>
   )
