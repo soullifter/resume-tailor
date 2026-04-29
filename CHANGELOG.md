@@ -8,6 +8,19 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.1.0] — 2026-04-28
+
+### Word (.docx) support
+- Upload `.docx` resumes — text extracted via `mammoth`, same flow as PDF
+- Download as Word (.docx) — generated from resume data with Classic / Modern / Minimal color schemes
+- Format toggle on download page — choose PDF or Word before downloading
+- PDF template selector only shown when PDF format is selected
+- File input and upload copy updated to mention PDF or Word (.docx)
+- Landing page FAQ updated — Word upload now mentioned
+- `docx` package added for generation; `mammoth` package added for extraction
+
+---
+
 ## [1.0.2] — 2026-04-28
 
 ### Bug fixes

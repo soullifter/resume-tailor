@@ -12,6 +12,7 @@ import SaveResumeModal from './SaveResumeModal'
 import ResumePreview from './ResumePreview'
 import { getSavedResumes, getApplications } from '../utils/storage'
 import { saveResume, addApplication } from '../utils/storage'
+import { generateDocxBlob } from '../utils/docxGenerator'
 import { geminiJSON, geminiScore } from '../utils/groq'
 import { polishPrompt, scorePrompt } from '../utils/prompts'
 
@@ -155,6 +156,8 @@ function CanvasPdfPreview({ resumeData, template }) {
     </div>
   )
 }
+
+
 
 const isTouchDevice = typeof window !== 'undefined' && window.matchMedia('(hover: none) and (pointer: coarse)').matches
 
@@ -448,8 +451,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
   const [polishing, setPolishing]       = useState(false)
   const [polished, setPolished]         = useState(false)
   const [polishError, setPolishError]   = useState('')
-  const [showPreview, setShowPreview]   = useState(false)
-  const [showPdfPreview, setShowPdfPreview] = useState(false)
+  const [showFormatPreview, setShowFormatPreview] = useState(false)
   const [pageCount, setPageCount]       = useState(null)
 
   async function measurePages(data) {
@@ -574,15 +576,24 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
   const [downloadingPdf, setDownloadingPdf]       = useState(false)
   const [downloadFileName, setDownloadFileName]   = useState('')
   const [downloadFlash, setDownloadFlash]         = useState(false)
+  const [downloadFormat, setDownloadFormat]       = useState('pdf')
 
   async function triggerDownload(name) {
     setDownloadingPdf(true)
     try {
-      const blob = await pdf(<ResumeDocument data={resumeData} template={template} />).toBlob()
-      const url  = URL.createObjectURL(blob)
-      const a    = document.createElement('a')
+      const baseName = (name.trim() || 'resume').replace(/\.(pdf|docx)$/i, '')
+      let blob, ext
+      if (downloadFormat === 'docx') {
+        blob = await generateDocxBlob(resumeData, template)
+        ext  = '.docx'
+      } else {
+        blob = await pdf(<ResumeDocument data={resumeData} template={template} />).toBlob()
+        ext  = '.pdf'
+      }
+      const url = URL.createObjectURL(blob)
+      const a   = document.createElement('a')
       a.href     = url
-      a.download = (name.trim() || 'resume').replace(/\.pdf$/i, '') + '.pdf'
+      a.download = baseName + ext
       a.click()
       URL.revokeObjectURL(url)
       setShowDownloadModal(false)
@@ -711,45 +722,62 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           />
         </div>
 
-        {/* Template selector */}
-        <TemplateSelector value={template} onChange={setTemplate} />
-
-        {/* Preview toggle */}
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => { setShowPreview(v => !v); setShowPdfPreview(false) }}
-            className={`flex-1 py-2.5 rounded-xl border text-sm transition-colors flex items-center justify-center gap-2 ${
-              showPreview ? 'border-blue-500 bg-blue-500/10 text-blue-400' : 'border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white'
-            }`}
-          >
-            {showPreview ? '▲ Hide Preview' : '▼ Preview Resume'}
-          </button>
-          <button
-            onClick={() => { setShowPdfPreview(v => !v); setShowPreview(false) }}
-            className={`flex-1 py-2.5 rounded-xl border text-sm transition-colors flex items-center justify-center gap-2 ${
-              showPdfPreview ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400' : 'border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white'
-            }`}
-          >
-            {showPdfPreview ? '▲ Hide PDF View' : '📄 Exact PDF Preview'}
-          </button>
-        </div>
-        {showPreview && (
-          <div className="mb-4" style={{ animation: 'ring-float-in 0.4s ease-out both' }}>
-            <ResumePreview data={resumeData} hideDownload template={template} />
+        {/* Format selector */}
+        <div className="mb-4">
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Download Format</p>
+          <div className="flex gap-2">
+            {[
+              { id: 'pdf',  label: 'PDF',          desc: 'Best for email & viewing' },
+              { id: 'docx', label: 'Word (.docx)',  desc: 'Required by most portals' },
+            ].map(f => (
+              <button
+                key={f.id}
+                onClick={() => { setDownloadFormat(f.id); setShowFormatPreview(false) }}
+                className={`flex-1 py-2.5 px-3 rounded-xl border text-left transition-all ${
+                  downloadFormat === f.id
+                    ? 'border-blue-500 bg-blue-500/10'
+                    : 'border-slate-700 hover:border-slate-500'
+                }`}
+              >
+                <p className={`text-xs font-semibold ${downloadFormat === f.id ? 'text-blue-400' : 'text-slate-300'}`}>{f.label}</p>
+                <p className="text-slate-500 text-xs mt-0.5">{f.desc}</p>
+              </button>
+            ))}
           </div>
-        )}
-        {showPdfPreview && (
-          <div className="mb-4" style={{ animation: 'ring-float-in 0.4s ease-out both' }}>
-            {isTouchDevice ? (
-              <CanvasPdfPreview resumeData={resumeData} template={template} />
-            ) : (
-              <div className="rounded-xl overflow-hidden border border-slate-700">
-                <PDFViewer width="100%" height={700} showToolbar={false}>
-                  <ResumeDocument data={resumeData} template={template} />
-                </PDFViewer>
+        </div>
+
+        {/* Template selector — PDF only */}
+        {downloadFormat === 'pdf' && <TemplateSelector value={template} onChange={setTemplate} />}
+
+        {/* Preview toggle — PDF only */}
+        {downloadFormat === 'pdf' && (
+          <>
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setShowFormatPreview(v => !v)}
+                className={`flex-1 py-2.5 rounded-xl border text-sm transition-colors flex items-center justify-center gap-2 ${
+                  showFormatPreview
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400'
+                    : 'border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white'
+                }`}
+              >
+                {showFormatPreview ? '▲ Hide PDF Preview' : '📄 Preview PDF'}
+              </button>
+            </div>
+            {showFormatPreview && (
+              <div className="mb-4" style={{ animation: 'ring-float-in 0.4s ease-out both' }}>
+                {isTouchDevice ? (
+                  <CanvasPdfPreview resumeData={resumeData} template={template} />
+                ) : (
+                  <div className="rounded-xl overflow-hidden border border-slate-700">
+                    <PDFViewer width="100%" height={700} showToolbar={false}>
+                      <ResumeDocument data={resumeData} template={template} />
+                    </PDFViewer>
+                  </div>
+                )}
               </div>
             )}
-          </div>
+          </>
         )}
 
         {/* Submit-ready check */}
@@ -773,7 +801,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
           <span className="relative z-10">
-            {downloadFlash ? '✓ Saved!' : `Download PDF · ${TEMPLATES.find(t => t.id === template)?.label}`}
+            {downloadFlash ? '✓ Saved!' : `Download Resume · ${TEMPLATES.find(t => t.id === template)?.label}`}
           </span>
         </button>
 
@@ -854,9 +882,13 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
         <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden"
           style={{ animation: 'modal-pop 0.35s cubic-bezier(0.34,1.56,0.64,1) both' }}>
-          <div className="px-5 pt-5 pb-4">
-            <p className="text-white font-semibold text-sm mb-1">Name your file</p>
-            <p className="text-slate-400 text-xs mb-4">Edit the filename below — <span className="text-slate-500">.pdf</span> will be added automatically.</p>
+          <div className="px-5 pt-5 pb-4 space-y-4">
+            <div>
+              <p className="text-white font-semibold text-sm mb-1">Name your file</p>
+              <p className="text-slate-400 text-xs">
+                Saving as <span className="text-blue-400 font-medium">{downloadFormat === 'docx' ? 'Word (.docx)' : 'PDF'}</span> — change format above if needed.
+              </p>
+            </div>
             <div className="flex items-center gap-2 bg-slate-800 border border-slate-600 focus-within:border-blue-500 rounded-xl px-3 py-2.5 transition-colors">
               <input
                 autoFocus
@@ -867,7 +899,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
                 className="flex-1 bg-transparent text-white text-sm outline-none min-w-0"
                 spellCheck={false}
               />
-              <span className="text-slate-500 text-sm shrink-0">.pdf</span>
+              <span className="text-slate-500 text-sm shrink-0">{downloadFormat === 'docx' ? '.docx' : '.pdf'}</span>
             </div>
           </div>
           <div className="flex gap-2 px-5 pb-5">

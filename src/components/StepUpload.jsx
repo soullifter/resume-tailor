@@ -3,6 +3,14 @@ import * as pdfjsLib from 'pdfjs-dist'
 import StepLayout from './StepLayout'
 import ResumeHealthScore from './ResumeHealthScore'
 
+async function extractTextFromDocx(file) {
+  const arrayBuffer = await file.arrayBuffer()
+  const mammoth = await import('mammoth')
+  const result = await mammoth.default.extractRawText({ arrayBuffer })
+  if (!result.value || result.value.length < 50) throw new Error('Could not extract text from DOCX file.')
+  return result.value
+}
+
 function readAsArrayBuffer(blob) {
   if (typeof blob.arrayBuffer === 'function') return blob.arrayBuffer()
   return new Promise((resolve, reject) => {
@@ -581,6 +589,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
   const [fileName, setFileName]   = useState('')
   const [error, setError]         = useState('')
   const [pdfFile, setPdfFile]     = useState(null)
+  const [fileType, setFileType]   = useState(null) // 'pdf' | 'docx'
   const [resumeText, setResumeText] = useState('')
   const [dragOver, setDragOver]   = useState(false)
   const [showSpark, setShowSpark] = useState(false)
@@ -588,14 +597,15 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
 
   async function handleFile(file) {
     if (!file) return
-    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
-    if (!isPdf) {
-      setError(`"${file.name}" is not a PDF. Please upload a PDF file.`)
+    const isPdf  = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
+    const isDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.toLowerCase().endsWith('.docx')
+    if (!isPdf && !isDocx) {
+      setError(`"${file.name}" is not a supported file. Please upload a PDF or Word (.docx) file.`)
       setStatus('error')
       return
     }
     if (file.size > 10 * 1024 * 1024) {
-      setError('File is too large. Please upload a PDF under 10MB.')
+      setError('File is too large. Please upload a file under 10MB.')
       setStatus('error')
       return
     }
@@ -603,18 +613,26 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
     setError('')
     setFileName(file.name)
     try {
-      const { text } = await extractTextFromPdf(file)
-      if (!text || text.length < 50) throw new Error('Could not extract text. Is the PDF scanned/image-based?')
+      let text
+      if (isDocx) {
+        text = await extractTextFromDocx(file)
+        setFileType('docx')
+      } else {
+        const result = await extractTextFromPdf(file)
+        text = result.text
+        if (!text || text.length < 50) throw new Error('Could not extract text. Is the PDF scanned/image-based?')
+        setPdfFile(file)
+        setFileType('pdf')
+      }
       setStatus('done')
-      setPdfFile(file)
       setResumeText(text)
       onTextExtracted(text)
       setShowSpark(true)
       setTimeout(() => setShowSpark(false), 700)
     } catch (e) {
-      console.error('[PDF upload error]', e)
+      console.error('[file upload error]', e)
       setStatus('error')
-      setError((e.message || 'Failed to read PDF.') + ' — ' + String(e))
+      setError((e.message || 'Failed to read file.') + ' — ' + String(e))
     }
   }
 
@@ -630,6 +648,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
     setFileName('')
     setError('')
     setPdfFile(null)
+    setFileType(null)
     setResumeText('')
     onTextExtracted('')
     if (inputRef.current) inputRef.current.value = ''
@@ -644,7 +663,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
       subtitle={
         inputMode === 'scratch'
           ? 'Fill in your details — we\'ll tailor it for the job.'
-          : 'Drop your current PDF resume — we\'ll parse and improve it.'
+          : 'Drop your PDF or Word resume — we\'ll parse and improve it.'
       }
       onBack={onBack}
       onNext={onNext}
@@ -652,7 +671,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
       onOpenSettings={onOpenSettings}
     >
       <style>{UPLOAD_STYLES}</style>
-      <input ref={inputRef} type="file" accept=".pdf,application/pdf" className="hidden" onChange={e => handleFile(e.target.files[0])} />
+      <input ref={inputRef} type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden" onChange={e => handleFile(e.target.files[0])} />
 
       {/* User mode selector */}
       <UserModeSelector value={userMode} onChange={onUserModeChange} />
@@ -660,7 +679,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
       {/* Upload / Scratch toggle */}
       <div className="flex gap-1 p-1 bg-slate-900 border border-slate-800 rounded-xl mb-5">
         {[
-          { id: 'upload', label: '📎  Upload PDF' },
+          { id: 'upload', label: '📎  Upload PDF / Word' },
           { id: 'scratch', label: '✏️  Build from scratch' },
         ].map(({ id, label }) => (
           <button
@@ -702,7 +721,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
               </div>
               <button onClick={reset} className="text-slate-500 hover:text-slate-300 text-xs underline transition-colors">Remove</button>
             </div>
-            <PdfPreview file={pdfFile} />
+            {fileType === 'pdf' && <PdfPreview file={pdfFile} />}
             <ResumeHealthScore apiKey={apiKey} resumeText={resumeText} onScoreReady={onHealthScore} userMode={userMode} />
           </div>
         ) : (
@@ -731,13 +750,13 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                     </svg>
                   </div>
-                  <p className="text-white font-semibold mb-1.5">Upload your PDF resume</p>
+                  <p className="text-white font-semibold mb-1.5">Upload your resume</p>
                   <p className="text-slate-500 text-sm mb-4">Tap to browse, or drag and drop</p>
                   <span className="inline-flex items-center gap-1.5 text-xs text-slate-600 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    PDF only · max 10MB
+                    PDF or Word (.docx) · max 10MB
                   </span>
                   {status === 'error' && (
                     <p className="mt-4 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2">{error}</p>

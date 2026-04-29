@@ -888,7 +888,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
             {
               badge: '1', badgeBg: 'bg-gradient-to-br from-blue-500 to-blue-400',
               title: 'Drop your resume',
-              desc: 'Upload your PDF. We scan it instantly — score your resume health, spot weak spots, and show you exactly what needs fixing.',
+              desc: 'Upload your PDF or Word (.docx) resume. We scan it instantly — score your resume health, spot weak spots, and show you exactly what needs fixing.',
             },
             {
               badge: '2', badgeBg: 'bg-gradient-to-br from-violet-500 to-purple-500',
@@ -1026,7 +1026,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
             { q: 'Is this really free?', a: 'Yes, completely. Bring your own Groq API key (free, no credit card). Across 4 AI models you get ~80 full resume rewrites per day. We charge nothing, ever.' },
             { q: 'What is a Groq API key and how do I get one?', a: (<>A free key that unlocks fast AI. Go to <a href="https://console.groq.com" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline transition-colors">console.groq.com</a>, sign up (no credit card), hit &quot;API Keys&quot; → &quot;Create&quot;. Takes 2 minutes. Paste it in once — done.</>) },
             { q: 'Is my resume safe?', a: 'Nobody except you sees it. Your resume goes from your browser directly to Groq\'s AI — never through any server we own. We have no database, no backend.' },
-            { q: 'My resume is a Word file. Can I use this?', a: 'PDF only for now. Open your Word doc → File → Save as PDF. Takes 10 seconds.' },
+            { q: 'My resume is a Word file. Can I use this?', a: 'Yes — upload your .docx directly. You can also download your tailored resume as a Word file when done.' },
             { q: 'How is this different from Jobscan or Rezi?', a: 'Those charge monthly and store your data. This is free, no account, runs in your browser, and has more tools — interview prep, cover letters, job tracker, quality checks.' },
             { q: 'Does it work on mobile?', a: 'Yes. For uploading and editing in detail, a laptop is better — but everything works on mobile.' },
             { q: 'I\'m getting a "503" or overloaded error.', a: 'Not broken — Groq\'s free tier gets busy sometimes. Wait 30 seconds, hit Try again. Always resolves.' },
