@@ -8,6 +8,26 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.2.3] — 2026-04-29
+
+### AI generation quality — kill the AI-generated feel
+- **Ban filler tails**: "demonstrating hands-on experience with X", "showcasing ability to Y", "highlighting proficiency in Z" are now explicitly forbidden — the #1 AI tell
+- **Preserve specifics**: model names (SimCLR, BERT), dataset names (CIFAR-10), paper titles must survive rewriting — never replaced with generic category names
+- **Projects expand, not compress**: 2-3 bullets per project with specific tool/dataset/result; rich projects no longer collapsed to 1 vague line
+- **Summary anchored to real background**: no more generic "Results-driven professional" openers — must reference specific role, institution, or achievement from the candidate's actual resume
+- **Vary bullet length naturally**: short punchy bullets mixed with longer context bullets — uniform length is an AI tell
+- **Don't over-polish strong bullets**: if original is already specific and concrete, preserve its phrasing — only rewrite genuinely weak bullets
+- **Ban AI buzzwords**: "leveraged", "spearheaded", "synergized", "demonstrating", "showcasing" removed from generation vocabulary
+
+### ATS scorer — stricter, more accurate
+- Keyword in bullet with specific context = full credit (was: any bullet appearance = full credit)
+- Keyword in bullet but vague/generic usage = 0.5 credit (new)
+- Keyword in skills section only = 0.25 credit (was: 0.5)
+- Quality penalties: −8 if <30% bullets have real metrics, −6 if 3+ filler-tail bullets, −4 if summary is generic
+- Score now reflects real recruiter pass rate, not just keyword presence
+
+---
+
 ## [1.2.2] — 2026-04-29
 
 ### AI generation quality — anti-fake-metrics & bullet variety

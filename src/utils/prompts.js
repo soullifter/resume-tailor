@@ -336,6 +336,7 @@ SUMMARY:
 - Naturally embed 2-3 key JD terms (ATS-friendly)
 - Match the seniority tone
 - NEVER mention the company name or employer being applied to — keep it general and transferable
+- NEVER write a generic template summary. Anchor it to something specific from the candidate's actual background — their real role title, institution, specific domain, or a concrete achievement. A recruiter should be able to tell this is about one specific person, not any candidate. Avoid openers like "Results-driven professional", "Passionate engineer", "Motivated candidate seeking" — these are AI tells
 
 EXPERIENCE:
 - Rewrite EVERY bullet — no bullet should be left in its original weak form
@@ -350,11 +351,21 @@ EXPERIENCE:
 - Use JD language/terminology only where it authentically describes what the candidate actually did
 - NEVER add a tool, technology, or skill into a bullet that does not appear in the original resume — not even as an inference or related skill
 - You may use JD phrasing/terminology for skills that ARE already in the resume — do NOT add skills that are not in the original resume
+- NEVER end a bullet with a capability claim or filler tail — phrases like "demonstrating hands-on experience with X", "showcasing ability to Y", "highlighting proficiency in Z", "proving ability to", "showing experience with" are AI tells and must never appear anywhere in the output
+- Preserve ALL specific names exactly as they appear in the original — model names (SimCLR, BERT, GPT-2), dataset names (CIFAR-10, ImageNet), paper titles, institution names, tool names. NEVER replace a specific name with its generic category (e.g. do NOT replace "SimCLR" with "self-supervised learning technique", do NOT replace "CIFAR-10" with "image dataset")
+- Vary bullet length naturally — some bullets are short and punchy (10-12 words), some are longer with context (18-22 words). Do NOT make every bullet the same length
+- If the original bullet is already specific, concrete, and strong, preserve its core phrasing closely — only rewrite bullets that are genuinely weak (vague verbs, passive voice, no specifics). Do not rewrite a good bullet just to sound different
+- Avoid overused AI resume words: "leveraged", "spearheaded", "synergized", "demonstrating", "showcasing", "highlighting". Use direct natural verbs instead
 
 SKILLS:
 - ONLY include skills explicitly present in the candidate's original resume — do NOT add skills from the JD that aren't already there, not even inferred or related ones (e.g. if resume has Docker but not Kubernetes, do NOT add Kubernetes)
 - Order: JD-matching skills first → other resume skills → remove only skills with zero relevance to this JD
 - Keep all relevant technical, domain, and tool skills that are in the original resume
+
+PROJECTS:
+- Project bullets should expand, not compress — include the specific model/tool/dataset used, what it was applied to, and the result (accuracy, benchmark, paper reproduced, metric achieved). If the original mentions a specific paper, dataset, or benchmark, that name must appear in the rewritten bullet
+- Aim for 2-3 bullets per project if the original has content to support it — do NOT collapse a rich project to 1 vague line
+- Same anti-fabrication rules apply: never invent accuracy numbers, dataset sizes, or performance gains not in the original
 
 PRESERVE ALL RELEVANT SECTIONS:
 - Keep projects, certifications, awards, publications, languages, volunteer work if they add value for this role
@@ -433,14 +444,22 @@ export function scorePrompt(resumeText, jobDescription, userMode = 'standard') {
     temperature: 0,
     maxOutputTokens: 2048,
     prompt: `/no_think
-ATS resume scanner. Score how well the resume matches the job description.
+ATS resume scanner. Score how well the resume matches the job description. Be strict — this score must reflect real recruiter pass rate, not just keyword presence.
 
-Rules:
-- Required skills/tools found in experience bullets: full credit
-- Found in skills section only: half credit
-- Absent: no credit
-- Required keywords weight 3x preferred keywords
-- Normalize to 0-100
+KEYWORD SCORING:
+- Keyword used in an experience bullet with specific context (tool name, dataset, metric, outcome) = full credit (1.0)
+- Keyword used in an experience bullet but vague/generic (e.g. "worked with machine learning") = partial credit (0.5)
+- Keyword in skills section only, not demonstrated in bullets = low credit (0.25)
+- Keyword absent entirely = no credit (0)
+- Required keywords (must-have) weight 3x preferred keywords
+- Normalize keyword score to 0-100
+
+QUALITY PENALTIES (apply after normalizing):
+- Fewer than 30% of bullets contain any real metric (number, %, $, quantified result) → subtract 8 points
+- More than 3 bullets end with filler phrases ("demonstrating X", "showcasing ability to Y", "highlighting proficiency in") → subtract 6 points
+- Summary is generic with no specific role, institution, or concrete achievement → subtract 4 points
+
+Final score = normalized keyword score minus applicable penalties. Floor at 0, cap at 100.
 ${modeRule ? `\nADJUSTMENT FOR THIS CANDIDATE: ${modeRule}\n` : ''}
 RESUME:
 ${resumeText}
