@@ -8,6 +8,17 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.2.1] — 2026-04-29
+
+### Fixes & polish
+- PDF preview zoom: − / + buttons, trackpad pinch (ctrl+scroll), touch pinch — panel stays fixed size, content scrolls inside
+- Preview panel: full-width 50/50 split on all screen sizes — removed `max-w-7xl` centering that caused side margins on large screens
+- Preview background: dark slate behind PDF canvas — no white bleed around the page
+- Bullets: strip trailing periods post-generation (resume convention); prompt updated to enforce this
+- JD step: "Analyze & Tailor" button disabled and shows "Analyzing JD…" while JD analysis is in progress
+
+---
+
 ## [1.2.0] — 2026-04-29
 
 ### Download page redesign — split-pane layout
