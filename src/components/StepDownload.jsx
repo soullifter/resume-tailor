@@ -112,7 +112,9 @@ function CanvasPdfPreview({ resumeData, template, fitToHeight = false }) {
         const unscaledViewport = page.getViewport({ scale: 1 })
         let scale
         if (fitToHeight && containerHeight > 100) {
-          scale = (containerHeight / unscaledViewport.height) * dpr
+          const scaleByWidth  = containerWidth  / unscaledViewport.width
+          const scaleByHeight = containerHeight / unscaledViewport.height
+          scale = Math.min(scaleByWidth, scaleByHeight) * dpr
         } else {
           scale = (containerWidth / unscaledViewport.width) * dpr
         }
