@@ -48,6 +48,15 @@ const DOWNLOAD_STYLES = `
   0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0); }
   50%       { box-shadow: 0 0 12px 2px rgba(59,130,246,0.2); }
 }
+.resume-preview-interactive [data-field] {
+  border-radius: 4px;
+  transition: background 0.15s, outline 0.15s;
+  cursor: pointer;
+}
+.resume-preview-interactive [data-field]:hover {
+  background: rgba(59,130,246,0.08);
+  outline: 1px solid rgba(59,130,246,0.25);
+}
 `
 
 const TEMPLATES = [
@@ -633,6 +642,23 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
     setScoreStale(false)
   }
 
+  const [previewTab, setPreviewTab] = useState('live') // 'live' | 'pdf'
+
+  function handleFieldClick(field) {
+    // "summary" → "editor-summary"
+    // "experience.0.bullets.1" → "editor-experience-0-bullet-1"
+    // "experience.0" → "editor-experience-0"
+    const id = 'editor-' + field.replace(/\.bullets\.(\d+)$/, '-bullet-$1').replace(/\.items\.(\d+)$/, '-item-$1').replace(/\./g, '-')
+    const el = document.getElementById(id)
+    if (!el) return
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    el.style.transition = 'background 0.2s, box-shadow 0.2s, border-radius 0.2s'
+    el.style.background = 'rgba(234,179,8,0.12)'
+    el.style.boxShadow = '0 0 0 2px rgba(234,179,8,0.4)'
+    el.style.borderRadius = '8px'
+    setTimeout(() => { el.style.background = ''; el.style.boxShadow = ''; el.style.borderRadius = '' }, 1600)
+  }
+
   const [showDownloadModal, setShowDownloadModal] = useState(false)
   const [downloadingPdf, setDownloadingPdf]       = useState(false)
   const [downloadFileName, setDownloadFileName]   = useState('')
@@ -939,12 +965,34 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
 
         {/* RIGHT COLUMN — full-height panel, desktop only, 50/50 */}
         <div className="hidden lg:flex lg:flex-col flex-1 border-l border-slate-800 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-800 shrink-0">
-            <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Live Preview</p>
+          {/* Tab header */}
+          <div className="shrink-0 border-b border-slate-800 flex items-center gap-1 px-3 py-2">
+            <button
+              onClick={() => setPreviewTab('live')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${previewTab === 'live' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              ✦ Live Preview
+            </button>
+            <button
+              onClick={() => setPreviewTab('pdf')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${previewTab === 'pdf' ? 'bg-slate-700 text-white border border-slate-600' : 'text-slate-500 hover:text-slate-300'}`}
+            >
+              PDF
+            </button>
+            {previewTab === 'live' && (
+              <span className="ml-auto text-xs text-slate-600 italic">Click any field → jumps to editor</span>
+            )}
           </div>
-          <div className="flex-1 overflow-hidden p-3">
-            {downloadFormat === 'pdf' ? (
-              <CanvasPdfPreview resumeData={resumeData} template={template} fitToHeight />
+          {/* Content */}
+          <div className={`flex-1 ${previewTab === 'live' ? 'overflow-y-auto' : 'overflow-hidden'}`}>
+            {previewTab === 'live' ? (
+              <div className="p-6">
+                <ResumePreview data={resumeData} template={template} hideDownload onFieldClick={handleFieldClick} />
+              </div>
+            ) : downloadFormat === 'pdf' ? (
+              <div className="h-full p-3">
+                <CanvasPdfPreview resumeData={resumeData} template={template} fitToHeight />
+              </div>
             ) : (
               <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-8">
                 <span className="text-4xl">📝</span>

@@ -245,7 +245,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
         </div>
 
         {/* ── Summary ── */}
-        <div>
+        <div id="editor-summary">
           <SectionLabel>Summary</SectionLabel>
           <Field value={data.summary} onChange={v => set('summary', v)} multiline rows={3} placeholder="Professional summary..." />
         </div>
@@ -260,7 +260,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
           </div>
           <div className="space-y-4">
             {data.experience?.map((exp, ei) => (
-              <div key={ei} className="border border-slate-800 rounded-xl p-3 space-y-2">
+              <div key={ei} id={`editor-experience-${ei}`} className="border border-slate-800 rounded-xl p-3 space-y-2">
                 <div className="flex justify-end">
                   <RemoveBtn onClick={() => set('experience', data.experience.filter((_, i) => i !== ei))}>Remove role</RemoveBtn>
                 </div>
@@ -273,14 +273,16 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
                 </div>
                 <div className="space-y-1.5">
                   {exp.bullets?.map((bullet, bi) => (
-                    <BulletRow key={bi} bullet={bullet}
-                      onEdit={v => setBullet(ei, bi, v)}
-                      onDelete={() => removeBullet(ei, bi)}
-                      onRewrite={async () => {
-                        const rewritten = await rewriteBullet(apiKey, bullet, exp.title, exp.company, jobDescription)
-                        setBullet(ei, bi, rewritten)
-                      }}
-                    />
+                    <div key={bi} id={`editor-experience-${ei}-bullet-${bi}`}>
+                      <BulletRow bullet={bullet}
+                        onEdit={v => setBullet(ei, bi, v)}
+                        onDelete={() => removeBullet(ei, bi)}
+                        onRewrite={async () => {
+                          const rewritten = await rewriteBullet(apiKey, bullet, exp.title, exp.company, jobDescription)
+                          setBullet(ei, bi, rewritten)
+                        }}
+                      />
+                    </div>
                   ))}
                   <button onClick={() => addBullet(ei)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">
                     + Add bullet
@@ -292,7 +294,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
         </div>
 
         {/* ── Skills ── */}
-        <div>
+        <div id="editor-skills">
           <SectionLabel>Skills</SectionLabel>
           <div className="flex flex-wrap gap-1.5 mb-2">
             {data.skills?.map((s, i) => (
@@ -322,7 +324,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
           </div>
           <div className="space-y-4">
             {(data.projects || []).map((proj, pi) => (
-              <div key={pi} className="border border-slate-800 rounded-xl p-3 space-y-2">
+              <div key={pi} id={`editor-projects-${pi}`} className="border border-slate-800 rounded-xl p-3 space-y-2">
                 <div className="flex justify-end">
                   <RemoveBtn onClick={() => set('projects', data.projects.filter((_, i) => i !== pi))}>Remove project</RemoveBtn>
                 </div>
@@ -340,14 +342,16 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
                 </div>
                 <div className="space-y-1.5">
                   {(proj.bullets || []).map((bullet, bi) => (
-                    <BulletRow key={bi} bullet={bullet}
-                      onEdit={v => setProjBullet(pi, bi, v)}
-                      onDelete={() => removeProjBullet(pi, bi)}
-                      onRewrite={async () => {
-                        const rewritten = await rewriteBullet(apiKey, bullet, proj.name, 'Project', jobDescription)
-                        setProjBullet(pi, bi, rewritten)
-                      }}
-                    />
+                    <div key={bi} id={`editor-projects-${pi}-bullet-${bi}`}>
+                      <BulletRow bullet={bullet}
+                        onEdit={v => setProjBullet(pi, bi, v)}
+                        onDelete={() => removeProjBullet(pi, bi)}
+                        onRewrite={async () => {
+                          const rewritten = await rewriteBullet(apiKey, bullet, proj.name, 'Project', jobDescription)
+                          setProjBullet(pi, bi, rewritten)
+                        }}
+                      />
+                    </div>
                   ))}
                   <button onClick={() => addProjBullet(pi)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">
                     + Add bullet
@@ -368,7 +372,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
           </div>
           <div className="space-y-2">
             {(data.certifications || []).map((cert, ci) => (
-              <div key={ci} className="border border-slate-800 rounded-xl p-3">
+              <div key={ci} id={`editor-certifications-${ci}`} className="border border-slate-800 rounded-xl p-3">
                 <div className="flex justify-end mb-2">
                   <RemoveBtn onClick={() => set('certifications', data.certifications.filter((_, i) => i !== ci))}>Remove</RemoveBtn>
                 </div>
@@ -394,7 +398,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
           </div>
           <div className="space-y-2">
             {(data.education || []).map((edu, i) => (
-              <div key={i} className="border border-slate-800 rounded-xl p-3">
+              <div key={i} id={`editor-education-${i}`} className="border border-slate-800 rounded-xl p-3">
                 <div className="flex justify-end mb-2">
                   <RemoveBtn onClick={() => removeEdu(i)}>Remove</RemoveBtn>
                 </div>
@@ -412,7 +416,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
 
         {/* ── Extra Sections (Awards, Publications, Languages, etc.) ── */}
         {(data.extraSections || []).map((section, si) => (
-          <div key={si}>
+          <div key={si} id={`editor-extra-${si}`}>
             <div className="flex items-center justify-between mb-2">
               <input
                 value={section.title}
