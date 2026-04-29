@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thepath2destiny.com/resume-tailor/sitemap.xml
