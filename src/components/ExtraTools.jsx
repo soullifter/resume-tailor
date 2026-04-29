@@ -45,13 +45,13 @@ function ToolCard({ icon, title, description, buttonLabel, onGenerate, result, r
           <span className="text-xl">{icon}</span>
           <div>
             <p className="text-white text-sm font-semibold">{title}</p>
-            <p className="text-slate-500 text-xs">{description}</p>
+            <p className="text-slate-500 text-sm">{description}</p>
           </div>
         </div>
         {(status === 'idle' || status === 'error') && (
           <button
             onClick={handleGenerate}
-            className="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg transition-colors shrink-0"
+            className="text-sm bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1.5 rounded-lg transition-colors shrink-0"
           >
             {status === 'error' ? 'Retry' : buttonLabel}
           </button>
@@ -66,7 +66,7 @@ function ToolCard({ icon, title, description, buttonLabel, onGenerate, result, r
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={handleGenerate}
-              className="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-2.5 py-1.5 rounded-lg transition-colors"
+              className="text-sm text-slate-500 hover:text-slate-300 border border-slate-700 px-2.5 py-1.5 rounded-lg transition-colors"
               title="Regenerate"
             >
               ↺
@@ -77,7 +77,7 @@ function ToolCard({ icon, title, description, buttonLabel, onGenerate, result, r
                   ? result.map((q, i) => `${i + 1}. ${q.question}\n💡 ${q.tip}${q.whatToAvoid ? `\n✗ Avoid: ${q.whatToAvoid}` : ''}`).join('\n\n')
                   : result
               )}
-              className="text-xs text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors"
+              className="text-sm text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors"
             >
               {copied ? 'Copied!' : 'Copy'}
             </button>
@@ -86,14 +86,14 @@ function ToolCard({ icon, title, description, buttonLabel, onGenerate, result, r
       </div>
       {status === 'error' && (
         <div className="border-t border-slate-800 px-4 py-2.5">
-          <p className="text-red-400 text-xs">{errorMsg}</p>
+          <p className="text-red-400 text-sm">{errorMsg}</p>
         </div>
       )}
 
       {status === 'done' && result && (
         <div className="border-t border-slate-800 p-4 max-h-64 overflow-y-auto">
           {resultType === 'text' && (
-            <p className="text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">{result}</p>
+            <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{result}</p>
           )}
           {resultType === 'list' && (
             <div className="space-y-3">
@@ -102,14 +102,14 @@ function ToolCard({ icon, title, description, buttonLabel, onGenerate, result, r
                 return (
                   <div key={i} className="border-l-2 border-blue-500/40 pl-3 space-y-1">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-white text-xs font-medium">{i + 1}. {item.question}</p>
+                      <p className="text-white text-sm font-medium">{i + 1}. {item.question}</p>
                       {item.difficulty && (
-                        <span className={`text-xs px-1.5 py-0.5 rounded border shrink-0 font-medium ${diffColor}`}>{item.difficulty}</span>
+                        <span className={`text-sm px-1.5 py-0.5 rounded border shrink-0 font-medium ${diffColor}`}>{item.difficulty}</span>
                       )}
                     </div>
-                    <p className="text-slate-400 text-xs">💡 {item.tip}</p>
+                    <p className="text-slate-400 text-sm">💡 {item.tip}</p>
                     {item.whatToAvoid && (
-                      <p className="text-red-400/70 text-xs">✗ Avoid: {item.whatToAvoid}</p>
+                      <p className="text-red-400/70 text-sm">✗ Avoid: {item.whatToAvoid}</p>
                     )}
                   </div>
                 )
@@ -144,7 +144,7 @@ export default function ExtraTools({ apiKey, resumeData, jobDescription }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider px-1">More tools for your application</p>
+      <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider px-1">More tools for your application</p>
 
       <ToolCard
         icon="✉️"

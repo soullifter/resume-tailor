@@ -92,7 +92,7 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
       <style>{`@keyframes card-stagger-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
       <div className="px-4 py-3 border-b border-slate-800">
         <p className="text-white text-sm font-semibold">Pre-Submit Check</p>
-        <p className="text-xs text-slate-500 mt-0.5">Unfilled placeholders · missing metrics · submit readiness</p>
+        <p className="text-sm text-slate-500 mt-0.5">Unfilled placeholders · missing metrics · submit readiness</p>
       </div>
 
       <div className="p-4 space-y-4">
@@ -119,7 +119,7 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
 
         {analyzeStatus === 'error' && (
           <div className="space-y-2">
-            <p className="text-red-400 text-xs">{analyzeError}</p>
+            <p className="text-red-400 text-sm">{analyzeError}</p>
             <button onClick={runAnalysis} className="w-full bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium py-2.5 rounded-xl transition-colors">
               Try Again
             </button>
@@ -132,13 +132,13 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
             {/* Issues */}
             {result.issues?.length > 0 ? (
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-slate-400">{result.issues.length} issue{result.issues.length !== 1 ? 's' : ''} found — fix manually in the editor above</p>
+                <p className="text-sm font-semibold text-slate-400">{result.issues.length} issue{result.issues.length !== 1 ? 's' : ''} found — fix manually in the editor above</p>
 
                 <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                   {[...result.issues].sort((a, b) => (a.type === 'placeholder' ? -1 : b.type === 'placeholder' ? 1 : 0)).map((issue, i) => {
                     const meta = ISSUE_META[issue.type] || { label: issue.type, color: 'text-slate-400 bg-slate-800 border-slate-700' }
                     return (
-                      <div key={i} className={`text-xs px-3 py-2.5 rounded-lg border ${meta.color}`}
+                      <div key={i} className={`text-sm px-3 py-2.5 rounded-lg border ${meta.color}`}
                         style={{ animation: `card-stagger-in 0.35s ease-out ${i * 55}ms both` }}>
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-semibold">{meta.label}</span>
@@ -154,12 +154,12 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
 
                 <div className="space-y-1.5">
                   {result.issues.some(i => i.type === 'placeholder') && (
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2.5 text-xs text-red-400 text-center leading-relaxed font-medium">
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2.5 text-sm text-red-400 text-center leading-relaxed font-medium">
                       Fill in all [X] placeholders before submitting — these are submit blockers.
                     </div>
                   )}
                   {result.issues.some(i => i.type === 'quantification') && (
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2.5 text-xs text-blue-400 text-center leading-relaxed">
+                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2.5 text-sm text-blue-400 text-center leading-relaxed">
                       Add real numbers to the flagged bullets — edit them directly above.
                     </div>
                   )}
@@ -185,34 +185,34 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
                 <div className={`rounded-xl p-4 border space-y-3 ${bandStyle.wrap}`}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-white text-xs font-semibold block">Submit Readiness</span>
+                      <span className="text-white text-sm font-semibold block">Submit Readiness</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className={`text-2xl font-bold ${bandStyle.ring}`}>{score}</span>
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${bandStyle.label}`}>
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-sm font-semibold border ${bandStyle.label}`}>
                         {bandStyle.tag}
                       </span>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-400 italic leading-relaxed">{result.submitCheck.verdict}</p>
+                  <p className="text-sm text-slate-400 italic leading-relaxed">{result.submitCheck.verdict}</p>
                   {result.submitCheck.blockers?.length > 0 && (
                     <div className="space-y-1">
                       {result.submitCheck.blockers.map((b, i) => (
-                        <p key={i} className="text-xs text-red-400 flex gap-1.5 font-medium"><span className="shrink-0">✗</span>{b}</p>
+                        <p key={i} className="text-sm text-red-400 flex gap-1.5 font-medium"><span className="shrink-0">✗</span>{b}</p>
                       ))}
                     </div>
                   )}
                   {result.submitCheck.warnings?.length > 0 && (
                     <div className="space-y-1">
                       {result.submitCheck.warnings.map((w, i) => (
-                        <p key={i} className="text-xs text-amber-400 flex gap-1.5"><span className="shrink-0">⚠</span>{w}</p>
+                        <p key={i} className="text-sm text-amber-400 flex gap-1.5"><span className="shrink-0">⚠</span>{w}</p>
                       ))}
                     </div>
                   )}
                   {result.submitCheck.positives?.length > 0 && (
                     <div className="space-y-1">
                       {result.submitCheck.positives.slice(0, 3).map((p, i) => (
-                        <p key={i} className="text-xs text-emerald-400 flex gap-1.5"><span className="shrink-0">✓</span>{p}</p>
+                        <p key={i} className="text-sm text-emerald-400 flex gap-1.5"><span className="shrink-0">✓</span>{p}</p>
                       ))}
                     </div>
                   )}
@@ -233,20 +233,20 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
         {/* ── Length trimmer ── */}
         <div className="border-t border-slate-800 pt-4">
           <div className="flex items-center justify-between mb-1">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Length Trimmer</p>
+            <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Length Trimmer</p>
             {pageCount && (
-              <span className="text-xs text-slate-500">
+              <span className="text-sm text-slate-500">
                 Currently <span className="text-white font-medium">~{pageCount} page{pageCount !== 1 ? 's' : ''}</span>
               </span>
             )}
           </div>
-          <p className="text-xs text-slate-500 mb-3">Always trims from the saved base — switching page targets never loses content permanently.</p>
+          <p className="text-sm text-slate-500 mb-3">Always trims from the saved base — switching page targets never loses content permanently.</p>
           <div className="flex gap-2 mb-2">
             {TRIM_OPTIONS.map(opt => (
               <button
                 key={opt.value}
                 onClick={() => { setTrimTarget(opt.value); setTrimStatus('idle') }}
-                className={`flex-1 text-xs py-2 rounded-lg border font-medium transition-colors ${
+                className={`flex-1 text-sm py-2 rounded-lg border font-medium transition-colors ${
                   trimTarget === opt.value
                     ? 'bg-blue-600 border-blue-500 text-white'
                     : 'bg-slate-800 border-slate-700 text-slate-400 hover:text-white hover:border-slate-500'
@@ -272,17 +272,17 @@ export default function ResumeQualityPanel({ resumeData, trimSource, pageCount, 
             ) : `Trim to ${trimTarget} page${trimTarget !== 1 ? 's' : ''}`}
           </button>
           {trimStatus === 'done' && (
-            <p className="text-emerald-400 text-xs mt-2 text-center">
+            <p className="text-emerald-400 text-sm mt-2 text-center">
               ✓ {trimPages !== null && trimPages <= trimTarget
                 ? `Trimmed to ${trimPages} page${trimPages !== 1 ? 's' : ''} — review above`
                 : `Trimmed as much as possible — review above`}
             </p>
           )}
           {trimStatus === 'fits' && (
-            <p className="text-emerald-400 text-xs mt-2 text-center">✓ Original already fits {trimTarget} page{trimTarget !== 1 ? 's' : ''} — restored above</p>
+            <p className="text-emerald-400 text-sm mt-2 text-center">✓ Original already fits {trimTarget} page{trimTarget !== 1 ? 's' : ''} — restored above</p>
           )}
           {trimStatus === 'error' && (
-            <p className="text-red-400 text-xs mt-2 text-center">{trimError}</p>
+            <p className="text-red-400 text-sm mt-2 text-center">{trimError}</p>
           )}
         </div>
 

@@ -14,7 +14,7 @@ function GearHint({ onOpenSettings }) {
 
   if (!visible) return null
   return (
-    <div className="flex items-center justify-between gap-3 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2 mb-3 text-xs"
+    <div className="flex items-center justify-between gap-3 bg-blue-500/10 border border-blue-500/20 rounded-xl px-3 py-2 mb-3 text-sm"
       style={{ animation: 'content-slide-in 0.4s ease-out both' }}>
       <div className="flex items-center gap-2 min-w-0">
         <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,7 +74,7 @@ export default function StepLayout({ step, totalSteps, title, subtitle, children
               <span className="text-white font-bold text-sm">ResumeTailor</span>
             </button>
             <div className="flex items-center gap-2">
-              <span className="text-slate-500 text-xs hidden sm:block">{Math.round(progress)}%</span>
+              <span className="text-slate-500 text-sm hidden sm:block">{Math.round(progress)}%</span>
               <ModelWidget />
               {onOpenSettings && (
                 <button onClick={onOpenSettings} title="API Key Settings" className="text-slate-600 hover:text-slate-300 transition-colors">
@@ -112,7 +112,7 @@ export default function StepLayout({ step, totalSteps, title, subtitle, children
                         </svg>
                       ) : stepNum}
                     </div>
-                    <span className="text-xs font-medium hidden sm:block truncate">{label}</span>
+                    <span className="text-sm font-medium hidden sm:block truncate">{label}</span>
                   </div>
                   {i < STEP_LABELS.length - 1 && (
                     <div className={`flex-1 h-px mx-1 transition-colors duration-500 ${isDone ? 'bg-emerald-500/40' : 'bg-slate-800'}`} />

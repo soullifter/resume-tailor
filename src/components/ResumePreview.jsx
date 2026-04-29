@@ -42,38 +42,38 @@ export default function ResumePreview({ data, hideDownload = false, template = '
         <div className="border-b-2 pb-4" style={{ borderColor: colors.primary }}>
           <h1 className="text-2xl font-bold" style={{ color: colors.primary }}>{data.name}</h1>
           <div className="flex flex-wrap gap-3 mt-1">
-            {data.email     && <span className="text-xs text-gray-500">{data.email}</span>}
-            {data.phone     && <span className="text-xs text-gray-500">{data.phone}</span>}
-            {data.location  && <span className="text-xs text-gray-500">{data.location}</span>}
-            {data.linkedin  && <span className="text-xs text-blue-500">{data.linkedin}</span>}
-            {data.github    && <span className="text-xs text-blue-500">{data.github}</span>}
-            {data.portfolio && <span className="text-xs text-blue-500">{data.portfolio}</span>}
+            {data.email     && <span className="text-sm text-gray-500">{data.email}</span>}
+            {data.phone     && <span className="text-sm text-gray-500">{data.phone}</span>}
+            {data.location  && <span className="text-sm text-gray-500">{data.location}</span>}
+            {data.linkedin  && <span className="text-sm text-blue-500">{data.linkedin}</span>}
+            {data.github    && <span className="text-sm text-blue-500">{data.github}</span>}
+            {data.portfolio && <span className="text-sm text-blue-500">{data.portfolio}</span>}
           </div>
         </div>
 
         {/* Summary */}
         {data.summary && (
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Summary</h3>
-            <p className="text-xs text-gray-700 leading-relaxed">{data.summary}</p>
+            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Summary</h3>
+            <p className="text-sm text-gray-700 leading-relaxed">{data.summary}</p>
           </div>
         )}
 
         {/* Experience */}
         {data.experience?.length > 0 && (
           <div>
-            <h3 className="text-xs font-bold text-blue-900 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Experience</h3>
+            <h3 className="text-sm font-bold text-blue-900 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Experience</h3>
             <div className="space-y-4">
               {data.experience.map((exp, i) => (
                 <div key={i}>
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-bold text-gray-800">{exp.title}</span>
-                    <span className="text-xs text-gray-400">{exp.dates}</span>
+                    <span className="text-sm font-bold text-gray-800">{exp.title}</span>
+                    <span className="text-sm text-gray-400">{exp.dates}</span>
                   </div>
-                  <p className="text-xs mb-1" style={{ color: colors.accent }}>{exp.company}</p>
+                  <p className="text-sm mb-1" style={{ color: colors.accent }}>{exp.company}</p>
                   <ul className="space-y-1">
                     {exp.bullets?.map((b, j) => (
-                      <li key={j} className="text-xs text-gray-700 flex gap-2">
+                      <li key={j} className="text-sm text-gray-700 flex gap-2">
                         <span className="text-gray-400 shrink-0">•</span><BoldText text={b} />
                       </li>
                     ))}
@@ -87,10 +87,10 @@ export default function ResumePreview({ data, hideDownload = false, template = '
         {/* Skills */}
         {data.skills?.length > 0 && (
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Skills</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Skills</h3>
             <div className="flex flex-wrap gap-2">
               {data.skills.map((skill, i) => (
-                <span key={i} className="text-xs px-2 py-1 bg-white border border-gray-200 rounded text-blue-900">{skill}</span>
+                <span key={i} className="text-sm px-2 py-1 bg-white border border-gray-200 rounded text-blue-900">{skill}</span>
               ))}
             </div>
           </div>
@@ -99,23 +99,23 @@ export default function ResumePreview({ data, hideDownload = false, template = '
         {/* Projects */}
         {data.projects?.length > 0 && (
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-3" style={{ color: colors.primary }}>Projects</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-3" style={{ color: colors.primary }}>Projects</h3>
             <div className="space-y-3">
               {data.projects.map((proj, i) => (
                 <div key={i}>
                   <div className="flex flex-col gap-0.5">
                     <div className="flex justify-between items-start gap-2">
-                      <span className="text-xs font-bold text-gray-800 shrink-0">{proj.name}</span>
-                      {proj.url && <span className="text-xs text-blue-500 break-all text-right min-w-0">{proj.url}</span>}
+                      <span className="text-sm font-bold text-gray-800 shrink-0">{proj.name}</span>
+                      {proj.url && <span className="text-sm text-blue-500 break-all text-right min-w-0">{proj.url}</span>}
                     </div>
                   </div>
-                  {proj.description && <p className="text-xs text-gray-500 mb-1">{proj.description}</p>}
+                  {proj.description && <p className="text-sm text-gray-500 mb-1">{proj.description}</p>}
                   {proj.technologies?.length > 0 && (
-                    <p className="text-xs text-gray-400 mb-1">{proj.technologies.join(' · ')}</p>
+                    <p className="text-sm text-gray-400 mb-1">{proj.technologies.join(' · ')}</p>
                   )}
                   <ul className="space-y-0.5">
                     {proj.bullets?.map((b, j) => (
-                      <li key={j} className="text-xs text-gray-700 flex gap-2">
+                      <li key={j} className="text-sm text-gray-700 flex gap-2">
                         <span className="text-gray-400 shrink-0">•</span><BoldText text={b} />
                       </li>
                     ))}
@@ -129,14 +129,14 @@ export default function ResumePreview({ data, hideDownload = false, template = '
         {/* Certifications */}
         {data.certifications?.length > 0 && (
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Certifications</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Certifications</h3>
             {data.certifications.map((cert, i) => (
               <div key={i} className="flex justify-between mb-1">
                 <div>
-                  <p className="text-xs font-semibold text-gray-800">{cert.name}</p>
-                  {cert.issuer && <p className="text-xs text-gray-500">{cert.issuer}</p>}
+                  <p className="text-sm font-semibold text-gray-800">{cert.name}</p>
+                  {cert.issuer && <p className="text-sm text-gray-500">{cert.issuer}</p>}
                 </div>
-                {cert.date && <span className="text-xs text-gray-400">{cert.date}</span>}
+                {cert.date && <span className="text-sm text-gray-400">{cert.date}</span>}
               </div>
             ))}
           </div>
@@ -145,14 +145,14 @@ export default function ResumePreview({ data, hideDownload = false, template = '
         {/* Education */}
         {data.education?.length > 0 && (
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Education</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Education</h3>
             {data.education.map((edu, i) => (
               <div key={i} className="flex justify-between mb-1">
                 <div>
-                  <p className="text-xs font-semibold text-gray-800">{edu.degree}</p>
-                  <p className="text-xs text-gray-500">{edu.school}</p>
+                  <p className="text-sm font-semibold text-gray-800">{edu.degree}</p>
+                  <p className="text-sm text-gray-500">{edu.school}</p>
                 </div>
-                <span className="text-xs text-gray-400">{edu.dates}</span>
+                <span className="text-sm text-gray-400">{edu.dates}</span>
               </div>
             ))}
           </div>
@@ -161,10 +161,10 @@ export default function ResumePreview({ data, hideDownload = false, template = '
         {/* Extra Sections */}
         {data.extraSections?.map((section, i) => section.items?.length > 0 && (
           <div key={i}>
-            <h3 className="text-xs font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>{section.title}</h3>
+            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>{section.title}</h3>
             <ul className="space-y-0.5">
               {section.items.map((item, j) => (
-                <li key={j} className="text-xs text-gray-700 flex gap-2">
+                <li key={j} className="text-sm text-gray-700 flex gap-2">
                   <span className="text-gray-400 shrink-0">•</span>{item}
                 </li>
               ))}

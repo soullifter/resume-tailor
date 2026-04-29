@@ -131,12 +131,12 @@ function CanvasPdfPreview({ resumeData, template }) {
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-800">
-        <span className="text-slate-400 text-xs font-medium">Exact PDF Preview</span>
+        <span className="text-slate-400 text-sm font-medium">Exact PDF Preview</span>
         {numPages > 1 && (
           <div className="flex items-center gap-2">
-            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 text-xs px-2">←</button>
-            <span className="text-slate-500 text-xs">{currentPage} / {numPages}</span>
-            <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 text-xs px-2">→</button>
+            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-2">←</button>
+            <span className="text-slate-500 text-sm">{currentPage} / {numPages}</span>
+            <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 text-sm px-2">→</button>
           </div>
         )}
       </div>
@@ -148,7 +148,7 @@ function CanvasPdfPreview({ resumeData, template }) {
         )}
         {error && (
           <div className="flex items-center justify-center h-16 bg-slate-900">
-            <span className="text-red-400 text-xs">{error}</span>
+            <span className="text-red-400 text-sm">{error}</span>
           </div>
         )}
         <canvas ref={canvasRef} className="w-full block" style={{ display: loading || error ? 'none' : 'block' }} />
@@ -210,7 +210,7 @@ function ScoreRing({ score, label, stale, delay = 0 }) {
           <span className={`text-sm font-bold ${stale ? 'text-slate-500' : 'text-white'}`}>{displayScore}%</span>
         </div>
       </div>
-      <span className={`text-xs ${stale ? 'text-slate-600' : 'text-slate-400'}`}>{label}{stale ? ' *' : ''}</span>
+      <span className={`text-sm ${stale ? 'text-slate-600' : 'text-slate-400'}`}>{label}{stale ? ' *' : ''}</span>
     </div>
   )
 }
@@ -224,12 +224,12 @@ function ScoreDiff({ beforeScore, afterScore, hasEdits, onRescore, rescoring, ha
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-2xl p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">ATS Match Improvement</p>
+        <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">ATS Match Improvement</p>
         {hasEdits && hasJobDescription && (
           <button
             onClick={onRescore}
             disabled={rescoring}
-            className="text-xs bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-400 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
+            className="text-sm bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-blue-400 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
           >
             {rescoring ? (
               <><svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Scoring...</>
@@ -239,7 +239,7 @@ function ScoreDiff({ beforeScore, afterScore, hasEdits, onRescore, rescoring, ha
       </div>
 
       {hasEdits && !rescoring && hasJobDescription && (
-        <p className="text-xs text-amber-400 mb-3">* Score is outdated — you've made edits. Click Re-score to update.</p>
+        <p className="text-sm text-amber-400 mb-3">* Score is outdated — you've made edits. Click Re-score to update.</p>
       )}
 
       <div className="flex items-center justify-center gap-4">
@@ -259,16 +259,16 @@ function ScoreDiff({ beforeScore, afterScore, hasEdits, onRescore, rescoring, ha
         )}
         {after !== null
           ? <ScoreRing score={after} label="Tailored" stale={hasEdits} delay={300} />
-          : before !== null && <span className="text-xs text-slate-500 italic">Scoring tailored resume...</span>
+          : before !== null && <span className="text-sm text-slate-500 italic">Scoring tailored resume...</span>
         }
       </div>
       {diff !== null && diff > 0 && !hasEdits && (
-        <p className="text-slate-500 text-xs text-center mt-3 leading-relaxed">
+        <p className="text-slate-500 text-sm text-center mt-3 leading-relaxed">
           The tailored resume now includes more of the job's required keywords and rephrased bullets to match the role — that's what lifted the ATS score.
         </p>
       )}
       {diff !== null && diff <= 0 && after !== null && !hasEdits && (
-        <p className="text-slate-500 text-xs text-center mt-3 leading-relaxed">
+        <p className="text-slate-500 text-sm text-center mt-3 leading-relaxed">
           Score held steady — the original resume was already a strong keyword match. The rewrite focused on impact and framing rather than new terms.
         </p>
       )}
@@ -314,7 +314,7 @@ function SubmitReadyCheck({ resumeData }) {
       </p>
       <ul className="space-y-1.5">
         {issues.map((issue, i) => (
-          <li key={i} className="text-xs text-slate-400 flex gap-2">
+          <li key={i} className="text-sm text-slate-400 flex gap-2">
             <span className="text-amber-500 shrink-0">⚠</span>
             {issue}
           </li>
@@ -342,7 +342,7 @@ function ChangeSummary({ changes }) {
           <span className="text-blue-400 text-sm">🔍</span>
           <p className="text-white text-sm font-medium">What the AI changed</p>
         </div>
-        <span className="text-slate-500 text-xs">{open ? '▲ Hide' : '▼ Show'}</span>
+        <span className="text-slate-500 text-sm">{open ? '▲ Hide' : '▼ Show'}</span>
       </button>
 
       {open && (
@@ -350,17 +350,17 @@ function ChangeSummary({ changes }) {
 
           {summaryRewrite && (
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1.5">Summary</p>
-              <p className="text-slate-300 text-xs leading-relaxed">{summaryRewrite}</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-1.5">Summary</p>
+              <p className="text-slate-300 text-sm leading-relaxed">{summaryRewrite}</p>
             </div>
           )}
 
           {keywordsAdded?.length > 0 && (
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1.5">Keywords woven in</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-1.5">Keywords woven in</p>
               <div className="flex flex-wrap gap-1.5">
                 {keywordsAdded.map((kw, i) => (
-                  <span key={i} className="text-xs px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full">+ {kw}</span>
+                  <span key={i} className="text-sm px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full">+ {kw}</span>
                 ))}
               </div>
             </div>
@@ -368,10 +368,10 @@ function ChangeSummary({ changes }) {
 
           {bulletImprovements?.length > 0 && (
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1.5">Experience bullets</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-1.5">Experience bullets</p>
               <div className="space-y-1.5">
                 {bulletImprovements.map((item, i) => (
-                  <div key={i} className="flex gap-2 text-xs">
+                  <div key={i} className="flex gap-2 text-sm">
                     <span className="text-blue-400 shrink-0 mt-0.5">↑</span>
                     <span className="text-slate-300">{item}</span>
                   </div>
@@ -382,8 +382,8 @@ function ChangeSummary({ changes }) {
 
           {skillsChange && (
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-1.5">Skills</p>
-              <p className="text-slate-300 text-xs leading-relaxed">{skillsChange}</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-1.5">Skills</p>
+              <p className="text-slate-300 text-sm leading-relaxed">{skillsChange}</p>
             </div>
           )}
 
@@ -396,7 +396,7 @@ function ChangeSummary({ changes }) {
 function TemplateSelector({ value, onChange }) {
   return (
     <div className="mb-4">
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">PDF Template</p>
+      <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">PDF Template</p>
       <div className="grid grid-cols-3 gap-2">
         {TEMPLATES.map(t => {
           const active = value === t.id
@@ -418,8 +418,8 @@ function TemplateSelector({ value, onChange }) {
                   </svg>
                 </span>
               )}
-              <p className={`text-xs font-semibold ${active ? 'text-blue-400' : 'text-white'}`}>{t.label}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{t.desc}</p>
+              <p className={`text-sm font-semibold ${active ? 'text-blue-400' : 'text-white'}`}>{t.label}</p>
+              <p className="text-sm text-slate-500 mt-0.5">{t.desc}</p>
             </button>
           )
         })}
@@ -667,14 +667,14 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
             <span className="text-amber-400 text-lg shrink-0">⚠</span>
             <div>
               <p className="text-amber-400 text-sm font-semibold">{placeholderCount} placeholder{placeholderCount !== 1 ? 's' : ''} need real numbers</p>
-              <p className="text-slate-400 text-xs mt-0.5">Fields marked <span className="text-amber-400 font-mono">[X]</span> are highlighted amber in the editor below — replace each with your actual number before downloading.</p>
+              <p className="text-slate-400 text-sm mt-0.5">Fields marked <span className="text-amber-400 font-mono">[X]</span> are highlighted amber in the editor below — replace each with your actual number before downloading.</p>
             </div>
           </div>
         )}
 
         {/* Editor header with reset + polish */}
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
             Resume Editor
             {hasEdits && <span className="ml-2 text-amber-400 normal-case font-normal">· unsaved changes</span>}
           </p>
@@ -683,7 +683,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
               onClick={handlePolish}
               disabled={polishing || polished}
               title="Fix grammar, passive voice, and unnatural phrasing for non-native English speakers"
-              className="text-xs bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-400 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
+              className="text-sm bg-purple-500/15 hover:bg-purple-500/25 border border-purple-500/30 text-purple-400 px-2.5 py-1 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-1.5"
             >
               {polishing ? (
                 <><svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Polishing...</>
@@ -692,7 +692,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
             {hasEdits && (
               <button
                 onClick={handleReset}
-                className="text-xs text-slate-500 hover:text-red-400 underline transition-colors"
+                className="text-sm text-slate-500 hover:text-red-400 underline transition-colors"
               >
                 Reset
               </button>
@@ -701,7 +701,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
         </div>
 
         {polishError && (
-          <p className="text-red-400 text-xs mb-2">{polishError}</p>
+          <p className="text-red-400 text-sm mb-2">{polishError}</p>
         )}
 
         {/* Editor */}
@@ -724,7 +724,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
 
         {/* Format selector */}
         <div className="mb-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Download Format</p>
+          <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Download Format</p>
           <div className="flex gap-2">
             {[
               { id: 'pdf',  label: 'PDF',          desc: 'Best for email & viewing' },
@@ -739,8 +739,8 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
                     : 'border-slate-700 hover:border-slate-500'
                 }`}
               >
-                <p className={`text-xs font-semibold ${downloadFormat === f.id ? 'text-blue-400' : 'text-slate-300'}`}>{f.label}</p>
-                <p className="text-slate-500 text-xs mt-0.5">{f.desc}</p>
+                <p className={`text-sm font-semibold ${downloadFormat === f.id ? 'text-blue-400' : 'text-slate-300'}`}>{f.label}</p>
+                <p className="text-slate-500 text-sm mt-0.5">{f.desc}</p>
               </button>
             ))}
           </div>
@@ -812,14 +812,14 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
               onClick={handleUpdateSave}
               disabled={rescoring}
               title={rescoring ? 'Wait for re-score to finish before saving' : undefined}
-              className="py-2.5 rounded-xl border border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 text-xs font-medium transition-colors disabled:opacity-40"
+              className="py-2.5 rounded-xl border border-blue-500/40 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 text-sm font-medium transition-colors disabled:opacity-40"
             >
               {rescoring ? 'Scoring...' : '↑ Update saved version'}
             </button>
           ) : savedLabel ? (
             <button
               onClick={onGoToVersions}
-              className="py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-medium transition-colors hover:bg-emerald-500/20"
+              className="py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium transition-colors hover:bg-emerald-500/20"
             >
               ✓ Saved — View My Resumes
             </button>
@@ -828,7 +828,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
               onClick={() => setModalMode('save')}
               disabled={rescoring}
               title={rescoring ? 'Wait for re-score to finish before saving' : undefined}
-              className="py-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white text-xs font-medium transition-colors disabled:opacity-40"
+              className="py-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white text-sm font-medium transition-colors disabled:opacity-40"
             >
               💾 Save this resume
             </button>
@@ -836,14 +836,14 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           {trackedLabel ? (
             <button
               onClick={onGoToTracker}
-              className="py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-xs font-medium transition-colors hover:bg-emerald-500/20"
+              className="py-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 text-sm font-medium transition-colors hover:bg-emerald-500/20"
             >
               ✓ Tracked — View Tracker
             </button>
           ) : (
             <button
               onClick={() => setModalMode('track')}
-              className="py-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white text-xs font-medium transition-colors"
+              className="py-2.5 rounded-xl border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white text-sm font-medium transition-colors"
             >
               📋 Track this application
             </button>
@@ -885,7 +885,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           <div className="px-5 pt-5 pb-4 space-y-4">
             <div>
               <p className="text-white font-semibold text-sm mb-1">Name your file</p>
-              <p className="text-slate-400 text-xs">
+              <p className="text-slate-400 text-sm">
                 Saving as <span className="text-blue-400 font-medium">{downloadFormat === 'docx' ? 'Word (.docx)' : 'PDF'}</span> — change format above if needed.
               </p>
             </div>

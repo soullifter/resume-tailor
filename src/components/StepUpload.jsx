@@ -242,7 +242,7 @@ function UserModeSelector({ value, onChange }) {
   return (
     <div className="mb-5">
       <p className="text-sm font-bold text-white mb-1">Who are you?</p>
-      <p className="text-xs text-slate-500 mb-3">Pick your situation — we tailor the AI to match.</p>
+      <p className="text-sm text-slate-500 mb-3">Pick your situation — we tailor the AI to match.</p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {USER_MODES.map(mode => {
           const active = value === mode.id
@@ -250,7 +250,7 @@ function UserModeSelector({ value, onChange }) {
             <button
               key={mode.id}
               onClick={() => onChange(mode.id)}
-              className={`relative text-left px-3 py-2.5 rounded-xl border text-xs transition-all duration-200 overflow-hidden ${
+              className={`relative text-left px-3 py-2.5 rounded-xl border text-sm transition-all duration-200 overflow-hidden ${
                 active
                   ? 'border-blue-500 bg-blue-600/10 text-white scale-[1.02] shadow-lg'
                   : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-600 hover:text-slate-200 hover:scale-[1.01] hover:-translate-y-0.5 hover:shadow-md'
@@ -351,14 +351,14 @@ function BuildFromScratch({ onDone }) {
     onDone(text)
   }
 
-  const inputCls = 'w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-xs rounded-lg px-2.5 py-2 focus:outline-none transition-colors placeholder:text-slate-600'
-  const labelCls = 'text-xs text-slate-500 mb-0.5 block'
+  const inputCls = 'w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-sm rounded-lg px-2.5 py-2 focus:outline-none transition-colors placeholder:text-slate-600'
+  const labelCls = 'text-sm text-slate-500 mb-0.5 block'
 
   return (
     <div className="space-y-5">
       {/* Contact */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-        <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Contact Info</p>
+        <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Contact Info</p>
         <div className="grid grid-cols-2 gap-2">
           <div><label className={labelCls}>Full Name *</label><input className={inputCls} value={data.name} onChange={e => set('name', e.target.value)} placeholder="Alex Chen" /></div>
           <div><label className={labelCls}>Email</label><input className={inputCls} value={data.email} onChange={e => set('email', e.target.value)} placeholder="alex@email.com" /></div>
@@ -370,23 +370,23 @@ function BuildFromScratch({ onDone }) {
 
       {/* Summary */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-2">Professional Summary</p>
+        <p className="text-sm font-bold text-blue-400 uppercase tracking-widest mb-2">Professional Summary</p>
         <textarea className={`${inputCls} resize-none`} rows={3} value={data.summary} onChange={e => set('summary', e.target.value)} placeholder="Brief overview of your background, skills, and career goals..." />
       </div>
 
       {/* Experience */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Experience</p>
-          <button onClick={addExp} className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors">+ Add Role</button>
+          <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Experience</p>
+          <button onClick={addExp} className="text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors">+ Add Role</button>
         </div>
         <div className="space-y-4">
           {data.experience.map((exp, ei) => (
             <div key={ei} className="border border-slate-800 rounded-xl p-3 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-500">Role {ei + 1}</span>
+                <span className="text-sm text-slate-500">Role {ei + 1}</span>
                 {data.experience.length > 1 && (
-                  <button onClick={() => removeExp(ei)} className="text-xs text-red-400/60 hover:text-red-400 transition-colors">Remove</button>
+                  <button onClick={() => removeExp(ei)} className="text-sm text-red-400/60 hover:text-red-400 transition-colors">Remove</button>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -398,14 +398,14 @@ function BuildFromScratch({ onDone }) {
                 <label className={labelCls}>Key achievements (one per bullet)</label>
                 {exp.bullets.map((b, bi) => (
                   <div key={bi} className="flex gap-1.5 items-start">
-                    <span className="text-slate-600 mt-2 text-xs shrink-0">•</span>
+                    <span className="text-slate-600 mt-2 text-sm shrink-0">•</span>
                     <textarea className={`${inputCls} flex-1 resize-none`} rows={2} value={b} onChange={e => setBullet(ei, bi, e.target.value)} placeholder="Describe an achievement or responsibility..." />
                     {exp.bullets.length > 1 && (
-                      <button onClick={() => removeBullet(ei, bi)} className="text-slate-600 hover:text-red-400 text-xs mt-2 transition-colors shrink-0">✕</button>
+                      <button onClick={() => removeBullet(ei, bi)} className="text-slate-600 hover:text-red-400 text-sm mt-2 transition-colors shrink-0">✕</button>
                     )}
                   </div>
                 ))}
-                <button onClick={() => addBullet(ei)} className="text-xs text-blue-400 hover:text-blue-300 transition-colors mt-1">+ Add bullet</button>
+                <button onClick={() => addBullet(ei)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">+ Add bullet</button>
               </div>
             </div>
           ))}
@@ -414,10 +414,10 @@ function BuildFromScratch({ onDone }) {
 
       {/* Skills */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3">Skills</p>
+        <p className="text-sm font-bold text-blue-400 uppercase tracking-widest mb-3">Skills</p>
         <div className="flex flex-wrap gap-1.5 mb-2">
           {data.skills.map((s, i) => (
-            <span key={i} className="flex items-center gap-1 text-xs px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-full">
+            <span key={i} className="flex items-center gap-1 text-sm px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-full">
               {s}
               <button onClick={() => set('skills', data.skills.filter((_, j) => j !== i))} className="text-slate-500 hover:text-red-400 transition-colors ml-0.5">×</button>
             </span>
@@ -425,13 +425,13 @@ function BuildFromScratch({ onDone }) {
         </div>
         <div className="flex gap-2">
           <input value={skillInput} onChange={e => setSkillInput(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }} placeholder="Type skill and press Enter..." className={`${inputCls} flex-1`} />
-          <button onClick={addSkill} className="text-xs bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition-colors">Add</button>
+          <button onClick={addSkill} className="text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition-colors">Add</button>
         </div>
       </div>
 
       {/* Education */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <p className="text-xs font-bold text-blue-400 uppercase tracking-widest mb-3">Education</p>
+        <p className="text-sm font-bold text-blue-400 uppercase tracking-widest mb-3">Education</p>
         <div className="space-y-3">
           {data.education.map((edu, i) => (
             <div key={i} className="grid grid-cols-2 gap-2">
@@ -440,18 +440,18 @@ function BuildFromScratch({ onDone }) {
               <div className="col-span-2"><label className={labelCls}>Dates</label><input className={inputCls} value={edu.dates} onChange={e => setEdu(i, 'dates', e.target.value)} placeholder="2018 – 2022" /></div>
             </div>
           ))}
-          <button onClick={() => setData(d => ({ ...d, education: [...d.education, { degree: '', school: '', dates: '' }] }))} className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors">+ Add Education</button>
+          <button onClick={() => setData(d => ({ ...d, education: [...d.education, { degree: '', school: '', dates: '' }] }))} className="text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors">+ Add Education</button>
         </div>
       </div>
 
       {/* Certifications */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-3">
-          <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Certifications</p>
-          <button onClick={addCert} className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors">+ Add</button>
+          <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Certifications</p>
+          <button onClick={addCert} className="text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors">+ Add</button>
         </div>
         {data.certifications.length === 0 ? (
-          <p className="text-slate-600 text-xs">AWS, Google Cloud, PMP, etc. — click + Add to include any certifications.</p>
+          <p className="text-slate-600 text-sm">AWS, Google Cloud, PMP, etc. — click + Add to include any certifications.</p>
         ) : (
           <div className="space-y-2">
             {data.certifications.map((c, i) => (
@@ -460,7 +460,7 @@ function BuildFromScratch({ onDone }) {
                 <div><label className={labelCls}>Issuer</label><input className={inputCls} value={c.issuer} onChange={e => setCert(i, 'issuer', e.target.value)} placeholder="Amazon Web Services" /></div>
                 <div><label className={labelCls}>Date</label><input className={inputCls} value={c.date} onChange={e => setCert(i, 'date', e.target.value)} placeholder="Jan 2024" /></div>
                 <div className="flex items-end pb-0.5">
-                  <button onClick={() => removeCert(i)} className="text-xs text-red-400/60 hover:text-red-400 transition-colors">Remove</button>
+                  <button onClick={() => removeCert(i)} className="text-sm text-red-400/60 hover:text-red-400 transition-colors">Remove</button>
                 </div>
               </div>
             ))}
@@ -472,13 +472,13 @@ function BuildFromScratch({ onDone }) {
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <p className="text-xs font-bold text-blue-400 uppercase tracking-widest">Additional Sections</p>
-            <p className="text-slate-600 text-xs mt-0.5">Languages, Publications, Awards, Volunteer Work, etc.</p>
+            <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Additional Sections</p>
+            <p className="text-slate-600 text-sm mt-0.5">Languages, Publications, Awards, Volunteer Work, etc.</p>
           </div>
-          <button onClick={addExtraSection} className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors shrink-0">+ Add Section</button>
+          <button onClick={addExtraSection} className="text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-2.5 py-1 rounded-lg transition-colors shrink-0">+ Add Section</button>
         </div>
         {data.extraSections.length === 0 ? (
-          <p className="text-slate-600 text-xs">Click + Add Section for anything that doesn't fit above.</p>
+          <p className="text-slate-600 text-sm">Click + Add Section for anything that doesn't fit above.</p>
         ) : (
           <div className="space-y-4">
             {data.extraSections.map((sec, si) => (
@@ -490,12 +490,12 @@ function BuildFromScratch({ onDone }) {
                     onChange={e => setExtraSection(si, 'title', e.target.value)}
                     placeholder="Section title (e.g. Languages, Awards)"
                   />
-                  <button onClick={() => removeExtraSection(si)} className="text-xs text-red-400/60 hover:text-red-400 transition-colors shrink-0">Remove</button>
+                  <button onClick={() => removeExtraSection(si)} className="text-sm text-red-400/60 hover:text-red-400 transition-colors shrink-0">Remove</button>
                 </div>
                 <div className="space-y-1.5">
                   {sec.items.map((item, ii) => (
                     <div key={ii} className="flex gap-1.5 items-center">
-                      <span className="text-slate-600 text-xs shrink-0">•</span>
+                      <span className="text-slate-600 text-sm shrink-0">•</span>
                       <input
                         className={`${inputCls} flex-1`}
                         value={item}
@@ -503,11 +503,11 @@ function BuildFromScratch({ onDone }) {
                         placeholder="e.g. Spanish (fluent), French (conversational)"
                       />
                       {sec.items.length > 1 && (
-                        <button onClick={() => removeExtraItem(si, ii)} className="text-slate-600 hover:text-red-400 text-xs transition-colors shrink-0">✕</button>
+                        <button onClick={() => removeExtraItem(si, ii)} className="text-slate-600 hover:text-red-400 text-sm transition-colors shrink-0">✕</button>
                       )}
                     </div>
                   ))}
-                  <button onClick={() => addExtraItem(si)} className="text-xs text-blue-400 hover:text-blue-300 transition-colors mt-1">+ Add item</button>
+                  <button onClick={() => addExtraItem(si)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">+ Add item</button>
                 </div>
               </div>
             ))}
@@ -565,12 +565,12 @@ function PdfPreview({ file }) {
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-800">
-        <span className="text-slate-400 text-xs font-medium">PDF Preview</span>
+        <span className="text-slate-400 text-sm font-medium">PDF Preview</span>
         {numPages > 1 && (
           <div className="flex items-center gap-2">
-            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 transition-colors text-xs px-2">←</button>
-            <span className="text-slate-500 text-xs">{currentPage} / {numPages}</span>
-            <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 transition-colors text-xs px-2">→</button>
+            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="text-slate-500 hover:text-white disabled:opacity-30 transition-colors text-sm px-2">←</button>
+            <span className="text-slate-500 text-sm">{currentPage} / {numPages}</span>
+            <button onClick={() => setCurrentPage(p => Math.min(numPages, p + 1))} disabled={currentPage === numPages} className="text-slate-500 hover:text-white disabled:opacity-30 transition-colors text-sm px-2">→</button>
           </div>
         )}
       </div>
@@ -685,7 +685,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
           <button
             key={id}
             onClick={() => { setInputMode(id); reset() }}
-            className={`flex-1 text-xs font-medium py-2 rounded-lg transition-all ${
+            className={`flex-1 text-sm font-medium py-2 rounded-lg transition-all ${
               inputMode === id
                 ? 'bg-slate-800 text-white shadow-sm'
                 : 'text-slate-500 hover:text-slate-300'
@@ -716,10 +716,10 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
                 </div>
                 <div>
                   <p className="text-white text-sm font-medium">{fileName}</p>
-                  <p className="text-emerald-400 text-xs">Ready to tailor</p>
+                  <p className="text-emerald-400 text-sm">Ready to tailor</p>
                 </div>
               </div>
-              <button onClick={reset} className="text-slate-500 hover:text-slate-300 text-xs underline transition-colors">Remove</button>
+              <button onClick={reset} className="text-slate-500 hover:text-slate-300 text-sm underline transition-colors">Remove</button>
             </div>
             {fileType === 'pdf' && <PdfPreview file={pdfFile} />}
             <ResumeHealthScore apiKey={apiKey} resumeText={resumeText} onScoreReady={onHealthScore} userMode={userMode} />
@@ -752,7 +752,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
                   </div>
                   <p className="text-white font-semibold mb-1.5">Upload your resume</p>
                   <p className="text-slate-500 text-sm mb-4">Tap to browse, or drag and drop</p>
-                  <span className="inline-flex items-center gap-1.5 text-xs text-slate-600 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-full">
+                  <span className="inline-flex items-center gap-1.5 text-sm text-slate-600 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
@@ -773,8 +773,8 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
               ].map(({ icon, label, desc }) => (
                 <div key={label} className="bg-slate-900/60 border border-slate-800 rounded-xl p-3 text-center">
                   <div className="text-lg mb-1">{icon}</div>
-                  <p className="text-white text-xs font-medium leading-snug">{label}</p>
-                  <p className="text-slate-500 text-xs mt-0.5">{desc}</p>
+                  <p className="text-white text-sm font-medium leading-snug">{label}</p>
+                  <p className="text-slate-500 text-sm mt-0.5">{desc}</p>
                 </div>
               ))}
             </div>
@@ -797,10 +797,10 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
                 </svg>
                 <div>
                   <p className="text-white text-sm font-medium">Resume built from scratch</p>
-                  <p className="text-emerald-400 text-xs">Ready to tailor</p>
+                  <p className="text-emerald-400 text-sm">Ready to tailor</p>
                 </div>
               </div>
-              <button onClick={reset} className="text-slate-500 hover:text-slate-300 text-xs underline transition-colors">Edit</button>
+              <button onClick={reset} className="text-slate-500 hover:text-slate-300 text-sm underline transition-colors">Edit</button>
             </div>
             <ResumeHealthScore apiKey={apiKey} resumeText={resumeText} onScoreReady={onHealthScore} userMode={userMode} />
           </div>

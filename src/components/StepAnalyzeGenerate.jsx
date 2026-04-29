@@ -225,8 +225,8 @@ function GenerationCinematic() {
           <div className="space-y-2.5">
             {FAKE_OLD.map((old, i) => (
               <div key={i} className="space-y-0.5" style={{ animation: `gen-item-in 0.35s ease-out ${i * 180}ms both` }}>
-                <p className="text-xs text-slate-600 line-through leading-snug">{old}</p>
-                <p className="text-xs text-emerald-400 leading-snug overflow-hidden whitespace-nowrap"
+                <p className="text-sm text-slate-600 line-through leading-snug">{old}</p>
+                <p className="text-sm text-emerald-400 leading-snug overflow-hidden whitespace-nowrap"
                   style={{ animation: `gen-new-text 0.7s ease-out ${i * 180 + 400}ms both` }}>
                   → {FAKE_NEW[i]}
                 </p>
@@ -238,7 +238,7 @@ function GenerationCinematic() {
           <div className="flex flex-wrap gap-1.5">
             {FAKE_KWS.map((kw, i) => (
               <span key={kw}
-                className="px-2.5 py-1 bg-blue-500/15 border border-blue-500/30 text-blue-300 text-xs rounded-full font-medium"
+                className="px-2.5 py-1 bg-blue-500/15 border border-blue-500/30 text-blue-300 text-sm rounded-full font-medium"
                 style={{ animation: `kw-float-in 0.5s cubic-bezier(0.34,1.56,0.64,1) ${i * 140}ms both` }}>
                 ✓ {kw}
               </span>
@@ -253,11 +253,11 @@ function GenerationCinematic() {
             <div className="h-2 bg-slate-600 rounded-full overflow-hidden">
               <div className="h-full bg-blue-400/60 rounded-full" style={{ animation: 'progress-creep 1.4s ease-out 0.2s both', '--w': '65%' }} />
             </div>
-            <p className="text-xs text-slate-400 mt-2 leading-relaxed overflow-hidden whitespace-nowrap"
+            <p className="text-sm text-slate-400 mt-2 leading-relaxed overflow-hidden whitespace-nowrap"
               style={{ animation: 'gen-new-text 1.8s ease-out 0.4s both' }}>
               Results-driven engineer with 5+ years building scalable systems...
             </p>
-            <p className="text-xs text-slate-500 leading-relaxed overflow-hidden whitespace-nowrap"
+            <p className="text-sm text-slate-500 leading-relaxed overflow-hidden whitespace-nowrap"
               style={{ animation: 'gen-new-text 1.8s ease-out 1.2s both' }}>
               Proven track record of delivering high-impact features at scale...
             </p>
@@ -267,7 +267,7 @@ function GenerationCinematic() {
           <div className="flex flex-wrap gap-1.5">
             {FAKE_SKILLS.map((sk, i) => (
               <span key={sk}
-                className="px-2 py-1 bg-slate-700 border border-slate-600 text-slate-300 text-xs rounded-lg font-medium"
+                className="px-2 py-1 bg-slate-700 border border-slate-600 text-slate-300 text-sm rounded-lg font-medium"
                 style={{ animation: `kw-float-in 0.4s cubic-bezier(0.34,1.56,0.64,1) ${i * 100}ms both` }}>
                 {sk}
               </span>
@@ -276,7 +276,7 @@ function GenerationCinematic() {
         )}
         {phaseIdx === 4 && (
           <div className="space-y-3 flex flex-col justify-center h-full">
-            <div className="flex items-center justify-between text-xs text-slate-400">
+            <div className="flex items-center justify-between text-sm text-slate-400">
               <span>Building your resume...</span>
               <span className="text-white font-medium">{Math.round(progress)}%</span>
             </div>
@@ -286,7 +286,7 @@ function GenerationCinematic() {
                 style={{ width: `${progress}%` }}
               />
             </div>
-            <p className="text-xs text-slate-500 text-center">Almost there — polishing every line...</p>
+            <p className="text-sm text-slate-500 text-center">Almost there — polishing every line...</p>
           </div>
         )}
       </div>
@@ -294,7 +294,7 @@ function GenerationCinematic() {
       {/* Completed stages mini-list */}
       <div className="flex gap-3 flex-wrap">
         {GEN_PHASES.slice(0, phaseIdx).map(p => (
-          <span key={p.id} className="text-xs text-emerald-500/70 flex items-center gap-1">
+          <span key={p.id} className="text-sm text-emerald-500/70 flex items-center gap-1">
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
               <circle cx="5" cy="5" r="4.5" stroke="#10b981" strokeWidth="1" fill="rgba(16,185,129,0.15)" />
               <path d="M3 5.5l1.5 1.5 2.5-3" stroke="#10b981" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
@@ -327,7 +327,7 @@ function MatchScoreRing({ score }) {
           <span className="text-sm font-bold text-white">%</span>
         </div>
       </div>
-      <span className="text-xs font-medium" style={{ color }}>{label}</span>
+      <span className="text-sm font-medium" style={{ color }}>{label}</span>
     </div>
   )
 }
@@ -443,7 +443,7 @@ export default function StepAnalyzeGenerate({
           {/* Header */}
           <div className="flex items-center justify-between px-5 py-4">
             <div className="flex items-center gap-3">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${analyzed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}`}>
+              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold ${analyzed ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}`}>
                 {analyzed ? '✓' : '1'}
               </div>
               <span className="text-white text-sm font-medium">Analyze resume</span>
@@ -465,20 +465,20 @@ export default function StepAnalyzeGenerate({
                 <div className="flex gap-5 shrink-0">
                   <div className="flex flex-col items-center gap-1">
                     <MatchScoreRing score={analysis.matchScore ?? 0} />
-                    <span className="text-slate-500 text-xs">Profile Fit</span>
+                    <span className="text-slate-500 text-sm">Profile Fit</span>
                   </div>
                   {atsScore !== null && (
                     <div className="flex flex-col items-center gap-1">
                       <MatchScoreRing score={atsScore} />
-                      <span className="text-slate-500 text-xs">ATS Score</span>
-                      <span className="text-slate-600 text-xs">keyword match ↓</span>
+                      <span className="text-slate-500 text-sm">ATS Score</span>
+                      <span className="text-slate-600 text-sm">keyword match ↓</span>
                     </div>
                   )}
                 </div>
                 <div className="w-full space-y-2">
                   {verdict && (
                     <div
-                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold ${verdict.bg} ${verdict.text}`}
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-sm font-semibold ${verdict.bg} ${verdict.text}`}
                       style={{ animation: 'verdict-up 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.3s both' }}
                     >
                       <span className={`w-1.5 h-1.5 rounded-full ${verdict.dot}`} />
@@ -486,10 +486,10 @@ export default function StepAnalyzeGenerate({
                     </div>
                   )}
                   {analysis.worthApplyingReason && (
-                    <p className="text-slate-300 text-xs leading-relaxed">{analysis.worthApplyingReason}</p>
+                    <p className="text-slate-300 text-sm leading-relaxed">{analysis.worthApplyingReason}</p>
                   )}
                   {analysis.summary && (
-                    <p className="text-slate-400 text-xs leading-relaxed">{analysis.summary}</p>
+                    <p className="text-slate-400 text-sm leading-relaxed">{analysis.summary}</p>
                   )}
                 </div>
               </div>
@@ -497,9 +497,9 @@ export default function StepAnalyzeGenerate({
               {/* Strengths */}
               {analysis.strengths?.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">What's working</p>
+                  <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">What's working</p>
                   {analysis.strengths.map((s, i) => (
-                    <div key={i} className="flex gap-2 text-xs bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-2"
+                    <div key={i} className="flex gap-2 text-sm bg-emerald-500/5 border border-emerald-500/20 rounded-lg px-3 py-2"
                       style={{ animation: `card-stagger 0.4s ease-out ${i * 80}ms both` }}>
                       <span className="text-emerald-400 shrink-0 mt-0.5">✓</span>
                       <div>
@@ -514,9 +514,9 @@ export default function StepAnalyzeGenerate({
               {/* Fixable gaps */}
               {analysis.fixableGaps?.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">What we'll fix</p>
+                  <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">What we'll fix</p>
                   {analysis.fixableGaps.map((g, i) => (
-                    <div key={i} className="flex gap-2 text-xs bg-amber-500/5 border border-amber-500/20 rounded-lg px-3 py-2"
+                    <div key={i} className="flex gap-2 text-sm bg-amber-500/5 border border-amber-500/20 rounded-lg px-3 py-2"
                       style={{ animation: `card-stagger 0.4s ease-out ${i * 80}ms both` }}>
                       <span className="text-amber-400 shrink-0 mt-0.5">~</span>
                       <div>
@@ -531,9 +531,9 @@ export default function StepAnalyzeGenerate({
               {/* Hard gaps */}
               {analysis.hardGaps?.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">What to work on</p>
+                  <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">What to work on</p>
                   {analysis.hardGaps.map((g, i) => (
-                    <div key={i} className="flex gap-2 text-xs bg-red-500/5 border border-red-500/20 rounded-lg px-3 py-2"
+                    <div key={i} className="flex gap-2 text-sm bg-red-500/5 border border-red-500/20 rounded-lg px-3 py-2"
                       style={{ animation: `card-stagger 0.4s ease-out ${i * 80}ms both` }}>
                       <span className="text-red-400 shrink-0 mt-0.5">✗</span>
                       <div>
@@ -550,8 +550,8 @@ export default function StepAnalyzeGenerate({
                 <div className="flex gap-3 bg-blue-500/5 border border-blue-500/20 rounded-lg px-3 py-2.5">
                   <span className="text-blue-400 shrink-0 text-sm">💡</span>
                   <div>
-                    <p className="text-blue-300 text-xs font-semibold mb-0.5">Application tip</p>
-                    <p className="text-slate-300 text-xs leading-relaxed">{analysis.applicationTip}</p>
+                    <p className="text-blue-300 text-sm font-semibold mb-0.5">Application tip</p>
+                    <p className="text-slate-300 text-sm leading-relaxed">{analysis.applicationTip}</p>
                   </div>
                 </div>
               )}
@@ -559,22 +559,22 @@ export default function StepAnalyzeGenerate({
               {/* Keyword coverage */}
               {((analysis.presentKeywords?.length ?? 0) + (analysis.partialKeywords?.length ?? 0) + (analysis.missingKeywords?.length ?? 0)) > 0 && (
                 <div className="space-y-2">
-                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Keyword Coverage</p>
+                  <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">Keyword Coverage</p>
                   <div className="flex flex-wrap gap-1.5">
                     {analysis.presentKeywords?.map((kw, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs rounded-full"
+                      <span key={i} className="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-sm rounded-full"
                         style={{ animation: `kw-bounce-in 0.4s cubic-bezier(0.34,1.56,0.64,1) ${i * 35}ms both` }}>✓ {kw}</span>
                     ))}
                     {analysis.partialKeywords?.map((kw, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs rounded-full"
+                      <span key={i} className="px-2 py-0.5 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-sm rounded-full"
                         style={{ animation: `kw-bounce-in 0.4s cubic-bezier(0.34,1.56,0.64,1) ${((analysis.presentKeywords?.length ?? 0) + i) * 35}ms both` }}>~ {kw}</span>
                     ))}
                     {analysis.missingKeywords?.map((kw, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-xs rounded-full"
+                      <span key={i} className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-full"
                         style={{ animation: `kw-bounce-in 0.4s cubic-bezier(0.34,1.56,0.64,1) ${((analysis.presentKeywords?.length ?? 0) + (analysis.partialKeywords?.length ?? 0) + i) * 35}ms both` }}>✗ {kw}</span>
                     ))}
                   </div>
-                  <div className="flex gap-4 text-xs text-slate-500">
+                  <div className="flex gap-4 text-sm text-slate-500">
                     <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />Present</span>
                     <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />Partial</span>
                     <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-500 inline-block" />Missing</span>
@@ -593,34 +593,34 @@ export default function StepAnalyzeGenerate({
           }`}>
             <div className="flex items-center justify-between gap-3 px-5 py-4">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${phase === 'done' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${phase === 'done' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}`}>
                   {phase === 'done' ? '✓' : '2'}
                 </div>
                 <div className="min-w-0">
                   <span className="text-white text-sm font-medium">Generate tailored resume</span>
                   {phase === 'analyzed' && (
-                    <p className="text-slate-500 text-xs mt-0.5">Rewrites every bullet, summary & skills for this JD</p>
+                    <p className="text-slate-500 text-sm mt-0.5">Rewrites every bullet, summary & skills for this JD</p>
                   )}
                 </div>
               </div>
               {(phase === 'analyzed' || phase === 'error') && analysis && (
                 <button
                   onClick={runGeneration}
-                  className="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-1.5 rounded-lg transition-all active:scale-95"
+                  className="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold px-4 py-1.5 rounded-lg transition-all active:scale-95"
                   style={{ animation: phase === 'analyzed' ? 'gen-btn-glow 2.5s ease-in-out infinite' : 'none' }}
                 >
                   {phase === 'error' ? 'Retry' : 'Generate Resume →'}
                 </button>
               )}
-              {phase === 'done' && <span className="shrink-0 text-emerald-400 text-xs font-medium">Complete</span>}
+              {phase === 'done' && <span className="shrink-0 text-emerald-400 text-sm font-medium">Complete</span>}
             </div>
 
             {/* Priority actions */}
             {(phase === 'analyzed' || phase === 'error') && analysis?.priorityActions?.length > 0 && (
               <div className="border-t border-slate-800 px-5 py-3 space-y-2">
-                <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">Top priorities for this rewrite</p>
+                <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">Top priorities for this rewrite</p>
                 {analysis.priorityActions.map((action, i) => (
-                  <div key={i} className="flex gap-2 text-xs text-slate-300">
+                  <div key={i} className="flex gap-2 text-sm text-slate-300">
                     <span className="text-blue-400 font-bold shrink-0">{i + 1}.</span>
                     <span>{action}</span>
                   </div>
@@ -634,24 +634,24 @@ export default function StepAnalyzeGenerate({
                 {!showInstructions ? (
                   <button
                     onClick={() => setShowInstructions(true)}
-                    className="text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                    className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
                   >
                     + Add instructions for the AI
                   </button>
                 ) : (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <p className="text-xs text-slate-400 font-medium">Instructions for the AI</p>
-                      <button onClick={() => setShowInstructions(false)} className="text-slate-600 hover:text-slate-400 text-xs transition-colors">✕</button>
+                      <p className="text-sm text-slate-400 font-medium">Instructions for the AI</p>
+                      <button onClick={() => setShowInstructions(false)} className="text-slate-600 hover:text-slate-400 text-sm transition-colors">✕</button>
                     </div>
                     <textarea
                       value={customInstructions}
                       onChange={e => setCustomInstructions(e.target.value.slice(0, 300))}
                       placeholder={'e.g. "Focus on my leadership experience" · "Keep it to 1 page" · "I\'m applying as an internal transfer"'}
                       rows={3}
-                      className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none transition-colors"
+                      className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none transition-colors"
                     />
-                    <p className="text-slate-600 text-xs text-right">{customInstructions.length}/300</p>
+                    <p className="text-slate-600 text-sm text-right">{customInstructions.length}/300</p>
                   </div>
                 )}
               </div>
@@ -680,7 +680,7 @@ export default function StepAnalyzeGenerate({
           <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4"
             style={{ animation: 'error-shake 0.55s ease-out both' }}>
             <p className="text-red-400 text-sm">{error}</p>
-            <button onClick={analysis ? runGeneration : runAnalysis} className="text-red-400 underline text-xs mt-2">Try again</button>
+            <button onClick={analysis ? runGeneration : runAnalysis} className="text-red-400 underline text-sm mt-2">Try again</button>
           </div>
         )}
 

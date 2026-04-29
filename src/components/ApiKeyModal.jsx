@@ -59,7 +59,7 @@ function FeedbackModal({ onClose }) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <span className="text-white text-sm font-semibold">Send Feedback</span>
-            <span className="text-slate-600 text-xs">{APP_VERSION}</span>
+            <span className="text-slate-600 text-sm">{APP_VERSION}</span>
           </div>
           <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -69,14 +69,14 @@ function FeedbackModal({ onClose }) {
         </div>
         <div className="p-5 space-y-3">
           {status === 'sent' ? (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-4 text-xs text-emerald-400 text-center">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-4 text-sm text-emerald-400 text-center">
               ✓ Thanks! We'll review it soon.
-              <button onClick={() => setStatus('idle')} className="block mx-auto mt-1 text-slate-500 underline text-xs">Send another</button>
+              <button onClick={() => setStatus('idle')} className="block mx-auto mt-1 text-slate-500 underline text-sm">Send another</button>
             </div>
           ) : (
             <>
               {hasError && (
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 text-xs text-amber-400">
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2 text-sm text-amber-400">
                   ⚡ An error was detected — it will be included automatically if you submit a bug report.
                 </div>
               )}
@@ -85,7 +85,7 @@ function FeedbackModal({ onClose }) {
                   <button
                     key={t}
                     onClick={() => setType(t)}
-                    className={`flex-1 py-1.5 text-xs rounded-lg border transition-colors ${
+                    className={`flex-1 py-1.5 text-sm rounded-lg border transition-colors ${
                       type === t
                         ? 'border-blue-500 bg-blue-500/10 text-blue-400'
                         : 'border-slate-700 text-slate-400 hover:border-slate-500'
@@ -105,25 +105,25 @@ function FeedbackModal({ onClose }) {
                   'Select a type above, then describe...'
                 }
                 rows={4}
-                className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2.5 text-xs focus:outline-none resize-none transition-colors"
+                className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2.5 text-sm focus:outline-none resize-none transition-colors"
               />
               <div className="flex items-center justify-between">
-                <span className="text-slate-600 text-xs">{description.length}/500</span>
+                <span className="text-slate-600 text-sm">{description.length}/500</span>
               </div>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="Email (optional — for follow-up)"
-                className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2 text-xs focus:outline-none transition-colors"
+                className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white placeholder-slate-600 rounded-xl px-3 py-2 text-sm focus:outline-none transition-colors"
               />
               {status === 'error' && (
-                <p className="text-red-400 text-xs">Failed to send — check your connection and try again.</p>
+                <p className="text-red-400 text-sm">Failed to send — check your connection and try again.</p>
               )}
               <button
                 onClick={handleSubmit}
                 disabled={!type || !description.trim() || status === 'sending'}
-                className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white text-sm font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
               >
                 {status === 'sending' ? (
                   <><svg className="animate-spin h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>Sending...</>
@@ -190,8 +190,8 @@ function DataModal({ onClose }) {
         </div>
         <div className="p-5 space-y-4">
           <p className="text-slate-400 text-sm">Back up everything to a file and restore it on any device.</p>
-          <div className="bg-slate-800/50 rounded-xl p-3 space-y-1.5 text-xs text-slate-500">
-            <p className="text-slate-400 font-medium text-xs">What's included</p>
+          <div className="bg-slate-800/50 rounded-xl p-3 space-y-1.5 text-sm text-slate-500">
+            <p className="text-slate-400 font-medium text-sm">What's included</p>
             <p>• Saved resumes</p>
             <p>• Application tracker entries</p>
             <p>• Today's token usage &amp; model limits</p>
@@ -218,14 +218,14 @@ function DataModal({ onClose }) {
             <input ref={fileRef} type="file" accept=".json,application/json" className="hidden" onChange={handleImport} />
           </div>
           {importResult && (
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 text-xs text-emerald-400 space-y-0.5">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3 py-2 text-sm text-emerald-400 space-y-0.5">
               <p className="font-semibold">Import complete</p>
               <p>Resumes: +{importResult.resumesAdded} added, {importResult.resumesSkipped} already existed</p>
               <p>Applications: +{importResult.appsAdded} added, {importResult.appsSkipped} already existed</p>
             </div>
           )}
           {importError && (
-            <p className="text-amber-400 text-xs">{importError}</p>
+            <p className="text-amber-400 text-sm">{importError}</p>
           )}
         </div>
       </div>
@@ -302,7 +302,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
                 <span className="text-emerald-400 text-sm font-medium">Connected</span>
-                <span className="text-slate-600 text-xs ml-auto">Groq · Free tier</span>
+                <span className="text-slate-600 text-sm ml-auto">Groq · Free tier</span>
               </div>
 
               <div className="flex items-center gap-3 bg-slate-800 border border-slate-700 rounded-xl px-4 py-3">
@@ -347,7 +347,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
           {mode === 'new' && (
             <>
               {isMigration && (
-                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2.5 text-xs text-amber-400 leading-relaxed">
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2.5 text-sm text-amber-400 leading-relaxed">
                   <span className="font-semibold block mb-0.5">Action required — switch to Groq</span>
                   We've moved from Google Gemini to Groq for faster, more reliable AI. Your old Gemini key has been cleared. Get a free Groq key below — takes 2 minutes.
                 </div>
@@ -372,8 +372,8 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
                   <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                 </svg>
                 <div>
-                  <p className="text-white text-xs font-medium group-hover:text-red-300 transition-colors">Watch: How to get your free Groq API key</p>
-                  <p className="text-slate-500 text-xs">2 min video — takes you through every step</p>
+                  <p className="text-white text-sm font-medium group-hover:text-red-300 transition-colors">Watch: How to get your free Groq API key</p>
+                  <p className="text-slate-500 text-sm">2 min video — takes you through every step</p>
                 </div>
                 <svg className="h-3 w-3 text-slate-500 ml-auto shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -384,7 +384,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
                 <ol className="space-y-2 bg-slate-800/50 rounded-xl p-4">
                   {guideSteps.map((s, i) => (
                     <li key={i} className="flex gap-3 text-sm text-slate-400">
-                      <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center shrink-0">{i + 1}</span>
+                      <span className="w-5 h-5 rounded-full bg-blue-600 text-white text-sm flex items-center justify-center shrink-0">{i + 1}</span>
                       {s}
                     </li>
                   ))}
@@ -417,7 +417,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
               {status === 'error' && <p className="text-red-400 text-sm">{error}</p>}
 
               {existingKey && (
-                <button onClick={() => setMode('connected')} className="text-slate-500 text-xs underline">
+                <button onClick={() => setMode('connected')} className="text-slate-500 text-sm underline">
                   Cancel
                 </button>
               )}
@@ -427,7 +427,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
           {/* Model selector — shown once connected */}
           {mode === 'connected' && (
             <div className="border-t border-slate-800 pt-4 space-y-2">
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">AI Model</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider">AI Model</p>
               <div className="space-y-2">
                 {MODEL_OPTIONS.map(opt => (
                   <button
@@ -442,24 +442,24 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
                     <div className="flex items-center justify-between mb-0.5">
                       <span className={`text-sm font-semibold ${selectedModel === opt.id ? 'text-white' : 'text-slate-300'}`}>{opt.name}</span>
                       <div className="flex items-center gap-1.5">
-                        <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${opt.tagColor}`}>{opt.tag}</span>
-                        <span className="text-xs text-slate-500">{opt.capacity}</span>
+                        <span className={`text-sm px-2 py-0.5 rounded-full border font-medium ${opt.tagColor}`}>{opt.tag}</span>
+                        <span className="text-sm text-slate-500">{opt.capacity}</span>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">{opt.desc}</p>
+                    <p className="text-sm text-slate-500 leading-relaxed">{opt.desc}</p>
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          <p className="text-slate-600 text-xs pt-1">🔒 Your key is stored in your browser only — never sent to any server.</p>
+          <p className="text-slate-600 text-sm pt-1">🔒 Your key is stored in your browser only — never sent to any server.</p>
 
           {/* Quick action buttons */}
           <div className="border-t border-slate-800 pt-4 flex gap-2">
             <button
               onClick={() => setShowFeedback(true)}
-              className="flex-1 py-2 text-xs font-medium text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+              className="flex-1 py-2 text-sm font-medium text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -468,7 +468,7 @@ export default function ApiKeyModal({ onClose, onKeySet, isMigration = false }) 
             </button>
             <button
               onClick={() => setShowData(true)}
-              className="flex-1 py-2 text-xs font-medium text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+              className="flex-1 py-2 text-sm font-medium text-slate-400 border border-slate-700 hover:border-slate-500 hover:text-slate-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7c0-2 1-3 3-3h10c2 0 3 1 3 3M4 7h16M10 12h4" />

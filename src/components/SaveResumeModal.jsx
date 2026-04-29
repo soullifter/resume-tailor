@@ -16,13 +16,13 @@ export default function SaveResumeModal({ onSave, onClose, defaultCompany = '', 
           <h3 className="text-white font-bold text-base">Save this resume</h3>
           <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors text-lg leading-none">✕</button>
         </div>
-        <p className="text-slate-500 text-xs mb-5 leading-relaxed">
+        <p className="text-slate-500 text-sm mb-5 leading-relaxed">
           Saved to your browser — no account needed. Reload or re-tailor any time.
         </p>
 
         <div className="space-y-3 mb-5">
           <div>
-            <label className="text-xs text-slate-500 block mb-1">Company name</label>
+            <label className="text-sm text-slate-500 block mb-1">Company name</label>
             <input
               value={company}
               onChange={e => setCompany(e.target.value)}
@@ -32,7 +32,7 @@ export default function SaveResumeModal({ onSave, onClose, defaultCompany = '', 
             />
           </div>
           <div>
-            <label className="text-xs text-slate-500 block mb-1">Role title</label>
+            <label className="text-sm text-slate-500 block mb-1">Role title</label>
             <input
               value={role}
               onChange={e => setRole(e.target.value)}

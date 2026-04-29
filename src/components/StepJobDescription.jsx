@@ -130,12 +130,12 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                 </svg>
                 <div>
                   <p className="text-white text-sm font-medium">Job description loaded</p>
-                  <p className="text-slate-500 text-xs">{wordCount} words · {value.length} chars</p>
+                  <p className="text-slate-500 text-sm">{wordCount} words · {value.length} chars</p>
                 </div>
               </div>
               <button
                 onClick={() => setCollapsed(false)}
-                className="text-slate-500 hover:text-slate-300 text-xs underline transition-colors shrink-0"
+                className="text-slate-500 hover:text-slate-300 text-sm underline transition-colors shrink-0"
               >
                 Edit
               </button>
@@ -157,7 +157,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                 }}
               />
               {value.length > 0 && (
-                <p className="absolute bottom-3 right-4 text-xs text-slate-600">{wordCount}w · {value.length} chars</p>
+                <p className="absolute bottom-3 right-4 text-sm text-slate-600">{wordCount}w · {value.length} chars</p>
               )}
             </>
           )}
@@ -172,7 +172,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
             </span>
             <p
               key={msgIdx}
-              className="text-blue-300 text-xs font-medium"
+              className="text-blue-300 text-sm font-medium"
               style={{ animation: 'jd-msg-in 0.22s ease-out both', opacity: msgVisible ? 1 : 0, transition: 'opacity 0.18s' }}
             >
               {JD_PARSE_MESSAGES[msgIdx]}
@@ -181,12 +181,12 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
         )}
 
         {!isReady && value.length > 0 && parseStatus === 'idle' && (
-          <p className="text-slate-500 text-xs px-1">Paste more of the job description for better results</p>
+          <p className="text-slate-500 text-sm px-1">Paste more of the job description for better results</p>
         )}
 
         {parseStatus === 'error' && (
           <div className="flex items-center justify-between px-1">
-            <p className="text-red-400 text-xs">{parseError}</p>
+            <p className="text-red-400 text-sm">{parseError}</p>
             <button
               onClick={() => {
                 if (!apiKey || value.trim().length < 50) return
@@ -195,7 +195,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                   .then(info => { setJobInfo(info); setParseStatus('done'); setCollapsed(true); onJobInfoParsed?.(info) })
                   .catch(e => { setParseError(e.message || 'Could not analyze JD. You can still proceed.'); setParseStatus('error') })
               }}
-              className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors shrink-0 ml-3"
+              className="text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors shrink-0 ml-3"
             >
               Try again
             </button>
@@ -208,7 +208,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
             <span className="text-amber-400 text-base shrink-0 mt-0.5">⚠</span>
             <div>
               <p className="text-amber-400 text-sm font-medium">Job description looks incomplete</p>
-              <p className="text-amber-400/70 text-xs mt-1">The tailoring may be less targeted. For best results, paste the full JD including responsibilities and requirements. You can still proceed.</p>
+              <p className="text-amber-400/70 text-sm mt-1">The tailoring may be less targeted. For best results, paste the full JD including responsibilities and requirements. You can still proceed.</p>
             </div>
           </div>
         )}
@@ -225,13 +225,13 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
               <div className="flex items-center gap-2 flex-wrap mb-1">
                 {jobInfo.title && <span className="text-white text-sm font-semibold">{jobInfo.title}</span>}
                 {jobInfo.seniority && (
-                  <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${seniorityColors[jobInfo.seniority] || seniorityColors.Mid}`}>
+                  <span className={`text-sm px-2 py-0.5 rounded-full border font-medium ${seniorityColors[jobInfo.seniority] || seniorityColors.Mid}`}>
                     {jobInfo.seniority}
                   </span>
                 )}
                 {jobInfo.overallMatch && (
                   <span
-                    className={`text-xs px-2 py-0.5 rounded-full border font-medium ${
+                    className={`text-sm px-2 py-0.5 rounded-full border font-medium ${
                       jobInfo.overallMatch === 'strong'   ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' :
                       jobInfo.overallMatch === 'moderate' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
                                                             'text-red-400 bg-red-500/10 border-red-500/20'
@@ -242,14 +242,14 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-400 flex-wrap">
+              <div className="flex items-center gap-2 text-sm text-slate-400 flex-wrap">
                 {jobInfo.company              && <span>{jobInfo.company}</span>}
                 {jobInfo.location             && <><span>·</span><span>{jobInfo.location}</span></>}
                 {jobInfo.experienceYearsRequired && <><span>·</span><span>{jobInfo.experienceYearsRequired}</span></>}
                 {jobInfo.salary               && <><span>·</span><span className="text-emerald-400 font-medium">{jobInfo.salary}</span></>}
               </div>
               {jobInfo.whatThisRoleWants && (
-                <p className="text-slate-400 text-xs mt-2 leading-relaxed">💡 {jobInfo.whatThisRoleWants}</p>
+                <p className="text-slate-400 text-sm mt-2 leading-relaxed">💡 {jobInfo.whatThisRoleWants}</p>
               )}
             </div>
 
@@ -259,7 +259,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
 
                 {jobInfo.mustHaveSkills?.length > 0 && (
                   <div>
-                    <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">
+                    <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">
                       Must-have — {jobInfo.mustHaveSkills.filter(s => s.inResume).length}/{jobInfo.mustHaveSkills.length} in your resume
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -267,7 +267,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                         <span
                           key={i}
                           title={s.note || ''}
-                          className={`text-xs px-2.5 py-1 rounded-full border font-medium cursor-default ${
+                          className={`text-sm px-2.5 py-1 rounded-full border font-medium cursor-default ${
                             s.inResume
                               ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
                               : 'text-red-400 bg-red-500/10 border-red-500/20'
@@ -283,7 +283,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
 
                 {jobInfo.niceToHaveSkills?.length > 0 && (
                   <div>
-                    <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-2">
+                    <p className="text-slate-500 text-sm font-semibold uppercase tracking-wider mb-2">
                       Nice-to-have — {jobInfo.niceToHaveSkills.filter(s => s.inResume).length}/{jobInfo.niceToHaveSkills.length} in your resume
                     </p>
                     <div className="flex flex-wrap gap-1.5">
@@ -291,7 +291,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                         <span
                           key={i}
                           title={s.note || ''}
-                          className={`text-xs px-2.5 py-1 rounded-full border cursor-default ${
+                          className={`text-sm px-2.5 py-1 rounded-full border cursor-default ${
                             s.inResume
                               ? 'text-slate-300 bg-slate-800 border-slate-600'
                               : 'text-slate-500 bg-slate-900 border-slate-700'
@@ -328,7 +328,7 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
               return warnings.length > 0 ? (
                 <div className="border-t border-slate-800 px-4 py-3 space-y-2">
                   {warnings.map((w, i) => (
-                    <div key={i} className="flex gap-2 text-xs text-amber-400">
+                    <div key={i} className="flex gap-2 text-sm text-amber-400">
                       <span className="shrink-0 mt-0.5">⚠</span><span>{w}</span>
                     </div>
                   ))}

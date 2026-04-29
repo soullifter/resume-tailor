@@ -28,7 +28,7 @@ function NoteInput({ appId, initialValue, onSave }) {
       onChange={e => setValue(e.target.value)}
       onBlur={() => onSave(appId, value)}
       placeholder="Add notes..."
-      className="w-full bg-slate-800 border border-slate-700 focus:border-slate-600 text-slate-400 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none transition-colors placeholder:text-slate-700 mb-2"
+      className="w-full bg-slate-800 border border-slate-700 focus:border-slate-600 text-slate-400 text-sm rounded-lg px-2.5 py-1.5 focus:outline-none transition-colors placeholder:text-slate-700 mb-2"
     />
   )
 }
@@ -52,17 +52,17 @@ function AddAppModal({ onSave, onClose }) {
         </div>
         <div className="space-y-3 mb-5">
           <div>
-            <label className="text-xs text-slate-500 block mb-1">Company name</label>
+            <label className="text-sm text-slate-500 block mb-1">Company name</label>
             <input autoFocus value={company} onChange={e => setCompany(e.target.value)} placeholder="e.g. Stripe"
               className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-sm rounded-xl px-3 py-2.5 focus:outline-none transition-colors" />
           </div>
           <div>
-            <label className="text-xs text-slate-500 block mb-1">Role title</label>
+            <label className="text-sm text-slate-500 block mb-1">Role title</label>
             <input value={role} onChange={e => setRole(e.target.value)} placeholder="e.g. Senior Frontend Engineer"
               className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-sm rounded-xl px-3 py-2.5 focus:outline-none transition-colors" />
           </div>
           <div>
-            <label className="text-xs text-slate-500 block mb-1">ATS match score (optional)</label>
+            <label className="text-sm text-slate-500 block mb-1">ATS match score (optional)</label>
             <input value={score} onChange={e => setScore(e.target.value)} placeholder="e.g. 82" type="number" min="0" max="100"
               className="w-full bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-sm rounded-xl px-3 py-2.5 focus:outline-none transition-colors" />
           </div>
@@ -123,7 +123,7 @@ function FollowUpModal({ app, apiKey, onClose }) {
           <h3 className="text-white font-bold">Follow-up Email</h3>
           <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">✕</button>
         </div>
-        <p className="text-slate-500 text-xs mb-4">{app.company} — {app.role} · Applied {daysSince(app.dateApplied)} days ago</p>
+        <p className="text-slate-500 text-sm mb-4">{app.company} — {app.role} · Applied {daysSince(app.dateApplied)} days ago</p>
 
         {status === 'idle' && (
           <button onClick={generate} className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors">
@@ -141,18 +141,18 @@ function FollowUpModal({ app, apiKey, onClose }) {
         )}
         {status === 'error' && (
           <div className="space-y-2">
-            <p className="text-red-400 text-xs">{errorMsg}</p>
+            <p className="text-red-400 text-sm">{errorMsg}</p>
             <button onClick={generate} className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors">Try again</button>
           </div>
         )}
         {status === 'done' && email && (
           <div className="space-y-3">
             <div className="bg-slate-800 border border-slate-700 rounded-xl p-3">
-              <p className="text-slate-500 text-xs mb-1">Subject</p>
+              <p className="text-slate-500 text-sm mb-1">Subject</p>
               <p className="text-white text-sm font-medium">{email.subject}</p>
             </div>
             <div className="bg-slate-800 border border-slate-700 rounded-xl p-3">
-              <p className="text-slate-500 text-xs mb-1">Body</p>
+              <p className="text-slate-500 text-sm mb-1">Body</p>
               <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{email.body}</p>
             </div>
             <div className="flex gap-2">
@@ -198,24 +198,24 @@ function Analytics({ apps }) {
         {stats.map(({ label, value, color }) => (
           <div key={label} className="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center">
             <p className={`text-2xl font-black ${color}`}>{value}</p>
-            <p className="text-slate-500 text-xs mt-1 leading-snug">{label}</p>
+            <p className="text-slate-500 text-sm mt-1 leading-snug">{label}</p>
           </div>
         ))}
       </div>
 
       <div>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Pipeline Breakdown</p>
+        <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-3">Pipeline Breakdown</p>
         <div className="space-y-2">
           {STATUSES.map(s => {
             const count = byStatus[s.id] || 0
             const pct = total > 0 ? Math.round((count / total) * 100) : 0
             return (
               <div key={s.id} className="flex items-center gap-3">
-                <span className={`text-xs font-medium w-16 shrink-0 ${s.color.split(' ')[0]}`}>{s.label}</span>
+                <span className={`text-sm font-medium w-16 shrink-0 ${s.color.split(' ')[0]}`}>{s.label}</span>
                 <div className="flex-1 bg-slate-800 rounded-full h-2 overflow-hidden">
                   <div className={`h-full rounded-full transition-all duration-500 ${s.color.split(' ')[0].replace('text-', 'bg-')}`} style={{ width: `${pct}%` }} />
                 </div>
-                <span className="text-xs text-slate-500 w-8 text-right shrink-0">{count}</span>
+                <span className="text-sm text-slate-500 w-8 text-right shrink-0">{count}</span>
               </div>
             )
           })}
@@ -282,14 +282,14 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
             <div className="w-px h-4 bg-slate-700" />
             <div>
               <h1 className="text-white font-bold text-base">Application Tracker</h1>
-              <p className="text-slate-500 text-xs">{apps.length} application{apps.length !== 1 ? 's' : ''} tracked</p>
+              <p className="text-slate-500 text-sm">{apps.length} application{apps.length !== 1 ? 's' : ''} tracked</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <ModelWidget />
             <button
               onClick={() => setShowAdd(true)}
-              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
+              className="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
             >
               + Add Application
             </button>
@@ -304,7 +304,7 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`text-xs font-medium px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
+              className={`text-sm font-medium px-4 py-3 border-b-2 transition-colors whitespace-nowrap ${
                 tab === t.id
                   ? 'border-blue-500 text-white'
                   : t.highlight
@@ -344,7 +344,7 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
           <div className="space-y-3">
             {tab === 'followups' && (
               <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 mb-2">
-                <p className="text-amber-400 text-xs font-semibold">These applications have had no update in 7+ days. Consider following up.</p>
+                <p className="text-amber-400 text-sm font-semibold">These applications have had no update in 7+ days. Consider following up.</p>
               </div>
             )}
             {filtered.map(app => {
@@ -355,22 +355,22 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="min-w-0">
                       <p className="text-white font-semibold text-sm truncate">{app.role}</p>
-                      <p className="text-slate-400 text-xs">{app.company}</p>
+                      <p className="text-slate-400 text-sm">{app.company}</p>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       {app.matchScore != null && (
-                        <span className="text-xs text-slate-500">{app.matchScore}%</span>
+                        <span className="text-sm text-slate-500">{app.matchScore}%</span>
                       )}
-                      <span className={`text-xs px-2.5 py-1 rounded-full border font-medium ${meta.color}`}>
+                      <span className={`text-sm px-2.5 py-1 rounded-full border font-medium ${meta.color}`}>
                         {meta.label}
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="text-slate-500 text-xs">{timeAgo(app.dateApplied)}</span>
+                    <span className="text-slate-500 text-sm">{timeAgo(app.dateApplied)}</span>
                     {days >= 7 && app.status === 'applied' && (
-                      <span className="text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                      <span className="text-sm text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full">
                         {days}d — follow up?
                       </span>
                     )}
@@ -382,7 +382,7 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
                       <button
                         key={s.id}
                         onClick={() => handleStatusChange(app.id, s.id)}
-                        className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                        className={`text-sm px-2.5 py-1 rounded-full border transition-colors ${
                           app.status === s.id ? s.color : 'border-slate-700 text-slate-600 hover:text-slate-400'
                         }`}
                       >
@@ -400,12 +400,12 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
                     return linked ? (
                       <div className="flex items-center justify-between bg-slate-800/60 border border-slate-700 rounded-lg px-3 py-2 mb-2">
                         <div className="min-w-0">
-                          <p className="text-xs text-slate-500 mb-0.5">Linked resume</p>
-                          <p className="text-xs text-slate-300 truncate">{linked.company} · {linked.role}</p>
+                          <p className="text-sm text-slate-500 mb-0.5">Linked resume</p>
+                          <p className="text-sm text-slate-300 truncate">{linked.company} · {linked.role}</p>
                         </div>
                         <button
                           onClick={() => setPreviewResume(linked)}
-                          className="text-xs text-blue-400 hover:text-blue-300 shrink-0 ml-3 transition-colors"
+                          className="text-sm text-blue-400 hover:text-blue-300 shrink-0 ml-3 transition-colors"
                         >
                           Preview →
                         </button>
@@ -417,13 +417,13 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setFollowUp(app)}
-                      className="flex-1 text-xs py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white transition-colors"
+                      className="flex-1 text-sm py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white transition-colors"
                     >
                       Generate follow-up
                     </button>
                     <button
                       onClick={() => setDeleteConfirm(app.id)}
-                      className="text-xs py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-red-500/10 border border-slate-700 hover:border-red-500/30 text-slate-500 hover:text-red-400 transition-colors"
+                      className="text-sm py-1.5 px-3 rounded-lg bg-slate-800 hover:bg-red-500/10 border border-slate-700 hover:border-red-500/30 text-slate-500 hover:text-red-400 transition-colors"
                     >
                       ✕
                     </button>
@@ -461,7 +461,7 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-xs shadow-2xl text-center">
             <p className="text-white font-semibold mb-2">Remove this application?</p>
-            <p className="text-slate-400 text-xs mb-5">This can't be undone.</p>
+            <p className="text-slate-400 text-sm mb-5">This can't be undone.</p>
             <div className="flex gap-2">
               <button onClick={() => setDeleteConfirm(null)} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white text-sm transition-colors">Cancel</button>
               <button onClick={() => handleDelete(deleteConfirm)} className="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-semibold transition-colors">Remove</button>

@@ -129,7 +129,7 @@ function ScoreRing({ score }) {
             <span className="text-xl font-bold text-white">{display}</span>
           </div>
         </div>
-        <span className="text-xs font-medium mt-1 transition-colors duration-300" style={{ color }}>{label}</span>
+        <span className="text-sm font-medium mt-1 transition-colors duration-300" style={{ color }}>{label}</span>
       </div>
     </>
   )
@@ -168,7 +168,7 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
         </div>
         <button
           onClick={runAnalysis}
-          className="text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors shrink-0"
+          className="text-sm text-slate-400 hover:text-white border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg transition-colors shrink-0"
         >
           Try again
         </button>
@@ -197,16 +197,16 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
         <ScoreRing score={score} />
         <div className="flex-1 min-w-0">
           <p className="text-white text-sm font-semibold mb-1">Resume Quality Score</p>
-          <p className="text-slate-400 text-xs leading-relaxed">{data.verdict}</p>
+          <p className="text-slate-400 text-sm leading-relaxed">{data.verdict}</p>
           {extraSections.length > 0 && (
-            <p className="text-slate-500 text-xs mt-1">
+            <p className="text-slate-500 text-sm mt-1">
               Also includes: {extraSections.join(', ')}
             </p>
           )}
         </div>
         <button
           onClick={() => setExpanded(v => !v)}
-          className="text-slate-500 hover:text-slate-300 text-xs underline shrink-0 transition-colors"
+          className="text-slate-500 hover:text-slate-300 text-sm underline shrink-0 transition-colors"
         >
           {expanded ? 'Less' : 'Details'}
         </button>
@@ -216,7 +216,7 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
       {!expanded && data.weaknesses?.length > 0 && (
         <div className="px-4 pb-3 space-y-1.5">
           {data.weaknesses.slice(0, 2).map((w, i) => (
-            <div key={i} className="flex gap-2 text-xs text-amber-400">
+            <div key={i} className="flex gap-2 text-sm text-amber-400">
               <span className="shrink-0 mt-0.5">⚠</span>
               <span>{w}</span>
             </div>
@@ -230,7 +230,7 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
 
           {/* Score breakdown */}
           <div>
-            <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Breakdown</p>
+            <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Breakdown</p>
             <div className="space-y-2.5">
               {[
                 { label: 'Contact Info',         max: 10, val: scoreContact(data),       hint: getContactHint(data) },
@@ -244,16 +244,16 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
               ].map(({ label, max, val, hint }) => (
                 <div key={label}>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-slate-400 text-xs w-36 shrink-0">{label}</span>
+                    <span className="text-slate-400 text-sm w-36 shrink-0">{label}</span>
                     <div className="flex-1 bg-slate-800 rounded-full h-1.5">
                       <div
                         className="h-1.5 rounded-full bg-blue-500 transition-all"
                         style={{ width: `${Math.min(100, Math.max(0, (val / max) * 100))}%` }}
                       />
                     </div>
-                    <span className="text-slate-400 text-xs w-12 text-right shrink-0">{Math.min(max, Math.max(0, val))}/{max}</span>
+                    <span className="text-slate-400 text-sm w-12 text-right shrink-0">{Math.min(max, Math.max(0, val))}/{max}</span>
                   </div>
-                  {hint && <p className="text-amber-400/80 text-xs ml-36 pl-2">{hint}</p>}
+                  {hint && <p className="text-amber-400/80 text-sm ml-36 pl-2">{hint}</p>}
                 </div>
               ))}
             </div>
@@ -262,10 +262,10 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
           {/* Strengths */}
           {data.strengths?.length > 0 && (
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">Strengths</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Strengths</p>
               <ul className="space-y-1">
                 {data.strengths.map((s, i) => (
-                  <li key={i} className="flex gap-2 text-xs text-emerald-400">
+                  <li key={i} className="flex gap-2 text-sm text-emerald-400">
                     <span className="shrink-0">✓</span>{s}
                   </li>
                 ))}
@@ -276,10 +276,10 @@ export default function ResumeHealthScore({ apiKey, resumeText, onScoreReady, us
           {/* Weaknesses */}
           {data.weaknesses?.length > 0 && (
             <div>
-              <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-2">What to Fix</p>
+              <p className="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">What to Fix</p>
               <ul className="space-y-1">
                 {data.weaknesses.map((w, i) => (
-                  <li key={i} className="flex gap-2 text-xs text-amber-400">
+                  <li key={i} className="flex gap-2 text-sm text-amber-400">
                     <span className="shrink-0">⚠</span>{w}
                   </li>
                 ))}
