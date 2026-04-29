@@ -14,9 +14,9 @@ function makeStyles(t, c) {
       fontFamily: 'Helvetica',
       fontSize: 10,
       color: c.text,
-      paddingTop: 36,
-      paddingBottom: 40,
-      paddingHorizontal: 46,
+      paddingTop: 24,
+      paddingBottom: 26,
+      paddingHorizontal: 36,
     },
 
     // ── Header ────────────────────────────────────────────────────────────────

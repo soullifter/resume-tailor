@@ -393,8 +393,16 @@ export default function StepAnalyzeGenerate({
       geminiScore(apiKey, sp, { temperature: st, maxOutputTokens: sm })
         .then(score => onTailoredScore?.(score))
         .catch(() => {})
+      // Strip trailing periods from all bullets (resume convention)
+      const stripDots = arr => (arr || []).map(b => typeof b === 'string' ? b.replace(/\.+$/, '') : b)
+      const cleaned = {
+        ...resume,
+        experience: (resume.experience || []).map(e => ({ ...e, bullets: stripDots(e.bullets) })),
+        projects:   (resume.projects   || []).map(p => ({ ...p, bullets: stripDots(p.bullets) })),
+        extraSections: (resume.extraSections || []).map(s => ({ ...s, items: stripDots(s.items) })),
+      }
       setPhase('done')
-      onResumeGenerated(resume)
+      onResumeGenerated(cleaned)
       setShowToast(true)
       setShowConfetti(true)
       setTimeout(() => setShowToast(false), 4000)

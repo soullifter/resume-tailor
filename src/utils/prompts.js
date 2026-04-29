@@ -341,6 +341,7 @@ EXPERIENCE:
 - Rewrite EVERY bullet — no bullet should be left in its original weak form
 - Reorder bullets within each role: most JD-relevant bullet goes first
 - Every bullet format: strong past-tense action verb + specific outcome + metric
+- Do NOT end any bullet with a period or full stop — resume bullets never end with punctuation
 - Wrap key metrics, numbers, percentages, and dollar amounts in **double asterisks** — e.g. **40%**, **$2M revenue**, **3x faster** — so they render bold in the PDF
 - Preserve ALL existing numbers/metrics/percentages exactly as they appear in the original
 - Use [X] as placeholder only where a metric is clearly implied but genuinely missing
@@ -614,7 +615,7 @@ WHAT TO FIX — apply every rule below:
 
 7. CONSISTENCY
    - Date formats consistent throughout (e.g. all "Jan 2022 – Mar 2024" or all "2022 – 2024")
-   - Bullet punctuation consistent — either all end with periods or none do
+   - Remove any trailing periods from bullets — resume bullets should never end with a full stop
    - Tool/technology names correctly capitalized (JavaScript not javascript, AWS not aws, React not react)
 
 ABSOLUTE LIMITS — violating any is a failure:
