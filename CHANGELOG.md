@@ -8,6 +8,28 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.3.0] — 2026-04-29
+
+### JD auto-fetch from job URLs
+- Paste a LinkedIn or Greenhouse job URL to auto-fill the job description — no more manual copy-paste
+- LinkedIn: all URL formats supported (`/jobs/view/{id}`, `?currentJobId=`, `&currentJobId=`)
+- Greenhouse: direct public API (`boards.greenhouse.io` and `job-boards.greenhouse.io`)
+- LinkedIn fetched via Apps Script proxy (no CORS issues); Greenhouse fetched directly
+- Graceful fallback — if fetch fails, error message shown and textarea stays ready for manual paste
+
+### Download counter on landing page
+- Big animated number above the CTA showing total resumes downloaded
+- Smooth count-up animation when number loads
+- Pulsing skeleton shown while fetching — no "0" flicker on load
+- Spinning live indicator ring next to the label
+- Auto-refreshes count every 60 seconds
+
+### Download tracking fix
+- Switched from Google Forms to Apps Script `doPost` endpoint
+- Fixed blank rows issue — all fields (name, email, company, role, seniority, template, format, ATS score, browser/device) now correctly recorded in Google Sheets
+
+---
+
 ## [1.2.3] — 2026-04-29
 
 ### AI generation quality — kill the AI-generated feel
