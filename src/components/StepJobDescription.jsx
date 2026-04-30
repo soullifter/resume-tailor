@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import StepLayout from './StepLayout'
-import { geminiJSON } from '../utils/groq'
+import { geminiJSON, checkInjection, validateJobDescription } from '../utils/groq'
 import { jdParsePrompt } from '../utils/prompts'
 
 async function parseJobInfo(apiKey, jd, resumeText) {
@@ -93,13 +93,34 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
   const [focused, setFocused]         = useState(false)
   const [msgIdx, setMsgIdx]           = useState(0)
   const [msgVisible, setMsgVisible]   = useState(true)
-  const debounceRef = useRef(null)
+  const parsedValueRef = useRef('')
   const msgIntervalRef = useRef(null)
+  const [jdValidation, setJdValidation]   = useState(null) // null | { isJobDescription }
+  const [jdCheckLoading, setJdCheckLoading] = useState(false)
+  const [jdCheckError, setJdCheckError]   = useState('')
 
   // URL auto-fetch
   const [urlInput, setUrlInput]           = useState('')
   const [urlStatus, setUrlStatus]         = useState('idle') // 'idle' | 'loading' | 'success' | 'error'
   const [urlError, setUrlError]           = useState('')
+
+  const analyzeJD = useCallback(async (jdText = value) => {
+    if (!apiKey || jdText.trim().length < 50) return
+    setParseStatus('loading')
+    setParseError('')
+    try {
+      const info = await parseJobInfo(apiKey, jdText, resumeText)
+      setJobInfo(info)
+      setParseStatus('done')
+      setCollapsed(true)
+      onJobInfoParsed?.(info)
+      parsedValueRef.current = jdText
+      validateJobDescription(apiKey, jdText).then(r => { if (r) setJdValidation(r) }).catch(() => {})
+    } catch (e) {
+      setParseError(e.message || 'Could not analyze JD. You can still proceed.')
+      setParseStatus('error')
+    }
+  }, [apiKey, value, resumeText])
 
   async function handleFetchUrl() {
     if (!urlInput.trim()) return
@@ -109,33 +130,42 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
       const text = await fetchJDFromUrl(urlInput.trim())
       onChange(text)
       setUrlStatus('success')
+      // Auto-analyze after URL fetch — JD is complete
+      if (apiKey && text.trim().length > 50) analyzeJD(text)
     } catch (e) {
       setUrlError(e.message || 'Could not fetch job description')
       setUrlStatus('error')
     }
   }
 
-  // Reset collapsed when user edits JD or clears it
-  useEffect(() => {
-    if (value.trim().length < 50) setCollapsed(false)
-  }, [value])
+  async function handleNext() {
+    if (!apiKey) { onNext(); return }
+    setJdCheckLoading(true)
+    setJdCheckError('')
+    try {
+      const unsafe = await checkInjection(apiKey, value)
+      if (unsafe) {
+        setJdCheckError('Job description contains disallowed content. Please paste a valid job posting.')
+        setJdCheckLoading(false)
+        return
+      }
+    } catch { /* fail open */ }
+    setJdCheckLoading(false)
+    onNext()
+  }
 
+  // Reset state when JD is cleared or becomes too short
   useEffect(() => {
-    if (!apiKey || value.trim().length < 50) {
+    if (value.trim().length < 50) {
+      setCollapsed(false)
+      setJdValidation(null)
       setJobInfo(null)
       setParseStatus('idle')
       onJobInfoParsed?.(null)
-      return
+      parsedValueRef.current = ''
     }
-    setParseStatus('loading')
-    clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => {
-      parseJobInfo(apiKey, value, resumeText)
-        .then(info => { setJobInfo(info); setParseStatus('done'); setCollapsed(true); onJobInfoParsed?.(info) })
-        .catch(e => { setParseError(e.message || 'Could not analyze JD. You can still proceed.'); setParseStatus('error') })
-    }, 1200)
-    return () => clearTimeout(debounceRef.current)
-  }, [value, apiKey, resumeText])
+    setJdCheckError('')
+  }, [value])
 
   // Cycle loading messages while parsing
   useEffect(() => {
@@ -164,9 +194,9 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
       title="Paste the job description"
       subtitle="Copy the full JD from LinkedIn, Indeed, or any job board."
       onBack={onBack}
-      onNext={onNext}
-      nextLabel={parseStatus === 'loading' ? 'Analyzing JD...' : 'Analyze & Tailor'}
-      nextDisabled={!isReady || parseStatus === 'loading'}
+      onNext={handleNext}
+      nextLabel={jdCheckLoading ? 'Checking...' : parseStatus === 'loading' ? 'Analyzing JD...' : 'Analyze & Tailor'}
+      nextDisabled={!isReady || parseStatus === 'loading' || jdCheckLoading}
       onOpenSettings={onOpenSettings}
     >
       <style>{JD_STYLES}</style>
@@ -228,12 +258,21 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
                   <p className="text-slate-500 text-sm">{wordCount} words · {value.length} chars</p>
                 </div>
               </div>
-              <button
-                onClick={() => setCollapsed(false)}
-                className="text-slate-500 hover:text-slate-300 text-sm underline transition-colors shrink-0"
-              >
-                Edit
-              </button>
+              <div className="flex items-center gap-3 shrink-0">
+                <button
+                  onClick={() => analyzeJD()}
+                  disabled={parseStatus === 'loading'}
+                  className="text-blue-400 hover:text-blue-300 text-sm transition-colors disabled:opacity-50"
+                >
+                  {parseStatus === 'loading' ? 'Analyzing...' : 'Re-analyze'}
+                </button>
+                <button
+                  onClick={() => setCollapsed(false)}
+                  className="text-slate-500 hover:text-slate-300 text-sm underline transition-colors"
+                >
+                  Edit
+                </button>
+              </div>
             </div>
           ) : (
             /* Expanded textarea */
@@ -257,6 +296,38 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
             </>
           )}
         </div>
+
+        {/* ── Analyze JD button ── */}
+        {isReady && !collapsed && (
+          <button
+            onClick={() => analyzeJD()}
+            disabled={parseStatus === 'loading' || !apiKey}
+            className="w-full py-2.5 rounded-xl border border-blue-500/40 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {parseStatus === 'loading'
+              ? '⏳ Analyzing job description...'
+              : parsedValueRef.current
+                ? '↻ Re-analyze JD'
+                : '🔍 Analyze JD'}
+          </button>
+        )}
+
+        {/* ── JD validation warnings ── */}
+        {jdValidation && !jdValidation.isJobDescription && (
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 flex items-start gap-3">
+            <span className="text-amber-400 shrink-0 mt-0.5">⚠</span>
+            <div>
+              <p className="text-amber-400 text-sm font-medium">This may not be a job description</p>
+              <p className="text-amber-400/70 text-sm mt-0.5">Check you pasted the right content. You can still proceed.</p>
+            </div>
+          </div>
+        )}
+        {jdCheckError && (
+          <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 flex items-start gap-3">
+            <span className="text-red-400 shrink-0 mt-0.5">✕</span>
+            <p className="text-red-400 text-sm">{jdCheckError}</p>
+          </div>
+        )}
 
         {/* ── Status line below textarea ── */}
         {parseStatus === 'loading' && (

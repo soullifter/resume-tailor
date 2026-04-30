@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { geminiText } from '../utils/groq'
+import { geminiText, checkInjection } from '../utils/groq'
 import { bulletRewritePrompt } from '../utils/prompts'
 
 async function rewriteBullet(apiKey, bullet, title, company, jobDescription) {
@@ -43,13 +43,25 @@ function Field({ label, value, onChange, multiline, rows = 2, placeholder = '' }
   )
 }
 
-function BulletRow({ bullet, onEdit, onDelete, onRewrite }) {
+function BulletRow({ bullet, onEdit, onDelete, onRewrite, apiKey }) {
   const [loading, setLoading] = useState(false)
+  const [rewriteError, setRewriteError] = useState('')
   const textareaRef = useRef(null)
 
   async function handleRewrite() {
     setLoading(true)
-    try { await onRewrite() } catch {}
+    setRewriteError('')
+    try {
+      if (apiKey && bullet.trim().length > 10) {
+        const unsafe = await checkInjection(apiKey, bullet).catch(() => false)
+        if (unsafe) {
+          setRewriteError('Bullet contains disallowed content — cannot rewrite.')
+          setLoading(false)
+          return
+        }
+      }
+      await onRewrite()
+    } catch {}
     setLoading(false)
   }
 
@@ -91,6 +103,7 @@ function BulletRow({ bullet, onEdit, onDelete, onRewrite }) {
             )}
           </p>
         )}
+        {rewriteError && <p className="text-red-400 text-xs px-1 mt-0.5">{rewriteError}</p>}
       </div>
       <div className="flex flex-col gap-1 shrink-0">
         <button onClick={handleBold} title="Select text in the bullet, then click B to bold it"
@@ -301,7 +314,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
                     <div className="space-y-1.5">
                       {exp.bullets?.map((bullet, bi) => (
                         <div key={bi} id={`editor-experience-${ei}-bullet-${bi}`}>
-                          <BulletRow bullet={bullet}
+                          <BulletRow bullet={bullet} apiKey={apiKey}
                             onEdit={v => setBullet(ei, bi, v)}
                             onDelete={() => removeBullet(ei, bi)}
                             onRewrite={async () => {
@@ -374,7 +387,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
                     <div className="space-y-1.5">
                       {(proj.bullets || []).map((bullet, bi) => (
                         <div key={bi} id={`editor-projects-${pi}-bullet-${bi}`}>
-                          <BulletRow bullet={bullet}
+                          <BulletRow bullet={bullet} apiKey={apiKey}
                             onEdit={v => setProjBullet(pi, bi, v)}
                             onDelete={() => removeProjBullet(pi, bi)}
                             onRewrite={async () => {
@@ -468,7 +481,7 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
             </div>
             <div className="space-y-1.5">
               {(section.items || []).map((item, ii) => (
-                <BulletRow key={ii} bullet={item}
+                <BulletRow key={ii} bullet={item} apiKey={apiKey}
                   onEdit={v => setExtraItem(si, ii, v)}
                   onDelete={() => removeExtraItem(si, ii)}
                   onRewrite={async () => {

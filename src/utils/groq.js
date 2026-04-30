@@ -340,6 +340,37 @@ Reply format: {"isResume": true, "language": "English"}`
 }
 
 /**
+ * Pre-flight JD validation — checks if pasted text is actually a job description.
+ * Always fails silently (returns null on error).
+ * Uses llama-3.1-8b-instant for speed.
+ */
+export async function validateJobDescription(apiKey, text) {
+  try {
+    const snippet = text.slice(0, 1500).replace(/`/g, "'")
+    const prompt = `Is this text a job description or job posting? Reply with ONLY valid JSON, no other text.
+
+Text:
+"""
+${snippet}
+"""
+
+Reply format: {"isJobDescription": true}`
+
+    const raw = await _call(apiKey, prompt, {
+      _modelId: 'llama-3.1-8b-instant',
+      temperature: 0,
+      maxOutputTokens: 20,
+    })
+    const clean = raw.replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/```[a-z]*\n?/gi, '').replace(/```/g, '').trim()
+    const start = clean.indexOf('{')
+    const end   = clean.lastIndexOf('}')
+    if (start === -1 || end === -1) return null
+    const result = JSON.parse(clean.slice(start, end + 1))
+    return { isJobDescription: result.isJobDescription === true }
+  } catch { return null }
+}
+
+/**
  * Prompt injection check — detects if text tries to override AI instructions.
  * Returns true if unsafe, false if safe. Always fails open (returns false on error).
  * Uses llama-3.1-8b-instant for speed.

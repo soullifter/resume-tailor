@@ -8,6 +8,22 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.4.2] — 2026-04-30
+
+### JD analysis — manual trigger (no more auto-fire on every keystroke)
+- Removed auto-parse debounce that fired API calls on every keystroke — was wasting token quota and hitting rate limits during active typing
+- Added "🔍 Analyze JD" button below the textarea — user triggers analysis once when done pasting
+- After analysis, collapsed card shows "Re-analyze" button next to "Edit" for quick re-trigger
+- URL auto-fetch still auto-analyzes immediately (JD is complete on fetch)
+
+### Additional pre-flight validations
+- JD validation: background check detects if pasted text isn't a job description → amber warning banner
+- JD injection check: runs when clicking "Analyze & Tailor", blocks with error if unsafe content detected
+- Bullet rewrite injection check: ✨ rewrite button checks bullet content before sending to AI, shows inline error if blocked
+- All three use `llama-3.1-8b-instant` (Basic) — fast, no impact on user quota
+
+---
+
 ## [1.4.1] — 2026-04-30
 
 ### Section reordering in editor
