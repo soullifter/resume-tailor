@@ -219,90 +219,85 @@ export default function ResumeDocument({ data, template = 'classic' }) {
           </View>
         )}
 
-        {/* Experience */}
-        {data.experience?.length > 0 && (
-          <View style={s.section}>
-            <SectionTitle label="Experience" s={s} isModern={isModern} />
-            {data.experience.map((exp, i) => (
-              <View key={i} style={s.entryItem}>
-                <View style={s.entryHeader}>
-                  <View style={s.entryHeaderLeft}>
-                    <Text style={s.entryTitle}>{exp.title}</Text>
-                    {exp.company && <Text style={s.entryTitleSep}>·</Text>}
-                    {exp.company && <Text style={s.entrySub}>{exp.company}</Text>}
+        {/* Reorderable sections */}
+        {(data.sectionOrder ?? ['experience', 'skills', 'projects', 'certifications', 'education']).map(key => {
+          if (key === 'experience' && data.experience?.length > 0) return (
+            <View key="experience" style={s.section}>
+              <SectionTitle label="Experience" s={s} isModern={isModern} />
+              {data.experience.map((exp, i) => (
+                <View key={i} style={s.entryItem}>
+                  <View style={s.entryHeader}>
+                    <View style={s.entryHeaderLeft}>
+                      <Text style={s.entryTitle}>{exp.title}</Text>
+                      {exp.company && <Text style={s.entryTitleSep}>·</Text>}
+                      {exp.company && <Text style={s.entrySub}>{exp.company}</Text>}
+                    </View>
+                    <Text style={s.entryDates}>{exp.dates}</Text>
                   </View>
-                  <Text style={s.entryDates}>{exp.dates}</Text>
+                  {exp.bullets?.map((b, j) => (
+                    <Bullet key={j} text={b} s={s} />
+                  ))}
                 </View>
-                {exp.bullets?.map((b, j) => (
-                  <Bullet key={j} text={b} s={s} />
-                ))}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Skills */}
-        {data.skills?.length > 0 && (
-          <View style={s.section}>
-            <SectionTitle label="Skills" s={s} isModern={isModern} />
-            <SkillsLine skills={data.skills} s={s} />
-          </View>
-        )}
-
-        {/* Projects */}
-        {data.projects?.length > 0 && (
-          <View style={s.section}>
-            <SectionTitle label="Projects" s={s} isModern={isModern} />
-            {data.projects.map((proj, i) => (
-              <View key={i} style={s.entryItem}>
-                <View style={s.entryHeader}>
-                  <View style={s.entryHeaderLeft}>
-                    <Text style={s.entryTitle}>{proj.name}</Text>
-                    {proj.technologies?.length > 0 && <Text style={s.entryTitleSep}>·</Text>}
-                    {proj.technologies?.length > 0 && <Text style={s.entrySub}>{proj.technologies.join(', ')}</Text>}
+              ))}
+            </View>
+          )
+          if (key === 'skills' && data.skills?.length > 0) return (
+            <View key="skills" style={s.section}>
+              <SectionTitle label="Skills" s={s} isModern={isModern} />
+              <SkillsLine skills={data.skills} s={s} />
+            </View>
+          )
+          if (key === 'projects' && data.projects?.length > 0) return (
+            <View key="projects" style={s.section}>
+              <SectionTitle label="Projects" s={s} isModern={isModern} />
+              {data.projects.map((proj, i) => (
+                <View key={i} style={s.entryItem}>
+                  <View style={s.entryHeader}>
+                    <View style={s.entryHeaderLeft}>
+                      <Text style={s.entryTitle}>{proj.name}</Text>
+                      {proj.technologies?.length > 0 && <Text style={s.entryTitleSep}>·</Text>}
+                      {proj.technologies?.length > 0 && <Text style={s.entrySub}>{proj.technologies.join(', ')}</Text>}
+                    </View>
+                    {proj.url && <Text style={[s.contactLink, { flexShrink: 0 }]}>{proj.url}</Text>}
                   </View>
-                  {proj.url && <Text style={[s.contactLink, { flexShrink: 0 }]}>{proj.url}</Text>}
+                  {proj.description && <Text style={s.entryMeta}>{proj.description}</Text>}
+                  {proj.bullets?.map((b, j) => (
+                    <Bullet key={j} text={b} s={s} />
+                  ))}
                 </View>
-                {proj.description && <Text style={s.entryMeta}>{proj.description}</Text>}
-                {proj.bullets?.map((b, j) => (
-                  <Bullet key={j} text={b} s={s} />
-                ))}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Certifications */}
-        {data.certifications?.length > 0 && (
-          <View style={s.section}>
-            <SectionTitle label="Certifications" s={s} isModern={isModern} />
-            {data.certifications.map((cert, i) => (
-              <View key={i} style={s.certRow}>
-                <View style={s.certLeft}>
-                  <Text style={s.certName}>{cert.name}</Text>
-                  {cert.issuer && <Text style={s.certIssuer}>{cert.issuer}</Text>}
+              ))}
+            </View>
+          )
+          if (key === 'certifications' && data.certifications?.length > 0) return (
+            <View key="certifications" style={s.section}>
+              <SectionTitle label="Certifications" s={s} isModern={isModern} />
+              {data.certifications.map((cert, i) => (
+                <View key={i} style={s.certRow}>
+                  <View style={s.certLeft}>
+                    <Text style={s.certName}>{cert.name}</Text>
+                    {cert.issuer && <Text style={s.certIssuer}>{cert.issuer}</Text>}
+                  </View>
+                  {cert.date && <Text style={s.certDate}>{cert.date}</Text>}
                 </View>
-                {cert.date && <Text style={s.certDate}>{cert.date}</Text>}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {/* Education */}
-        {data.education?.length > 0 && (
-          <View style={s.section}>
-            <SectionTitle label="Education" s={s} isModern={isModern} />
-            {data.education.map((edu, i) => (
-              <View key={i} style={s.eduRow}>
-                <View style={s.eduLeft}>
-                  <Text style={s.eduDegree}>{edu.degree}</Text>
-                  <Text style={s.eduSchool}>{edu.school}</Text>
+              ))}
+            </View>
+          )
+          if (key === 'education' && data.education?.length > 0) return (
+            <View key="education" style={s.section}>
+              <SectionTitle label="Education" s={s} isModern={isModern} />
+              {data.education.map((edu, i) => (
+                <View key={i} style={s.eduRow}>
+                  <View style={s.eduLeft}>
+                    <Text style={s.eduDegree}>{edu.degree}</Text>
+                    <Text style={s.eduSchool}>{edu.school}</Text>
+                  </View>
+                  <Text style={s.eduDates}>{edu.dates}</Text>
                 </View>
-                <Text style={s.eduDates}>{edu.dates}</Text>
-              </View>
-            ))}
-          </View>
-        )}
+              ))}
+            </View>
+          )
+          return null
+        })}
 
         {/* Extra Sections */}
         {data.extraSections?.map((section, si) => {

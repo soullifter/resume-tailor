@@ -8,6 +8,20 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.4.1] — 2026-04-30
+
+### Section reordering in editor
+- ▲ ▼ buttons on every section header (Experience, Skills, Projects, Certifications, Education) to move sections up or down
+- Order reflects instantly in the live HTML preview, the PDF canvas preview, and the downloaded PDF
+- Section order persisted in resume data — survives edits, polish, trim, and re-saves
+- Backwards compatible — resumes without a saved order default to the original order
+
+### ResumeTailor logo on My Resumes page
+- "R" gradient logo + ResumeTailor label added to the My Resumes header, matching the step pages
+- Clicking it navigates to the home/landing page
+
+---
+
 ## [1.4.0] — 2026-04-30
 
 ### Deep Reasoning model

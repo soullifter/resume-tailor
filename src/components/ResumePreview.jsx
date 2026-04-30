@@ -68,104 +68,99 @@ export default function ResumePreview({ data, hideDownload = false, template = '
           </div>
         )}
 
-        {/* Experience */}
-        {data.experience?.length > 0 && (
-          <div>
-            <h3 className="text-sm font-bold text-blue-900 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Experience</h3>
-            <div className="space-y-4">
-              {data.experience.map((exp, i) => (
-                <div key={i} data-field={`experience.${i}`}>
-                  <div className="flex justify-between items-start">
-                    <span className="text-sm font-bold text-gray-800">{exp.title}</span>
-                    <span className="text-sm text-gray-400">{exp.dates}</span>
-                  </div>
-                  <p className="text-sm mb-1" style={{ color: colors.accent }}>{exp.company}</p>
-                  <ul className="space-y-1">
-                    {exp.bullets?.map((b, j) => (
-                      <li key={j} className="text-sm text-gray-700 flex gap-2" data-field={`experience.${i}.bullets.${j}`}>
-                        <span className="text-gray-400 shrink-0">•</span><BoldText text={b} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Skills */}
-        {data.skills?.length > 0 && (
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Skills</h3>
-            <div className="flex flex-wrap gap-2">
-              {data.skills.map((skill, i) => (
-                <span key={i} className="text-sm px-2 py-1 bg-white border border-gray-200 rounded text-blue-900" data-field="skills">{skill}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Projects */}
-        {data.projects?.length > 0 && (
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-3" style={{ color: colors.primary }}>Projects</h3>
-            <div className="space-y-3">
-              {data.projects.map((proj, i) => (
-                <div key={i} data-field={`projects.${i}`}>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex justify-between items-start gap-2">
-                      <span className="text-sm font-bold text-gray-800 shrink-0">{proj.name}</span>
-                      {proj.url && <span className="text-sm text-blue-500 break-all text-right min-w-0">{proj.url}</span>}
+        {/* Reorderable sections */}
+        {(data.sectionOrder ?? ['experience', 'skills', 'projects', 'certifications', 'education']).map(key => {
+          if (key === 'experience' && data.experience?.length > 0) return (
+            <div key="experience">
+              <h3 className="text-sm font-bold text-blue-900 uppercase tracking-widest border-b border-gray-200 pb-1 mb-3">Experience</h3>
+              <div className="space-y-4">
+                {data.experience.map((exp, i) => (
+                  <div key={i} data-field={`experience.${i}`}>
+                    <div className="flex justify-between items-start">
+                      <span className="text-sm font-bold text-gray-800">{exp.title}</span>
+                      <span className="text-sm text-gray-400">{exp.dates}</span>
                     </div>
+                    <p className="text-sm mb-1" style={{ color: colors.accent }}>{exp.company}</p>
+                    <ul className="space-y-1">
+                      {exp.bullets?.map((b, j) => (
+                        <li key={j} className="text-sm text-gray-700 flex gap-2" data-field={`experience.${i}.bullets.${j}`}>
+                          <span className="text-gray-400 shrink-0">•</span><BoldText text={b} />
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  {proj.description && <p className="text-sm text-gray-500 mb-1">{proj.description}</p>}
-                  {proj.technologies?.length > 0 && (
-                    <p className="text-sm text-gray-400 mb-1">{proj.technologies.join(' · ')}</p>
-                  )}
-                  <ul className="space-y-0.5">
-                    {proj.bullets?.map((b, j) => (
-                      <li key={j} className="text-sm text-gray-700 flex gap-2" data-field={`projects.${i}.bullets.${j}`}>
-                        <span className="text-gray-400 shrink-0">•</span><BoldText text={b} />
-                      </li>
-                    ))}
-                  </ul>
+                ))}
+              </div>
+            </div>
+          )
+          if (key === 'skills' && data.skills?.length > 0) return (
+            <div key="skills">
+              <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Skills</h3>
+              <div className="flex flex-wrap gap-2">
+                {data.skills.map((skill, i) => (
+                  <span key={i} className="text-sm px-2 py-1 bg-white border border-gray-200 rounded text-blue-900" data-field="skills">{skill}</span>
+                ))}
+              </div>
+            </div>
+          )
+          if (key === 'projects' && data.projects?.length > 0) return (
+            <div key="projects">
+              <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-3" style={{ color: colors.primary }}>Projects</h3>
+              <div className="space-y-3">
+                {data.projects.map((proj, i) => (
+                  <div key={i} data-field={`projects.${i}`}>
+                    <div className="flex flex-col gap-0.5">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-sm font-bold text-gray-800 shrink-0">{proj.name}</span>
+                        {proj.url && <span className="text-sm text-blue-500 break-all text-right min-w-0">{proj.url}</span>}
+                      </div>
+                    </div>
+                    {proj.description && <p className="text-sm text-gray-500 mb-1">{proj.description}</p>}
+                    {proj.technologies?.length > 0 && (
+                      <p className="text-sm text-gray-400 mb-1">{proj.technologies.join(' · ')}</p>
+                    )}
+                    <ul className="space-y-0.5">
+                      {proj.bullets?.map((b, j) => (
+                        <li key={j} className="text-sm text-gray-700 flex gap-2" data-field={`projects.${i}.bullets.${j}`}>
+                          <span className="text-gray-400 shrink-0">•</span><BoldText text={b} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+          if (key === 'certifications' && data.certifications?.length > 0) return (
+            <div key="certifications">
+              <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Certifications</h3>
+              {data.certifications.map((cert, i) => (
+                <div key={i} className="flex justify-between mb-1" data-field={`certifications.${i}`}>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{cert.name}</p>
+                    {cert.issuer && <p className="text-sm text-gray-500">{cert.issuer}</p>}
+                  </div>
+                  {cert.date && <span className="text-sm text-gray-400">{cert.date}</span>}
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Certifications */}
-        {data.certifications?.length > 0 && (
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Certifications</h3>
-            {data.certifications.map((cert, i) => (
-              <div key={i} className="flex justify-between mb-1" data-field={`certifications.${i}`}>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">{cert.name}</p>
-                  {cert.issuer && <p className="text-sm text-gray-500">{cert.issuer}</p>}
+          )
+          if (key === 'education' && data.education?.length > 0) return (
+            <div key="education">
+              <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Education</h3>
+              {data.education.map((edu, i) => (
+                <div key={i} className="flex justify-between mb-1" data-field={`education.${i}`}>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">{edu.degree}</p>
+                    <p className="text-sm text-gray-500">{edu.school}</p>
+                  </div>
+                  <span className="text-sm text-gray-400">{edu.dates}</span>
                 </div>
-                {cert.date && <span className="text-sm text-gray-400">{cert.date}</span>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Education */}
-        {data.education?.length > 0 && (
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-widest border-b border-gray-200 pb-1 mb-2" style={{ color: colors.primary }}>Education</h3>
-            {data.education.map((edu, i) => (
-              <div key={i} className="flex justify-between mb-1" data-field={`education.${i}`}>
-                <div>
-                  <p className="text-sm font-semibold text-gray-800">{edu.degree}</p>
-                  <p className="text-sm text-gray-500">{edu.school}</p>
-                </div>
-                <span className="text-sm text-gray-400">{edu.dates}</span>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )
+          return null
+        })}
 
         {/* Extra Sections */}
         {data.extraSections?.map((section, i) => section.items?.length > 0 && (

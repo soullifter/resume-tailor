@@ -137,6 +137,17 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
 
   function set(field, value) { onChange({ ...data, [field]: value }) }
 
+  const DEFAULT_SECTION_ORDER = ['experience', 'skills', 'projects', 'certifications', 'education']
+  const sectionOrder = data.sectionOrder ?? DEFAULT_SECTION_ORDER
+
+  function moveSection(idx, dir) {
+    const next = idx + dir
+    if (next < 0 || next >= sectionOrder.length) return
+    const order = [...sectionOrder]
+    ;[order[idx], order[next]] = [order[next], order[idx]]
+    set('sectionOrder', order)
+  }
+
   // ── Experience helpers ───────────────────────────────────────────────────────
   function setExp(ei, field, value) {
     set('experience', data.experience.map((e, i) => i === ei ? { ...e, [field]: value } : e))
@@ -250,169 +261,195 @@ export default function ResumeEditor({ data, onChange, apiKey, jobDescription })
           <Field value={data.summary} onChange={v => set('summary', v)} multiline rows={3} placeholder="Professional summary..." />
         </div>
 
-        {/* ── Experience ── */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <SectionLabel>Experience</SectionLabel>
-            <AddBtn onClick={() => set('experience', [...(data.experience || []), { title: '', company: '', dates: '', bullets: [''] }])}>
-              + Add Role
-            </AddBtn>
-          </div>
-          <div className="space-y-4">
-            {data.experience?.map((exp, ei) => (
-              <div key={ei} id={`editor-experience-${ei}`} className="border border-slate-800 rounded-xl p-3 space-y-2">
-                <div className="flex justify-end">
-                  <RemoveBtn onClick={() => set('experience', data.experience.filter((_, i) => i !== ei))}>Remove role</RemoveBtn>
+        {/* ── Reorderable sections ── */}
+        {sectionOrder.map((key, idx) => {
+          const isFirst = idx === 0
+          const isLast  = idx === sectionOrder.length - 1
+          const movebtns = (
+            <div className="flex flex-col gap-0.5 mr-2 shrink-0">
+              <button onClick={() => moveSection(idx, -1)} disabled={isFirst}
+                title="Move section up"
+                className="text-slate-500 hover:text-slate-300 disabled:opacity-20 disabled:cursor-default transition-colors text-xs leading-none text-center">▲</button>
+              <button onClick={() => moveSection(idx, 1)} disabled={isLast}
+                title="Move section down"
+                className="text-slate-500 hover:text-slate-300 disabled:opacity-20 disabled:cursor-default transition-colors text-xs leading-none text-center">▼</button>
+            </div>
+          )
+
+          if (key === 'experience') return (
+            <div key="experience">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {movebtns}
+                  <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Experience</p>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Field label="Job Title" value={exp.title}   onChange={v => setExp(ei, 'title', v)} />
-                  <Field label="Company"   value={exp.company} onChange={v => setExp(ei, 'company', v)} />
-                  <div className="col-span-2">
-                    <Field label="Dates" value={exp.dates} onChange={v => setExp(ei, 'dates', v)} />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  {exp.bullets?.map((bullet, bi) => (
-                    <div key={bi} id={`editor-experience-${ei}-bullet-${bi}`}>
-                      <BulletRow bullet={bullet}
-                        onEdit={v => setBullet(ei, bi, v)}
-                        onDelete={() => removeBullet(ei, bi)}
-                        onRewrite={async () => {
-                          const rewritten = await rewriteBullet(apiKey, bullet, exp.title, exp.company, jobDescription)
-                          setBullet(ei, bi, rewritten)
-                        }}
-                      />
+                <AddBtn onClick={() => set('experience', [...(data.experience || []), { title: '', company: '', dates: '', bullets: [''] }])}>+ Add Role</AddBtn>
+              </div>
+              <div className="space-y-4">
+                {data.experience?.map((exp, ei) => (
+                  <div key={ei} id={`editor-experience-${ei}`} className="border border-slate-800 rounded-xl p-3 space-y-2">
+                    <div className="flex justify-end">
+                      <RemoveBtn onClick={() => set('experience', data.experience.filter((_, i) => i !== ei))}>Remove role</RemoveBtn>
                     </div>
-                  ))}
-                  <button onClick={() => addBullet(ei)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">
-                    + Add bullet
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Skills ── */}
-        <div id="editor-skills">
-          <SectionLabel>Skills</SectionLabel>
-          <div className="flex flex-wrap gap-1.5 mb-2">
-            {data.skills?.map((s, i) => (
-              <span key={i} className="flex items-center gap-1 text-sm px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-full">
-                {s}
-                <button onClick={() => set('skills', data.skills.filter((_, j) => j !== i))}
-                  className="text-slate-500 hover:text-red-400 transition-colors ml-0.5">×</button>
-              </span>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <input value={skillInput} onChange={e => setSkillInput(e.target.value)}
-              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
-              placeholder="Type skill and press Enter..."
-              className="flex-1 bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-sm rounded-lg px-2.5 py-1.5 focus:outline-none transition-colors" />
-            <button onClick={addSkill} className="text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition-colors">Add</button>
-          </div>
-        </div>
-
-        {/* ── Projects ── */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <SectionLabel>Projects</SectionLabel>
-            <AddBtn onClick={() => set('projects', [...(data.projects || []), { name: '', description: '', technologies: [], bullets: [''], url: '' }])}>
-              + Add Project
-            </AddBtn>
-          </div>
-          <div className="space-y-4">
-            {(data.projects || []).map((proj, pi) => (
-              <div key={pi} id={`editor-projects-${pi}`} className="border border-slate-800 rounded-xl p-3 space-y-2">
-                <div className="flex justify-end">
-                  <RemoveBtn onClick={() => set('projects', data.projects.filter((_, i) => i !== pi))}>Remove project</RemoveBtn>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Field label="Project Name"  value={proj.name}        onChange={v => setProj(pi, 'name', v)} />
-                  <Field label="URL (optional)" value={proj.url}        onChange={v => setProj(pi, 'url', v)} placeholder="https://..." />
-                  <div className="col-span-2">
-                    <Field label="Description" value={proj.description} onChange={v => setProj(pi, 'description', v)} placeholder="One-line description" />
-                  </div>
-                  <div className="col-span-2">
-                    <Field label="Technologies (comma-separated)"
-                      value={Array.isArray(proj.technologies) ? proj.technologies.join(', ') : proj.technologies || ''}
-                      onChange={v => setProj(pi, 'technologies', v.split(',').map(t => t.trim()).filter(Boolean))} />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  {(proj.bullets || []).map((bullet, bi) => (
-                    <div key={bi} id={`editor-projects-${pi}-bullet-${bi}`}>
-                      <BulletRow bullet={bullet}
-                        onEdit={v => setProjBullet(pi, bi, v)}
-                        onDelete={() => removeProjBullet(pi, bi)}
-                        onRewrite={async () => {
-                          const rewritten = await rewriteBullet(apiKey, bullet, proj.name, 'Project', jobDescription)
-                          setProjBullet(pi, bi, rewritten)
-                        }}
-                      />
+                    <div className="grid grid-cols-2 gap-2">
+                      <Field label="Job Title" value={exp.title}   onChange={v => setExp(ei, 'title', v)} />
+                      <Field label="Company"   value={exp.company} onChange={v => setExp(ei, 'company', v)} />
+                      <div className="col-span-2">
+                        <Field label="Dates" value={exp.dates} onChange={v => setExp(ei, 'dates', v)} />
+                      </div>
                     </div>
-                  ))}
-                  <button onClick={() => addProjBullet(pi)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">
-                    + Add bullet
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* ── Certifications ── */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <SectionLabel>Certifications</SectionLabel>
-            <AddBtn onClick={() => set('certifications', [...(data.certifications || []), { name: '', issuer: '', date: '' }])}>
-              + Add Cert
-            </AddBtn>
-          </div>
-          <div className="space-y-2">
-            {(data.certifications || []).map((cert, ci) => (
-              <div key={ci} id={`editor-certifications-${ci}`} className="border border-slate-800 rounded-xl p-3">
-                <div className="flex justify-end mb-2">
-                  <RemoveBtn onClick={() => set('certifications', data.certifications.filter((_, i) => i !== ci))}>Remove</RemoveBtn>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="col-span-2">
-                    <Field label="Certification Name" value={cert.name}   onChange={v => setCert(ci, 'name', v)} />
+                    <div className="space-y-1.5">
+                      {exp.bullets?.map((bullet, bi) => (
+                        <div key={bi} id={`editor-experience-${ei}-bullet-${bi}`}>
+                          <BulletRow bullet={bullet}
+                            onEdit={v => setBullet(ei, bi, v)}
+                            onDelete={() => removeBullet(ei, bi)}
+                            onRewrite={async () => {
+                              const rewritten = await rewriteBullet(apiKey, bullet, exp.title, exp.company, jobDescription)
+                              setBullet(ei, bi, rewritten)
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <button onClick={() => addBullet(ei)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">+ Add bullet</button>
+                    </div>
                   </div>
-                  <Field label="Issuing Body" value={cert.issuer} onChange={v => setCert(ci, 'issuer', v)} />
-                  <Field label="Date"         value={cert.date}   onChange={v => setCert(ci, 'date', v)} placeholder="Jan 2024" />
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          )
 
-        {/* ── Education ── */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <SectionLabel>Education</SectionLabel>
-            <AddBtn onClick={() => set('education', [...(data.education || []), { degree: '', school: '', dates: '' }])}>
-              + Add Education
-            </AddBtn>
-          </div>
-          <div className="space-y-2">
-            {(data.education || []).map((edu, i) => (
-              <div key={i} id={`editor-education-${i}`} className="border border-slate-800 rounded-xl p-3">
-                <div className="flex justify-end mb-2">
-                  <RemoveBtn onClick={() => removeEdu(i)}>Remove</RemoveBtn>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Field label="Degree" value={edu.degree} onChange={v => setEdu(i, 'degree', v)} />
-                  <Field label="School" value={edu.school} onChange={v => setEdu(i, 'school', v)} />
-                  <div className="col-span-2">
-                    <Field label="Dates" value={edu.dates} onChange={v => setEdu(i, 'dates', v)} />
-                  </div>
-                </div>
+          if (key === 'skills') return (
+            <div key="skills" id="editor-skills">
+              <div className="flex items-center mb-2">
+                {movebtns}
+                <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Skills</p>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {data.skills?.map((s, i) => (
+                  <span key={i} className="flex items-center gap-1 text-sm px-2 py-0.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-full">
+                    {s}
+                    <button onClick={() => set('skills', data.skills.filter((_, j) => j !== i))}
+                      className="text-slate-500 hover:text-red-400 transition-colors ml-0.5">×</button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input value={skillInput} onChange={e => setSkillInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSkill() } }}
+                  placeholder="Type skill and press Enter..."
+                  className="flex-1 bg-slate-800 border border-slate-700 focus:border-blue-500 text-white text-sm rounded-lg px-2.5 py-1.5 focus:outline-none transition-colors" />
+                <button onClick={addSkill} className="text-sm bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-lg transition-colors">Add</button>
+              </div>
+            </div>
+          )
+
+          if (key === 'projects') return (
+            <div key="projects">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {movebtns}
+                  <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Projects</p>
+                </div>
+                <AddBtn onClick={() => set('projects', [...(data.projects || []), { name: '', description: '', technologies: [], bullets: [''], url: '' }])}>+ Add Project</AddBtn>
+              </div>
+              <div className="space-y-4">
+                {(data.projects || []).map((proj, pi) => (
+                  <div key={pi} id={`editor-projects-${pi}`} className="border border-slate-800 rounded-xl p-3 space-y-2">
+                    <div className="flex justify-end">
+                      <RemoveBtn onClick={() => set('projects', data.projects.filter((_, i) => i !== pi))}>Remove project</RemoveBtn>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Field label="Project Name"   value={proj.name}        onChange={v => setProj(pi, 'name', v)} />
+                      <Field label="URL (optional)" value={proj.url}         onChange={v => setProj(pi, 'url', v)} placeholder="https://..." />
+                      <div className="col-span-2">
+                        <Field label="Description" value={proj.description} onChange={v => setProj(pi, 'description', v)} placeholder="One-line description" />
+                      </div>
+                      <div className="col-span-2">
+                        <Field label="Technologies (comma-separated)"
+                          value={Array.isArray(proj.technologies) ? proj.technologies.join(', ') : proj.technologies || ''}
+                          onChange={v => setProj(pi, 'technologies', v.split(',').map(t => t.trim()).filter(Boolean))} />
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      {(proj.bullets || []).map((bullet, bi) => (
+                        <div key={bi} id={`editor-projects-${pi}-bullet-${bi}`}>
+                          <BulletRow bullet={bullet}
+                            onEdit={v => setProjBullet(pi, bi, v)}
+                            onDelete={() => removeProjBullet(pi, bi)}
+                            onRewrite={async () => {
+                              const rewritten = await rewriteBullet(apiKey, bullet, proj.name, 'Project', jobDescription)
+                              setProjBullet(pi, bi, rewritten)
+                            }}
+                          />
+                        </div>
+                      ))}
+                      <button onClick={() => addProjBullet(pi)} className="text-sm text-blue-400 hover:text-blue-300 transition-colors mt-1">+ Add bullet</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+
+          if (key === 'certifications') return (
+            <div key="certifications">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {movebtns}
+                  <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Certifications</p>
+                </div>
+                <AddBtn onClick={() => set('certifications', [...(data.certifications || []), { name: '', issuer: '', date: '' }])}>+ Add Cert</AddBtn>
+              </div>
+              <div className="space-y-2">
+                {(data.certifications || []).map((cert, ci) => (
+                  <div key={ci} id={`editor-certifications-${ci}`} className="border border-slate-800 rounded-xl p-3">
+                    <div className="flex justify-end mb-2">
+                      <RemoveBtn onClick={() => set('certifications', data.certifications.filter((_, i) => i !== ci))}>Remove</RemoveBtn>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="col-span-2">
+                        <Field label="Certification Name" value={cert.name}   onChange={v => setCert(ci, 'name', v)} />
+                      </div>
+                      <Field label="Issuing Body" value={cert.issuer} onChange={v => setCert(ci, 'issuer', v)} />
+                      <Field label="Date"         value={cert.date}   onChange={v => setCert(ci, 'date', v)} placeholder="Jan 2024" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+
+          if (key === 'education') return (
+            <div key="education">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center">
+                  {movebtns}
+                  <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Education</p>
+                </div>
+                <AddBtn onClick={() => set('education', [...(data.education || []), { degree: '', school: '', dates: '' }])}>+ Add Education</AddBtn>
+              </div>
+              <div className="space-y-2">
+                {(data.education || []).map((edu, i) => (
+                  <div key={i} id={`editor-education-${i}`} className="border border-slate-800 rounded-xl p-3">
+                    <div className="flex justify-end mb-2">
+                      <RemoveBtn onClick={() => removeEdu(i)}>Remove</RemoveBtn>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Field label="Degree" value={edu.degree} onChange={v => setEdu(i, 'degree', v)} />
+                      <Field label="School" value={edu.school} onChange={v => setEdu(i, 'school', v)} />
+                      <div className="col-span-2">
+                        <Field label="Dates" value={edu.dates} onChange={v => setEdu(i, 'dates', v)} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+
+          return null
+        })}
 
         {/* ── Extra Sections (Awards, Publications, Languages, etc.) ── */}
         {(data.extraSections || []).map((section, si) => (

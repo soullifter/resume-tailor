@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getSavedResumes, deleteResume, renameResume, timeAgo } from '../utils/storage'
 import ModelWidget from './ModelWidget'
 
@@ -167,6 +168,7 @@ function CompareView({ a, b, onClose }) {
 }
 
 export default function VersionManager({ onBack, onLoadVersion, onRetailor }) {
+  const navigate = useNavigate()
   const [versions, setVersions]       = useState(() => getSavedResumes())
   const [renaming, setRenaming]       = useState(null)
   const [selected, setSelected]       = useState([])   // ids for comparison
@@ -209,6 +211,13 @@ export default function VersionManager({ onBack, onLoadVersion, onRetailor }) {
       <div className="border-b border-slate-800 px-4 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
+            <button onClick={() => navigate('/')} className="flex items-center gap-2 hover:opacity-80 transition-opacity" title="Go to home">
+              <div className="w-5 h-5 rounded bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center">
+                <span className="text-white text-[10px] font-bold">R</span>
+              </div>
+              <span className="text-white font-bold text-sm">ResumeTailor</span>
+            </button>
+            <div className="w-px h-4 bg-slate-700" />
             <button onClick={onBack} className="text-slate-400 hover:text-white text-sm transition-colors">← Back</button>
             <div className="w-px h-4 bg-slate-700" />
             <div>
