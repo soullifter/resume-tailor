@@ -27,7 +27,7 @@ function App() {
   const [matchScore,      setMatchScore]      = useState(() => s.matchScore)
   const [tailoredScore,   setTailoredScore]   = useState(() => s.tailoredScore)
   const [userMode,        setUserMode]        = useState(() => s.userMode)
-  const [jobInfo,         setJobInfo]         = useState(null)
+  const [jobInfo,         setJobInfo]         = useState(() => s.jobInfo)
 
   // On mount — clear any legacy Gemini key and force key setup
   useEffect(() => {
@@ -43,11 +43,11 @@ function App() {
   // Sync any session state change → sessionStorage
   useEffect(() => {
     writeSession({
-      sessionId, resumeText, jobDescription, generatedResume,
+      sessionId, resumeText, jobDescription, jobInfo, generatedResume,
       healthScore, matchScore, tailoredScore,
       userMode,
     })
-  }, [sessionId, resumeText, jobDescription, generatedResume,
+  }, [sessionId, resumeText, jobDescription, jobInfo, generatedResume,
       healthScore, matchScore, tailoredScore,
       userMode])
 
@@ -89,6 +89,7 @@ function App() {
     setGeneratedResume(version.resumeData)
     setResumeText(version.resumeText || '')
     setJobDescription(version.jobDescription || '')
+    setJobInfo(version.jobInfo || null)
     setMatchScore(version.matchScore ?? null)
     setTailoredScore(version.tailoredScore ?? null)
     setUserMode(version.userMode || 'standard')

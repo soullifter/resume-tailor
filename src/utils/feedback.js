@@ -53,39 +53,26 @@ const FIELDS = {
 }
 
 // ── Download tracking ──────────────────────────────────────────────────────
-const DOWNLOAD_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfPXE8o88HnaZFVOnzVvakOUqpvf_sJbzz8vL4l5lwdI3uejQ/formResponse'
-
-const DOWNLOAD_FIELDS = {
-  timestamp:     'entry.771984011',
-  name:          'entry.228836573',
-  email:         'entry.1896662128',
-  phone:         'entry.394669804',
-  company:       'entry.996407031',
-  role:          'entry.1283656379',
-  seniority:     'entry.622582645',
-  template:      'entry.273624715',
-  format:        'entry.113500063',
-  atsScore:      'entry.134314495',
-  browserDevice: 'entry.1467238439',
-}
+const DOWNLOAD_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyX0WyiuiG86e2NDpoQnzSPj_ThW986bpK52m4GlFZ-vMSDo1RJ1P0GLGSHMvDnfZwWjg/exec'
 
 export async function trackDownload({ resumeData, jobInfo, template, format, atsScore }) {
   try {
     const { device, browser } = getDeviceInfo()
-    const body = new FormData()
-    body.append(DOWNLOAD_FIELDS.timestamp,     new Date().toISOString())
-    body.append(DOWNLOAD_FIELDS.name,          resumeData?.name          || '')
-    body.append(DOWNLOAD_FIELDS.email,         resumeData?.email         || '')
-    body.append(DOWNLOAD_FIELDS.phone,         resumeData?.phone         || '')
-    body.append(DOWNLOAD_FIELDS.company,       jobInfo?.company          || '')
-    body.append(DOWNLOAD_FIELDS.role,          jobInfo?.title            || '')
-    body.append(DOWNLOAD_FIELDS.seniority,     jobInfo?.seniority        || '')
-    body.append(DOWNLOAD_FIELDS.template,      template                  || 'classic')
-    body.append(DOWNLOAD_FIELDS.format,        format                    || 'pdf')
-    body.append(DOWNLOAD_FIELDS.atsScore,      atsScore != null ? String(atsScore) : '')
-    body.append(DOWNLOAD_FIELDS.browserDevice, `${browser} · ${device}`)
-    await fetch(DOWNLOAD_FORM_URL, { method: 'POST', mode: 'no-cors', body })
-  } catch {}
+    const body = new URLSearchParams()
+    body.append('name',          resumeData?.name       || '')
+    body.append('email',         resumeData?.email      || '')
+    body.append('phone',         resumeData?.phone      || '')
+    body.append('company',       jobInfo?.company       || '')
+    body.append('role',          jobInfo?.title         || '')
+    body.append('seniority',     jobInfo?.seniority     || '')
+    body.append('template',      template               || 'classic')
+    body.append('format',        format                 || 'pdf')
+    body.append('atsScore',      atsScore != null ? String(atsScore) : '')
+    body.append('browserDevice', `${browser} · ${device}`)
+    await fetch(DOWNLOAD_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body })
+  } catch (e) {
+    console.warn('[trackDownload] failed:', e)
+  }
 }
 
 export async function submitFeedback({ type, description, email, page }) {

@@ -21,6 +21,10 @@ const LANDING_STYLES = `
     0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,0.5); }
     50%       { box-shadow: 0 0 0 10px rgba(59,130,246,0); }
   }
+  @keyframes ring-spin {
+    from { stroke-dashoffset: 0; }
+    to   { stroke-dashoffset: -440; }
+  }
 `
 
 const TICKER_ITEMS = [
@@ -683,13 +687,34 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
   const savedCount = getSavedResumes().length
   const [showToast, setShowToast] = useState(true)
   const [downloadCount, setDownloadCount] = useState(null)
+  const [displayCount, setDisplayCount] = useState(0)
 
-  useEffect(() => {
+  function fetchCount() {
     fetch(COUNTER_URL)
       .then(r => r.text())
-      .then(t => { const n = parseInt(t.trim()); if (!isNaN(n) && n > 0) setDownloadCount(n) })
+      .then(t => { const n = parseInt(t.trim()); if (!isNaN(n)) setDownloadCount(n) })
       .catch(() => {})
+  }
+
+  useEffect(() => {
+    fetchCount()
+    const interval = setInterval(fetchCount, 60000)
+    return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    if (downloadCount === null) return
+    const start = Date.now()
+    const from = displayCount
+    const dur = 1400
+    const tick = () => {
+      const p = Math.min((Date.now() - start) / dur, 1)
+      const ease = 1 - Math.pow(1 - p, 3)
+      setDisplayCount(Math.floor(from + ease * (downloadCount - from)))
+      if (p < 1) requestAnimationFrame(tick)
+    }
+    requestAnimationFrame(tick)
+  }, [downloadCount])
   return (
     <div className="bg-slate-950 text-white overflow-x-hidden">
       <style>{LANDING_STYLES}</style>
@@ -761,17 +786,6 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
             Free · AI-Powered · Your data never leaves your browser
           </div>
 
-          {/* Download counter */}
-          {downloadCount !== null && (
-            <div className="flex justify-center mb-3">
-              <div className="inline-flex items-center gap-1.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium px-3 py-1 rounded-full">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                {downloadCount.toLocaleString()} resumes downloaded
-              </div>
-            </div>
-          )}
 
           {/* Capacity strip */}
           <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
@@ -803,6 +817,26 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
             <br className="hidden sm:block" />
             <span className="text-slate-500 text-base">16 AI tools · tailored resume · interview prep · job tracker.</span>
           </p>
+
+          {/* Live download counter */}
+          <div className="flex flex-col items-center mb-8">
+            {downloadCount === null ? (
+              <div className="h-20 w-40 rounded-2xl bg-slate-800 animate-pulse mb-3" />
+            ) : (
+              <span className="text-6xl sm:text-7xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400 tabular-nums leading-none mb-3">
+                {displayCount.toLocaleString()}
+              </span>
+            )}
+            <p className="text-white text-xl sm:text-2xl font-semibold tracking-tight flex items-center gap-2">
+              <svg width="18" height="18" viewBox="0 0 18 18" className="shrink-0">
+                <circle cx="9" cy="9" r="7" fill="none" stroke="rgba(16,185,129,0.2)" strokeWidth="2" />
+                <circle cx="9" cy="9" r="7" fill="none" stroke="#10b981" strokeWidth="2"
+                  strokeDasharray="8 36" strokeLinecap="round"
+                  style={{ animation: 'ring-spin 1.8s linear infinite' }} />
+              </svg>
+              resumes tailored &amp; downloaded
+            </p>
+          </div>
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">

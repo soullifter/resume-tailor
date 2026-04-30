@@ -600,6 +600,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
       sessionId, company, role, resumeData,
       resumeText: resumeText || '',
       jobDescription: jobDescription || '',
+      jobInfo: jobInfo || null,
       userMode: userMode || 'standard',
       matchScore: beforeScore,
       tailoredScore: liveAfterScore,
@@ -960,7 +961,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
           Tailor for another job →
         </button>
 
-        <ExtraTools apiKey={apiKey} resumeData={resumeData} jobDescription={jobDescription} />
+        <ExtraTools apiKey={apiKey} resumeData={resumeData} jobDescription={jobDescription} jobInfo={jobInfo} />
 
         <div className="h-12" />
         </div>{/* end LEFT COLUMN */}

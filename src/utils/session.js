@@ -4,6 +4,7 @@ const DEFAULTS = {
   sessionId:       null,
   resumeText:      '',
   jobDescription:  '',
+  jobInfo:         null,
   generatedResume: null,
   healthScore:     null,
   matchScore:      null,

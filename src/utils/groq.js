@@ -296,6 +296,15 @@ export async function geminiScore(apiKey, prompt, opts) {
   return isNaN(val) ? null : Math.min(100, Math.max(0, val))
 }
 
+/**
+ * Compound search — uses compound-beta-mini (web search + reasoning).
+ * For company research, salary lookup, cold outreach, etc.
+ * Always uses compound-beta-mini regardless of user's selected model.
+ */
+export async function compoundSearch(apiKey, prompt, opts) {
+  return _call(apiKey, prompt, { ...opts, _modelId: 'compound-beta-mini' })
+}
+
 /** Validate API key — throws on invalid, resolves on valid */
 export async function validateApiKey(key) {
   const res = await fetch('https://api.groq.com/openai/v1/models', {
@@ -346,7 +355,7 @@ Reply format: {"isResume": true, "language": "English"}`
  */
 export async function validateJobDescription(apiKey, text) {
   try {
-    const snippet = text.slice(0, 1500).replace(/`/g, "'")
+    const snippet = text.slice(0, 4000).replace(/`/g, "'")
     const prompt = `Is this text a job description or job posting? Reply with ONLY valid JSON, no other text.
 
 Text:

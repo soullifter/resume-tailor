@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ResumePreview from './ResumePreview'
 import { getApplications, getSavedResumes, addApplication, updateApplication, deleteApplication, daysSince, timeAgo } from '../utils/storage'
-import { geminiJSON } from '../utils/groq'
+import { geminiJSON, compoundSearch } from '../utils/groq'
 import { followUpEmailPrompt } from '../utils/prompts'
 import ModelWidget from './ModelWidget'
 
@@ -168,6 +168,95 @@ function FollowUpModal({ app, apiKey, onClose }) {
   )
 }
 
+function CompanyResearchModal({ app, apiKey, onClose }) {
+  const [status, setStatus] = useState('idle')
+  const [result, setResult] = useState('')
+  const [error, setError]   = useState('')
+
+  async function research() {
+    setStatus('loading')
+    setError('')
+    try {
+      const text = await compoundSearch(apiKey,
+        `Research the company "${app.company}" for a job candidate preparing for an interview for the role "${app.role}". Provide a concise, practical overview covering:
+1. What the company does (products, services, business model)
+2. Tech stack and tools they use
+3. Company culture and values
+4. Recent news or achievements (last 6-12 months)
+5. Interview process and tips (if publicly known)
+
+Use clear section headers. Keep each section to 2-3 sentences. Focus on what would help someone ace an interview.`,
+        { maxOutputTokens: 800 }
+      )
+      setResult(text)
+      setStatus('done')
+    } catch (e) {
+      setError(e.message || 'Research failed. Try again.')
+      setStatus('error')
+    }
+  }
+
+  // Simple inline markdown renderer for the modal
+  function renderLine(line, i) {
+    if (/^\d+\./.test(line.trim())) {
+      const content = line.replace(/^\d+\.\s*/, '')
+      return <p key={i} className="text-slate-300 text-sm leading-relaxed font-semibold mt-3 mb-1">{content.replace(/\*\*/g, '')}</p>
+    }
+    const parts = []; const re = /\*\*(.+?)\*\*/g; let last = 0, m
+    while ((m = re.exec(line)) !== null) {
+      if (m.index > last) parts.push(line.slice(last, m.index))
+      parts.push(<strong key={m.index} className="text-white">{m[1]}</strong>)
+      last = m.index + m[0].length
+    }
+    if (last < line.length) parts.push(line.slice(last))
+    return line.trim() ? <p key={i} className="text-slate-300 text-sm leading-relaxed">{parts}</p> : <div key={i} className="h-1.5" />
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-lg shadow-2xl max-h-[85vh] flex flex-col">
+        <div className="flex items-center justify-between mb-1 shrink-0">
+          <div className="flex items-center gap-2">
+            <h3 className="text-white font-bold">Company Research</h3>
+            <span className="text-xs px-1.5 py-0.5 rounded border text-blue-400 bg-blue-500/10 border-blue-500/20">Web search</span>
+          </div>
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">✕</button>
+        </div>
+        <p className="text-slate-500 text-sm mb-4 shrink-0">{app.company} — {app.role}</p>
+
+        {status === 'idle' && (
+          <button onClick={research} className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors shrink-0">
+            Research {app.company}
+          </button>
+        )}
+        {status === 'loading' && (
+          <div className="flex items-center gap-2 text-blue-400 text-sm py-4 justify-center shrink-0">
+            <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+            Searching the web...
+          </div>
+        )}
+        {status === 'error' && (
+          <div className="space-y-2 shrink-0">
+            <p className="text-red-400 text-sm">{error}</p>
+            <button onClick={research} className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-colors">Try again</button>
+          </div>
+        )}
+        {status === 'done' && result && (
+          <div className="overflow-y-auto flex-1 space-y-0.5 pr-1">
+            {result.split('\n').map((line, i) => renderLine(line, i))}
+          </div>
+        )}
+        {status === 'done' && (
+          <button onClick={research} className="mt-4 w-full py-2 rounded-xl border border-slate-700 text-slate-400 hover:text-white text-sm transition-colors shrink-0">↺ Re-research</button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 function Analytics({ apps }) {
   const total = apps.length
   if (total === 0) return (
@@ -232,6 +321,7 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
   const [tab, setTab]           = useState('all')
   const [showAdd, setShowAdd]   = useState(false)
   const [followUp, setFollowUp] = useState(null)
+  const [research, setResearch] = useState(null)
   const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   function refresh() { setApps(getApplications()); setSavedResumes(getSavedResumes()) }
@@ -419,7 +509,13 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
                       onClick={() => setFollowUp(app)}
                       className="flex-1 text-sm py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white transition-colors"
                     >
-                      Generate follow-up
+                      Follow-up email
+                    </button>
+                    <button
+                      onClick={() => setResearch(app)}
+                      className="flex-1 text-sm py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-400 hover:text-white transition-colors"
+                    >
+                      🔍 Research
                     </button>
                     <button
                       onClick={() => setDeleteConfirm(app.id)}
@@ -447,6 +543,14 @@ export default function ApplicationTracker({ onBack, apiKey, onLoadVersion }) {
             <ResumePreview data={previewResume.resumeData} hideDownload />
           </div>
         </div>
+      )}
+
+      {research && (
+        <CompanyResearchModal
+          app={research}
+          apiKey={apiKey}
+          onClose={() => setResearch(null)}
+        />
       )}
 
       {followUp && (

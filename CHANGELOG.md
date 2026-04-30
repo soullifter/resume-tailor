@@ -8,6 +8,51 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.5.0] — 2026-04-30
+
+### Phase 2 — AI-powered application tools
+
+#### Cold Outreach Email
+- New tool on the download page — researches the company via web search and writes a hyper-personalized outreach email
+- Returns structured `{ subject, body }` with separate copy buttons for each
+- Uses `compound-beta-mini` (built-in web search)
+
+#### Enhanced Cover Letter
+- When company is known from JD analysis, automatically researches the company before writing
+- Opening paragraph references specific, real facts about the company
+- "Web search" badge shown when company research is active
+
+#### Salary Range Lookup
+- New tool — searches for real-time market salary data for the role, company, and location
+- Returns range, median, equity/bonus components, and sources
+
+#### Company Research in Application Tracker
+- "🔍 Research" button on every application card
+- Opens a modal with company overview, tech stack, culture, recent news, and interview tips
+- Powered by `compound-beta-mini` web search
+
+#### TTS Read Aloud
+- 🔊 speaker button on Cover Letter, LinkedIn Summary, Cold Outreach body, and Salary results
+- Uses browser-native `speechSynthesis` — no API cost
+- Click to start, click pause icon to stop
+
+#### Pre-population & persistence
+- Cold Outreach and Salary Lookup fields pre-populate from `jobInfo` (company, role, location)
+- `jobInfo` persisted in `sessionStorage` — survives page refresh
+- `jobInfo` saved alongside resume — restored when opening from My Resumes
+- Location field uses job location (`jobInfo.location`), not candidate's home location
+
+#### Result display improvements
+- Markdown renderer for tool results — renders `**bold**`, `*italic*`, and pipe tables
+- Collapse/expand chevron on all 5 tool cards — result stays until you dismiss it
+- Email body renders with paragraph spacing instead of flat `pre-wrap`
+
+#### Bug fixes
+- JD validation snippet bumped 1500 → 4000 chars — reduces false positives on fetched LinkedIn JDs
+- `ResearchCard` fields sync when `jobInfo` arrives after mount (useEffect on defaultsKey)
+
+---
+
 ## [1.4.2] — 2026-04-30
 
 ### JD analysis — manual trigger (no more auto-fire on every keystroke)

@@ -11,11 +11,11 @@ export function uid() { return Date.now().toString(36) + Math.random().toString(
 export function getSavedResumes()          { return read(RESUMES_KEY) }
 export function hasSavedResumes()          { return read(RESUMES_KEY).length > 0 }
 
-export function saveResume({ sessionId, company, role, resumeData, resumeText, jobDescription, userMode, matchScore, tailoredScore }) {
+export function saveResume({ sessionId, company, role, resumeData, resumeText, jobDescription, jobInfo, userMode, matchScore, tailoredScore }) {
   const versions = read(RESUMES_KEY)
   const existingIdx = sessionId ? versions.findIndex(v => v.sessionId === sessionId) : -1
   if (existingIdx >= 0) {
-    const updated = { ...versions[existingIdx], company, role, resumeData, resumeText, jobDescription, userMode: userMode || 'standard', matchScore: matchScore ?? null, tailoredScore: tailoredScore ?? null, updatedAt: new Date().toISOString() }
+    const updated = { ...versions[existingIdx], company, role, resumeData, resumeText, jobDescription, jobInfo: jobInfo ?? versions[existingIdx].jobInfo ?? null, userMode: userMode || 'standard', matchScore: matchScore ?? null, tailoredScore: tailoredScore ?? null, updatedAt: new Date().toISOString() }
     versions[existingIdx] = updated
     write(RESUMES_KEY, versions)
     return updated
@@ -26,6 +26,7 @@ export function saveResume({ sessionId, company, role, resumeData, resumeText, j
     company, role,
     createdAt: new Date().toISOString(),
     resumeData, resumeText, jobDescription,
+    jobInfo: jobInfo ?? null,
     userMode: userMode || 'standard',
     matchScore: matchScore ?? null,
     tailoredScore: tailoredScore ?? null,
