@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import * as pdfjsLib from 'pdfjs-dist'
 import StepLayout from './StepLayout'
 import ResumeHealthScore from './ResumeHealthScore'
+import { validateResume } from '../utils/groq'
 
 async function extractTextFromDocx(file) {
   const arrayBuffer = await file.arrayBuffer()
@@ -593,6 +594,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
   const [resumeText, setResumeText] = useState('')
   const [dragOver, setDragOver]   = useState(false)
   const [showSpark, setShowSpark] = useState(false)
+  const [validation, setValidation] = useState(null) // null | { isResume, language }
   const inputRef = useRef()
 
   async function handleFile(file) {
@@ -629,6 +631,8 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
       onTextExtracted(text)
       setShowSpark(true)
       setTimeout(() => setShowSpark(false), 700)
+      // Async pre-flight validation — non-blocking
+      if (apiKey) validateResume(apiKey, text).then(r => { if (r) setValidation(r) })
     } catch (e) {
       console.error('[file upload error]', e)
       setStatus('error')
@@ -650,6 +654,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
     setPdfFile(null)
     setFileType(null)
     setResumeText('')
+    setValidation(null)
     onTextExtracted('')
     if (inputRef.current) inputRef.current.value = ''
   }
@@ -721,6 +726,25 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
               </div>
               <button onClick={reset} className="text-slate-500 hover:text-slate-300 text-sm underline transition-colors">Remove</button>
             </div>
+            {/* Pre-flight validation warnings */}
+            {validation && !validation.isResume && (
+              <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 flex items-start gap-3">
+                <span className="text-amber-400 shrink-0 mt-0.5">⚠</span>
+                <div>
+                  <p className="text-amber-400 text-sm font-medium">This may not be a resume</p>
+                  <p className="text-amber-400/70 text-sm mt-0.5">The file doesn't look like a resume or CV. Check you uploaded the right file. You can still proceed.</p>
+                </div>
+              </div>
+            )}
+            {validation?.isResume && validation.language && validation.language?.toLowerCase() !== 'english' && (
+              <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-3 flex items-start gap-3">
+                <span className="text-blue-400 shrink-0 mt-0.5">ℹ</span>
+                <div>
+                  <p className="text-blue-400 text-sm font-medium">{validation.language} resume detected</p>
+                  <p className="text-blue-400/70 text-sm mt-0.5">Analysis and tailoring work best with English resumes. Results may vary.</p>
+                </div>
+              </div>
+            )}
             {fileType === 'pdf' && <PdfPreview file={pdfFile} />}
             <ResumeHealthScore apiKey={apiKey} resumeText={resumeText} onScoreReady={onHealthScore} userMode={userMode} />
           </div>

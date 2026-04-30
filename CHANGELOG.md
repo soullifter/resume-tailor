@@ -8,6 +8,28 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.4.0] — 2026-04-30
+
+### Deep Reasoning model
+- Added `openai/gpt-oss-120b` as a new "Deep Reasoning" model option — thinks before writing for more thorough tailoring
+- Reasoning model handling: `max_completion_tokens` boosted to min 6000 so internal thinking doesn't consume the output budget
+- Specific error message when reasoning model exhausts its token budget mid-response
+
+### Pre-flight resume validation
+- After upload, automatically checks if the file is actually a resume using a fast background call
+- Amber warning banner if uploaded file doesn't look like a resume or CV (non-blocking — user can still proceed)
+- Blue info banner if a non-English resume is detected — warns that results may vary
+
+### Prompt injection protection
+- Custom instructions field is checked for jailbreak/prompt injection attempts before generation runs
+- Generation blocked with a clear error if unsafe content detected; fails open silently on check errors
+
+### Rate limit bug fixes
+- Fixed: routine tasks (scoring, JD parse) hitting a 429 were incorrectly marking the user's selected model as exhausted instead of the actual failing model
+- Fixed: per-minute rate limit 429s no longer mark the model as exhausted — only daily limit errors do; per-minute shows "wait a moment" message instead
+
+---
+
 ## [1.3.0] — 2026-04-29
 
 ### JD auto-fetch from job URLs

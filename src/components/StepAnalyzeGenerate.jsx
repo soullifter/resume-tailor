@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import StepLayout from './StepLayout'
-import { geminiJSON, geminiScore } from '../utils/groq'
+import { geminiJSON, geminiScore, checkInjection } from '../utils/groq'
 import { analysisPrompt, generationPrompt, scorePrompt } from '../utils/prompts'
 
 // ── Styles ──────────────────────────────────────────────────────────────────
@@ -382,6 +382,15 @@ export default function StepAnalyzeGenerate({
     setPhase('generating')
     setError('')
     try {
+      // Injection check on custom instructions (non-blocking fail open)
+      if (customInstructions.trim()) {
+        const unsafe = await checkInjection(apiKey, customInstructions)
+        if (unsafe) {
+          setPhase('error')
+          setError('Custom instructions contain disallowed content. Keep instructions focused on resume style and preferences.')
+          return
+        }
+      }
       const { prompt, temperature, maxOutputTokens } = generationPrompt(resumeText, jobDescription, analysis, userMode, jobInfo, customInstructions)
       const resume = await geminiJSON(apiKey, prompt, { temperature, maxOutputTokens })
       const tailoredText = [
