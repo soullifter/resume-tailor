@@ -8,6 +8,44 @@ async function parseJobInfo(apiKey, jd, resumeText) {
   return geminiJSON(apiKey, prompt, { temperature, maxOutputTokens }, true)
 }
 
+// ── JD auto-fetch ─────────────────────────────────────────────────────────────
+const PROXY_URL = 'https://script.google.com/macros/s/AKfycbyX0WyiuiG86e2NDpoQnzSPj_ThW986bpK52m4GlFZ-vMSDo1RJ1P0GLGSHMvDnfZwWjg/exec'
+
+function stripHtml(html) {
+  return html.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+async function fetchJDFromUrl(url) {
+  // LinkedIn: linkedin.com/jobs/view/{id} OR ?currentJobId={id}
+  const liMatch = url.match(/linkedin\.com\/jobs\/view\/(\d+)/i)
+    || url.match(/[?&]currentJobId=(\d+)/i)
+  if (liMatch) {
+    const jobId = liMatch[1]
+    const proxied = `${PROXY_URL}?url=${encodeURIComponent(`https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/${jobId}`)}`
+    const res = await fetch(proxied)
+    const html = await res.text()
+    const text = stripHtml(html)
+    if (text.length < 100) throw new Error('Could not extract job description from LinkedIn')
+    return text
+  }
+
+  // Greenhouse: boards.greenhouse.io/{company}/jobs/{id} or job-boards.greenhouse.io/...
+  const ghMatch = url.match(/(?:boards|job-boards)\.greenhouse\.io\/([^/?#]+)\/jobs\/(\d+)/i)
+  if (ghMatch) {
+    const [, company, jobId] = ghMatch
+    const res = await fetch(`https://boards-api.greenhouse.io/v1/boards/${company}/jobs/${jobId}`)
+    if (!res.ok) throw new Error('Could not fetch job from Greenhouse')
+    const data = await res.json()
+    const header = [data.title, data.location?.name].filter(Boolean).join(' · ')
+    const body = stripHtml(data.content || '')
+    const text = [header, body].filter(Boolean).join('\n\n')
+    if (text.length < 100) throw new Error('Could not extract job description from Greenhouse')
+    return text
+  }
+
+  throw new Error('URL not supported — try a LinkedIn or Greenhouse job URL')
+}
+
 const JD_STYLES = `
 @keyframes jd-slide-spring {
   0%   { opacity: 0; transform: translateY(-14px) scale(0.97); }
@@ -57,6 +95,25 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
   const [msgVisible, setMsgVisible]   = useState(true)
   const debounceRef = useRef(null)
   const msgIntervalRef = useRef(null)
+
+  // URL auto-fetch
+  const [urlInput, setUrlInput]           = useState('')
+  const [urlStatus, setUrlStatus]         = useState('idle') // 'idle' | 'loading' | 'success' | 'error'
+  const [urlError, setUrlError]           = useState('')
+
+  async function handleFetchUrl() {
+    if (!urlInput.trim()) return
+    setUrlStatus('loading')
+    setUrlError('')
+    try {
+      const text = await fetchJDFromUrl(urlInput.trim())
+      onChange(text)
+      setUrlStatus('success')
+    } catch (e) {
+      setUrlError(e.message || 'Could not fetch job description')
+      setUrlStatus('error')
+    }
+  }
 
   // Reset collapsed when user edits JD or clears it
   useEffect(() => {
@@ -114,6 +171,44 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
     >
       <style>{JD_STYLES}</style>
       <div className="space-y-3">
+
+        {/* ── URL auto-fetch ── */}
+        <div className="space-y-1.5">
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={urlInput}
+              onChange={e => { setUrlInput(e.target.value); setUrlStatus('idle') }}
+              onKeyDown={e => e.key === 'Enter' && handleFetchUrl()}
+              placeholder="Paste a LinkedIn or Greenhouse job URL to auto-fill..."
+              className="flex-1 bg-slate-900 border border-slate-700 text-white placeholder-slate-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500/70 transition-colors"
+            />
+            <button
+              onClick={handleFetchUrl}
+              disabled={!urlInput.trim() || urlStatus === 'loading'}
+              className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white text-sm font-medium rounded-xl transition-colors shrink-0 flex items-center gap-2"
+            >
+              {urlStatus === 'loading' ? (
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                </svg>
+              ) : 'Fetch'}
+            </button>
+          </div>
+          {urlStatus === 'success' && (
+            <p className="text-emerald-400 text-xs px-1 flex items-center gap-1">
+              <svg width="12" height="12" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#10b981" strokeWidth="1.5" fill="rgba(16,185,129,0.1)"/><path d="M6 10.5l3 3 5-5" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Job description fetched — review and edit below if needed
+            </p>
+          )}
+          {urlStatus === 'error' && (
+            <p className="text-red-400 text-xs px-1">{urlError} — paste the JD manually below instead.</p>
+          )}
+          {urlStatus === 'idle' && (
+            <p className="text-slate-600 text-xs px-1">Works with LinkedIn & Greenhouse job URLs</p>
+          )}
+        </div>
 
         {/* ── Textarea ── */}
         <div className="relative">
