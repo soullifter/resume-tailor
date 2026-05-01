@@ -52,12 +52,12 @@ function SpeakButton({ getText }) {
   return (
     <button
       onClick={() => speaking ? stop() : speak(getText())}
-      className="text-slate-500 hover:text-slate-300 transition-colors p-1"
-      title={speaking ? 'Stop reading' : 'Read aloud'}>
-      {speaking
-        ? <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-        : <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 6a7 7 0 010 12m-4-9v6m-2-3a9 9 0 0118 0"/></svg>
-      }
+      className={`flex items-center gap-1 text-xs px-2 py-1 rounded-lg border transition-colors ${
+        speaking
+          ? 'text-blue-400 border-blue-500/30 bg-blue-500/10'
+          : 'text-slate-500 border-slate-700 hover:text-slate-300 hover:border-slate-600'
+      }`}>
+      {speaking ? '⏹ Stop' : '🔊 Read'}
     </button>
   )
 }
@@ -203,9 +203,11 @@ function ToolCard({ icon, title, description, buttonLabel, onGenerate, result, r
                 className="text-sm text-emerald-400 border border-emerald-500/30 px-3 py-1.5 rounded-lg transition-colors">
                 {copied ? 'Copied!' : 'Copy'}
               </button>
-              {resultType === 'text' && (
-                <SpeakButton getText={() => result} />
-              )}
+              <SpeakButton getText={() =>
+                resultType === 'list'
+                  ? result.map((q, i) => `Question ${i + 1}: ${q.question}. Tip: ${q.tip}`).join('. ')
+                  : result
+              } />
               <button onClick={() => setCollapsed(c => !c)}
                 className="text-slate-500 hover:text-slate-300 transition-colors p-1"
                 title={collapsed ? 'Expand' : 'Collapse'}>
