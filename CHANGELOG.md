@@ -8,6 +8,15 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.5.1] — 2026-04-30
+
+### TTS button polish
+- "🔊 Read" / "⏹ Stop" labeled button replaces ambiguous SVG icon — intent is now obvious
+- Read aloud now covers all 5 tools including Interview Prep (previously skipped list results)
+- Active speaking state shows blue highlight on the button
+
+---
+
 ## [1.5.0] — 2026-04-30
 
 ### Phase 2 — AI-powered application tools
