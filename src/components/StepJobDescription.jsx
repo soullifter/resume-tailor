@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import StepLayout from './StepLayout'
 import { geminiJSON, checkInjection, validateJobDescription } from '../utils/groq'
 import { jdParsePrompt } from '../utils/prompts'
+import { MicButton } from '../hooks/useVoiceInput.jsx'
 
 async function parseJobInfo(apiKey, jd, resumeText) {
   const { prompt, temperature, maxOutputTokens } = jdParsePrompt(jd, resumeText)
@@ -277,6 +278,14 @@ export default function StepJobDescription({ value, onChange, onNext, onBack, on
           ) : (
             /* Expanded textarea */
             <>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-slate-500 text-xs">Paste the JD or speak it aloud</span>
+                <MicButton
+                  apiKey={apiKey}
+                  label="Speak JD"
+                  onTranscript={t => onChange(t)}
+                />
+              </div>
               <textarea
                 value={value}
                 onChange={e => onChange(e.target.value)}

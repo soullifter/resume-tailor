@@ -55,24 +55,30 @@ const FIELDS = {
 // ── Download tracking ──────────────────────────────────────────────────────
 const DOWNLOAD_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyX0WyiuiG86e2NDpoQnzSPj_ThW986bpK52m4GlFZ-vMSDo1RJ1P0GLGSHMvDnfZwWjg/exec'
 
+async function _track({ resumeData, jobInfo, template, format, atsScore }) {
+  const { device, browser } = getDeviceInfo()
+  const body = new URLSearchParams()
+  body.append('name',          resumeData?.name       || '')
+  body.append('email',         resumeData?.email      || '')
+  body.append('phone',         resumeData?.phone      || '')
+  body.append('company',       jobInfo?.company       || '')
+  body.append('role',          jobInfo?.title         || '')
+  body.append('seniority',     jobInfo?.seniority     || '')
+  body.append('template',      template               || '')
+  body.append('format',        format                 || '')
+  body.append('atsScore',      atsScore != null ? String(atsScore) : '')
+  body.append('browserDevice', `${browser} · ${device}`)
+  await fetch(DOWNLOAD_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body })
+}
+
 export async function trackDownload({ resumeData, jobInfo, template, format, atsScore }) {
-  try {
-    const { device, browser } = getDeviceInfo()
-    const body = new URLSearchParams()
-    body.append('name',          resumeData?.name       || '')
-    body.append('email',         resumeData?.email      || '')
-    body.append('phone',         resumeData?.phone      || '')
-    body.append('company',       jobInfo?.company       || '')
-    body.append('role',          jobInfo?.title         || '')
-    body.append('seniority',     jobInfo?.seniority     || '')
-    body.append('template',      template               || 'classic')
-    body.append('format',        format                 || 'pdf')
-    body.append('atsScore',      atsScore != null ? String(atsScore) : '')
-    body.append('browserDevice', `${browser} · ${device}`)
-    await fetch(DOWNLOAD_SCRIPT_URL, { method: 'POST', mode: 'no-cors', body })
-  } catch (e) {
-    console.warn('[trackDownload] failed:', e)
-  }
+  try { await _track({ resumeData, jobInfo, template, format, atsScore }) }
+  catch (e) { console.warn('[trackDownload] failed:', e) }
+}
+
+export async function trackEvent(eventType, { resumeData, jobInfo, atsScore } = {}) {
+  try { await _track({ resumeData, jobInfo, format: eventType, atsScore }) }
+  catch (e) { console.warn('[trackEvent] failed:', e) }
 }
 
 export async function submitFeedback({ type, description, email, page }) {

@@ -2,7 +2,8 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import * as pdfjsLib from 'pdfjs-dist'
 import StepLayout from './StepLayout'
 import ResumeHealthScore from './ResumeHealthScore'
-import { validateResume } from '../utils/groq'
+import { validateResume, geminiJSON } from '../utils/groq'
+import { MicButton } from '../hooks/useVoiceInput.jsx'
 
 async function extractTextFromDocx(file) {
   const arrayBuffer = await file.arrayBuffer()
@@ -271,9 +272,46 @@ function UserModeSelector({ value, onChange }) {
   )
 }
 
+// ── Voice experience filler ──────────────────────────────────────────────────
+
+function VoiceExpFill({ apiKey, onFilled }) {
+  const [structuring, setStructuring] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleTranscript(transcript) {
+    setStructuring(true)
+    setError('')
+    try {
+      const result = await geminiJSON(apiKey,
+        `Extract job experience from this voice note into JSON.
+Voice note: "${transcript}"
+Return ONLY valid JSON: {"title":"","company":"","dates":"","bullets":[]}
+Rules: 2-4 bullets max, achievement-focused, action verb start, only use info mentioned, empty string if not mentioned.`,
+        { temperature: 0.2, maxOutputTokens: 400, _modelId: 'llama-3.1-8b-instant' })
+      onFilled(result)
+      setStructuring(false)
+    } catch {
+      setError('Could not structure — try again.')
+      setStructuring(false)
+    }
+  }
+
+  if (structuring) return (
+    <span className="flex items-center gap-1.5 text-xs text-blue-400">
+      <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24">
+        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+      </svg>
+      Structuring...
+    </span>
+  )
+  if (error) return <span className="text-xs text-red-400">{error}</span>
+  return <MicButton apiKey={apiKey} label="Fill from voice" onTranscript={handleTranscript} />
+}
+
 // ── Build from scratch ──────────────────────────────────────────────────────
 
-function BuildFromScratch({ onDone }) {
+function BuildFromScratch({ onDone, apiKey }) {
   const [data, setData] = useState({
     name: '', email: '', phone: '', location: '', linkedin: '',
     summary: '',
@@ -371,7 +409,10 @@ function BuildFromScratch({ onDone }) {
 
       {/* Summary */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
-        <p className="text-sm font-bold text-blue-400 uppercase tracking-widest mb-2">Professional Summary</p>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-sm font-bold text-blue-400 uppercase tracking-widest">Professional Summary</p>
+          <MicButton apiKey={apiKey} label="Speak" onTranscript={t => set('summary', t)} />
+        </div>
         <textarea className={`${inputCls} resize-none`} rows={3} value={data.summary} onChange={e => set('summary', e.target.value)} placeholder="Brief overview of your background, skills, and career goals..." />
       </div>
 
@@ -386,9 +427,17 @@ function BuildFromScratch({ onDone }) {
             <div key={ei} className="border border-slate-800 rounded-xl p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm text-slate-500">Role {ei + 1}</span>
-                {data.experience.length > 1 && (
-                  <button onClick={() => removeExp(ei)} className="text-sm text-red-400/60 hover:text-red-400 transition-colors">Remove</button>
-                )}
+                <div className="flex items-center gap-3">
+                  <VoiceExpFill apiKey={apiKey} onFilled={result => {
+                    if (result.title)   setExp(ei, 'title',   result.title)
+                    if (result.company) setExp(ei, 'company', result.company)
+                    if (result.dates)   setExp(ei, 'dates',   result.dates)
+                    if (result.bullets?.length) setData(d => ({ ...d, experience: d.experience.map((e, j) => j !== ei ? e : { ...e, bullets: result.bullets }) }))
+                  }} />
+                  {data.experience.length > 1 && (
+                    <button onClick={() => removeExp(ei)} className="text-sm text-red-400/60 hover:text-red-400 transition-colors">Remove</button>
+                  )}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div><label className={labelCls}>Job Title</label><input className={inputCls} value={exp.title} onChange={e => setExp(ei, 'title', e.target.value)} placeholder="Software Engineer" /></div>
@@ -829,7 +878,7 @@ export default function StepUpload({ onNext, onBack, onTextExtracted, onOpenSett
             <ResumeHealthScore apiKey={apiKey} resumeText={resumeText} onScoreReady={onHealthScore} userMode={userMode} />
           </div>
         ) : (
-          <BuildFromScratch onDone={handleScratchDone} />
+          <BuildFromScratch onDone={handleScratchDone} apiKey={apiKey} />
         )
       )}
     </StepLayout>

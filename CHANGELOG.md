@@ -8,6 +8,39 @@ Format: `Major.Minor.Patch` — bump policy:
 
 ---
 
+## [1.6.1] — 2026-05-01
+
+### Bug fixes & landing page accuracy
+- Fixed `handleUpdateSave` not persisting `jobInfo` — updating a saved resume no longer wipes job context from the saved version
+- Landing page tool count updated from 16 → 20 (ticker, hero, stat bar, features section, demo CTA)
+- Added Cold Outreach Email, Company Research, Salary Research, and Voice Input to the landing page feature pill strip
+
+---
+
+## [1.6.0] — 2026-05-01
+
+### Phase 3 — Voice Input + Funnel Tracking
+
+#### Voice Input
+- **JD step**: "🎤 Speak JD" button — dictate job description; pastes transcript, no auto-trigger
+- **Custom Instructions**: "🎤 Speak" mic button next to label — fills instructions field (300-char cap)
+- **Build from Scratch — Summary**: mic button fills summary field from voice
+- **Build from Scratch — Experience**: "🎤 Add role by voice" per experience entry — transcribes, then calls `llama-3.1-8b-instant` to extract title/company/dates/bullets from the voice note
+- Cross-browser `MediaRecorder` format detection: `webm;codecs=opus → webm → ogg → mp4`
+- Graceful "not supported" tooltip for legacy browsers
+
+#### Funnel Tracking
+- Fire `trackEvent('analyzed', ...)` after analysis completes (captures ATS score + job info)
+- Fire `trackEvent('generated', ...)` after resume generation completes (captures resume data + ATS)
+- Reuses same Apps Script endpoint; `format` field carries event type (`analyzed`, `generated`, `pdf`, `docx`)
+
+#### Bug Fixes
+- JSON truncation error now shows friendly message instead of raw `SyntaxError`
+- JD validation snippet bumped to 4000 chars (fixes false positive on LinkedIn JDs)
+- Save Resume modal auto-fills company/role from `jobInfo`
+
+---
+
 ## [1.5.1] — 2026-04-30
 
 ### TTS button polish

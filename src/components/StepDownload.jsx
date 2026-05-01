@@ -634,6 +634,7 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
       resumeData,
       resumeText: resumeText || '',
       jobDescription: jobDescription || '',
+      jobInfo: jobInfo || null,
       userMode: userMode || 'standard',
       matchScore: beforeScore,
       tailoredScore: liveAfterScore,
@@ -1011,8 +1012,8 @@ export default function StepDownload({ data, onStartOver, onBack, apiKey, jobDes
 
     {modalMode && (
       <SaveResumeModal
-        defaultCompany={savedLabel?.company ?? ''}
-        defaultRole={savedLabel?.role ?? ''}
+        defaultCompany={savedLabel?.company ?? jobInfo?.company ?? ''}
+        defaultRole={savedLabel?.role ?? jobInfo?.title ?? ''}
         onSave={handleModalSubmit}
         onClose={() => setModalMode(null)}
       />

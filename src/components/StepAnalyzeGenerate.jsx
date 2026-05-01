@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import StepLayout from './StepLayout'
 import { geminiJSON, geminiScore, checkInjection } from '../utils/groq'
 import { analysisPrompt, generationPrompt, scorePrompt } from '../utils/prompts'
+import { MicButton } from '../hooks/useVoiceInput.jsx'
+import { trackEvent } from '../utils/feedback'
 
 // ── Styles ──────────────────────────────────────────────────────────────────
 
@@ -372,6 +374,7 @@ export default function StepAnalyzeGenerate({
       setAtsScore(ats)
       onMatchScore?.(ats)  // ATS before score → used for before/after comparison on download page
       setPhase('analyzed')
+      trackEvent('analyzed', { jobInfo, atsScore: ats })
     } catch (e) {
       setPhase('error')
       setError(`Analysis failed: ${e.message}`)
@@ -412,6 +415,7 @@ export default function StepAnalyzeGenerate({
       }
       setPhase('done')
       onResumeGenerated(cleaned)
+      trackEvent('generated', { resumeData: cleaned, jobInfo, atsScore: atsScore ?? undefined })
       setShowToast(true)
       setShowConfetti(true)
       setTimeout(() => setShowToast(false), 4000)
@@ -658,7 +662,10 @@ export default function StepAnalyzeGenerate({
                 ) : (
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm text-slate-400 font-medium">Instructions for the AI</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm text-slate-400 font-medium">Instructions for the AI</p>
+                        <MicButton apiKey={apiKey} label="Speak" onTranscript={t => setCustomInstructions(t.slice(0, 300))} />
+                      </div>
                       <button onClick={() => setShowInstructions(false)} className="text-slate-600 hover:text-slate-400 text-sm transition-colors">✕</button>
                     </div>
                     <textarea

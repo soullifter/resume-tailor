@@ -35,7 +35,7 @@ const TICKER_ITEMS = [
   "✓  ATS score, keyword heatmap, AI rewrite — one tool",
   "✓  Download as PDF or Word when done",
   "✓  Cover letter + interview prep included",
-  "✓  16 tools — all free, all in your browser",
+  "✓  20 tools — all free, all in your browser",
   "✓  No data stored — no backend, no server",
   "✓  Works on mobile and desktop",
 ]
@@ -583,7 +583,7 @@ function ProductDemo({ onStart }) {
               onClick={onStart}
               className="w-full py-3 rounded-xl bg-gradient-to-r from-blue-600 to-emerald-600 hover:from-blue-500 hover:to-emerald-500 text-white text-sm font-semibold flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
             >
-              Try all 16 tools — Free →
+              Try all 20 tools — Free →
             </button>
           </div>
         )}
@@ -815,7 +815,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
             75% of resumes never reach a human.{' '}
             <span className="text-white font-medium">We fix that — free.</span>
             <br className="hidden sm:block" />
-            <span className="text-slate-500 text-base">16 AI tools · tailored resume · interview prep · job tracker.</span>
+            <span className="text-slate-500 text-base">20 AI tools · tailored resume · interview prep · job tracker.</span>
           </p>
 
           {/* Live download counter */}
@@ -865,8 +865,12 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
               { label: 'Length Trimmer',         color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
               { label: '3 PDF Templates',        color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
               { label: 'Cover Letter',           color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
+              { label: 'Cold Outreach Email',    color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
               { label: 'LinkedIn About',         color: 'text-violet-400 bg-violet-500/10 border-violet-500/20' },
               { label: 'Interview Questions',    color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' },
+              { label: 'Salary Research',        color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' },
+              { label: 'Company Research',       color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' },
+              { label: 'Voice Input',            color: 'text-teal-400 bg-teal-500/10 border-teal-500/20' },
               { label: 'Save Versions',          color: 'text-slate-300 bg-slate-800 border-slate-600' },
               { label: 'Application Tracker',    color: 'text-slate-300 bg-slate-800 border-slate-600' },
               { label: 'Follow-up Emails',       color: 'text-slate-300 bg-slate-800 border-slate-600' },
@@ -898,7 +902,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
         <div className="max-w-6xl mx-auto px-4 py-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
           {[
             { to: 75, suffix: '%', label: 'Resumes filtered before a human sees them', color: 'from-red-400 to-orange-400' },
-            { to: 16, suffix: '+', label: 'AI tools, all free', color: 'from-blue-400 to-blue-300' },
+            { to: 20, suffix: '+', label: 'AI tools, all free', color: 'from-blue-400 to-blue-300' },
             { to: 30, suffix: 's', label: 'To a tailored resume', color: 'from-emerald-400 to-teal-400' },
             { to: 100, suffix: '%', label: 'Free, forever', color: 'from-violet-400 to-purple-400' },
           ].map(({ to, suffix, label, color }, i) => (
@@ -989,7 +993,7 @@ export default function LandingPage({ onStart, onChangeKey, onGoToVersions, onGo
           <FadeIn>
             <div className="text-center mb-16">
               <p className="text-emerald-400 text-xs font-bold uppercase tracking-widest mb-3">What you get</p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">16 AI tools. One free product.</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">20 AI tools. One free product.</h2>
               <p className="text-slate-400">Everything you need to go from application to offer — all in your browser.</p>
             </div>
           </FadeIn>
